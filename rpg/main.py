@@ -43,9 +43,6 @@ def criar_monstro_por_id(id_monstro: str) -> Monstro:
 
 def jogar(jogador: 'Personagem'):
     """O loop principal de gameplay para um personagem ativo."""
-    # Inicia a primeira quest automaticamente para dar um ponto de partida ao jogador
-    quests.iniciar_quest(jogador, "mq01_despertar")
-
     while jogador.esta_vivo():
         funcoes_gerais.limpar_tela()
         funcoes_gerais.imprimir_cabecalho("Vila de Valesereno", nivel=2)
@@ -53,33 +50,59 @@ def jogar(jogador: 'Personagem'):
         print("\nO que você faz?")
         print("1. Falar com Elara (Curandeira da Vila)")
         print("2. Explorar a Floresta dos Sussurros")
-        print("3. Ver Diário de Missões")
-        print("4. Abrir Inventário")
-        print("5. Ver Equipamento")
-        print("6. Ver status do personagem")
-        print("7. Salvar Jogo")
-        print("8. Sair para o Menu Principal")
+        print("3. Viajar")
+        print("4. Ver Diário de Missões")
+        print("5. Abrir Inventário")
+        print("6. Ver Equipamento")
+        print("7. Ver status do personagem")
+        print("8. Salvar Jogo")
+        print("9. Sair para o Menu Principal")
 
         escolha = input("\nSua escolha: ")
 
         if escolha == '1': # Falar com Elara
             narrador.narrar("Você se aproxima de Elara, a curandeira local. Ela sorri calorosamente.")
 
-            # Lógica para a quest mq01: Falar com Elara para completá-la
+            # --- Lógica de Diálogo com Elara baseada no estado das quests ---
+
+            # Checa se a quest "despertar" está ativa
             quest_despertar = next((q for q in jogador.quests_ativas if q.id_quest == "mq01_despertar"), None)
-            if quest_despertar:
+            # Checa se a quest da ameaça está ativa
+            quest_ameaca = next((q for q in jogador.quests_ativas if q.id_quest == "mq02_ameaca_local"), None)
+
+            # Caso 1: Primeira interação, nenhuma quest principal foi iniciada.
+            if not quest_despertar and "mq01_despertar" not in jogador.quests_concluidas:
+                narrador.narrar("'Que bom que você acordou! Você estava desmaiado na floresta. Como se sente?'")
+                quests.iniciar_quest(jogador, "mq01_despertar")
+
+            # Caso 2: Jogador está na quest "despertar" e fala com ela para completar.
+            elif quest_despertar and not quest_despertar.esta_completa():
                 quests.atualizar_progresso_quests(jogador, "falar_com", "elara_curandeira")
                 if quest_despertar.esta_completa():
                     quests.concluir_quest(jogador, quest_despertar)
+                    # Imediatamente oferece a próxima quest
+                    narrador.narrar("'Fico feliz que esteja se recuperando. Na verdade, preciso de um favor...'")
+                    quests.iniciar_quest(jogador, "mq02_ameaca_local")
 
-            # Lógica para a quest mq02: Pegar e entregar
-            if "mq01_despertar" in jogador.quests_concluidas:
-                quests.iniciar_quest(jogador, "mq02_ameaca_local")
-
-            quest_ameaca = next((q for q in jogador.quests_ativas if q.id_quest == "mq02_ameaca_local"), None)
-            if quest_ameaca and quest_ameaca.esta_completa():
+            # Caso 3: Jogador completou a quest dos goblins e retorna para Elara.
+            elif quest_ameaca and quest_ameaca.esta_completa():
                 quests.concluir_quest(jogador, quest_ameaca)
+                # Imediatamente oferece a próxima quest
+                narrador.narrar("'Não acredito que você conseguiu! A vila está em dívida com você. Mas ao derrotá-los, você encontrou algo estranho...'")
                 quests.iniciar_quest(jogador, "mq03_primeira_sombra")
+
+            # Caso 4: Diálogo padrão se nenhuma condição de quest for atendida.
+            else:
+                narrador.narrar("'É bom ver você bem. Cuidado lá fora.'")
+
+            # Oferecer cura se o jogador não estiver com HP ou MP no máximo
+            if jogador.hp_atual < jogador.hp_max or jogador.mp_atual < jogador.mp_max:
+                narrador.narrar("\n'Você parece cansado. Deixe-me restaurar suas energias.'")
+                confirmar_cura = input("Aceitar a cura? (s/n): ").lower().strip()
+                if confirmar_cura == 's':
+                    jogador.hp_atual = jogador.hp_max
+                    jogador.mp_atual = jogador.mp_max
+                    narrador.narrar("Você se sente revigorado! HP e MP totalmente restaurados.")
 
             funcoes_gerais.pausar()
 
@@ -94,22 +117,26 @@ def jogar(jogador: 'Personagem'):
                 narrador.narrar("\nVocê explora a floresta, mas não encontra nada de interessante, apenas o som do vento nas árvores.")
             funcoes_gerais.pausar()
 
-        elif escolha == '3': # Diário de Missões
+        elif escolha == '3': # Viajar
+            narrador.narrar("Você olha para as estradas que saem de Valesereno, mas ainda não se sente pronto ou não sabe para onde ir. Melhor continuar explorando a área local por enquanto.")
+            funcoes_gerais.pausar()
+
+        elif escolha == '4': # Diário de Missões
             quests.exibir_journal(jogador)
 
-        elif escolha == '4': # Inventário
+        elif escolha == '5': # Inventário
             menu_inventario.exibir_inventario(jogador)
 
-        elif escolha == '5': # Equipamento
+        elif escolha == '6': # Equipamento
             menu_equipamento.exibir_equipamento(jogador)
 
-        elif escolha == '6': # Status
+        elif escolha == '7': # Status
             funcoes_gerais.limpar_tela()
             funcoes_gerais.imprimir_cabecalho("Status do Personagem", nivel=2)
             print(jogador)
             funcoes_gerais.pausar()
 
-        elif escolha == '7': # Salvar
+        elif escolha == '8': # Salvar
             nome_save = input("Digite o nome para o seu save: ").strip()
             if nome_save:
                 salvar_carregar.salvar_jogo(jogador, nome_save)
@@ -117,7 +144,7 @@ def jogar(jogador: 'Personagem'):
                 print("Nome de save inválido.")
             funcoes_gerais.pausar()
 
-        elif escolha == '8': # Sair
+        elif escolha == '9': # Sair
             print("\nVoltando ao menu principal...")
             funcoes_gerais.pausar()
             break
