@@ -21,6 +21,7 @@ def criar_monstro_por_id(id_monstro: str) -> Monstro:
         raise ValueError(f"Monstro com ID '{id_monstro}' não encontrado.")
 
     habilidades = dados_monstro.get("habilidades", [])
+    ataques_base = dados_monstro.get("ataques_base_ids", [])
     loot_table = dados_monstro.get("loot_table", [])
 
     return Monstro(
@@ -32,6 +33,7 @@ def criar_monstro_por_id(id_monstro: str) -> Monstro:
         ouro_recompensa=dados_monstro["ouro_recompensa"],
         stats_base=dados_monstro["stats_base"],
         habilidades_ids=habilidades,
+        ataques_base_ids=ataques_base,
         loot_table=loot_table,
         comportamento_ia=dados_monstro.get("comportamento_ia", "agressivo")
     )

@@ -14,6 +14,7 @@
 # "ouro_recompensa": (int) Ouro base ganho.
 # "stats_base": (dict) Seus atributos primários.
 # "habilidades": (list) Lista de IDs de habilidades que o monstro pode usar.
+# "ataques_base_ids": (list) Lista de IDs de ataques básicos que o monstro pode usar.
 # "loot_table": (list) Lista de possíveis itens derrubados.
 #   - "id_item": (str) ID do item.
 #   - "chance": (float) Chance de derrubar o item (0.0 a 1.0).
@@ -33,6 +34,7 @@ MONSTROS_AREA1 = {
             "inteligencia": 3, "sabedoria": 10, "carisma": 4
         },
         "habilidades": ["mordida_feroz"],
+        "ataques_base_ids": ["garra", "mordida"],
         "comportamento_ia": "agressivo",
         "loot_table": [
             {"id_item": "pele_de_lobo", "chance": 0.5, "quantidade": [1, 1]},
@@ -50,6 +52,7 @@ MONSTROS_AREA1 = {
             "inteligencia": 8, "sabedoria": 8, "carisma": 6
         },
         "habilidades": ["arremessar_pedra", "golpe_baixo"],
+        "ataques_base_ids": ["soco", "chute"],
         "comportamento_ia": "oportunista", # Ataca alvos com HP baixo
         "loot_table": [
             {"id_item": "caco_de_arma_enferrujada", "chance": 0.4, "quantidade": [1, 1]},
@@ -67,6 +70,7 @@ MONSTROS_AREA1 = {
             "inteligencia": 2, "sabedoria": 8, "carisma": 3
         },
         "habilidades": ["investida_imprudente"],
+        "ataques_base_ids": ["cabecada"],
         "comportamento_ia": "agressivo",
         "loot_table": [
             {"id_item": "carne_de_javali", "chance": 0.7, "quantidade": [1, 2]},
@@ -84,6 +88,7 @@ MONSTROS_AREA1 = {
             "inteligencia": 1, "sabedoria": 6, "carisma": 1
         },
         "habilidades": ["ferroada_venenosa"],
+        "ataques_base_ids": ["picada"],
         "comportamento_ia": "agressivo",
         "loot_table": [
             {"id_item": "ferrao_de_vespa", "chance": 0.6, "quantidade": [2, 5]},
@@ -101,6 +106,7 @@ MONSTROS_AREA1 = {
             "inteligencia": 1, "sabedoria": 1, "carisma": 1
         },
         "habilidades": ["cuspe_acido"],
+        "ataques_base_ids": ["pancada"],
         "comportamento_ia": "defensivo", # Tem alta defesa e baixo ataque
         "loot_table": [
             {"id_item": "gosma_de_slime", "chance": 0.9, "quantidade": [1, 3]}
@@ -119,6 +125,7 @@ MONSTROS_AREA1 = {
             "inteligencia": 6, "sabedoria": 12, "carisma": 8
         },
         "habilidades": ["mordida_feroz", "uivo_de_comando"], # Uivo aumenta o ataque de outros lobos
+        "ataques_base_ids": ["garra", "mordida"],
         "comportamento_ia": "lider_de_matilha", # Foca em alvos fracos e buffa aliados
         "loot_table": [
             {"id_item": "pele_de_lobo_alfa", "chance": 0.1, "quantidade": [1, 1]},
@@ -137,6 +144,7 @@ MONSTROS_AREA1 = {
             "inteligencia": 14, "sabedoria": 15, "carisma": 7
         },
         "habilidades": ["seta_de_veneno", "cura_primitiva"],
+        "ataques_base_ids": ["soco"],
         "comportamento_ia": "suporte", # Prioriza curar e buffar outros goblins
         "loot_table": [
             {"id_item": "cajado_torto_goblin", "chance": 0.2, "quantidade": [1, 1]},
@@ -154,6 +162,7 @@ MONSTROS_AREA1 = {
             "inteligencia": 4, "sabedoria": 12, "carisma": 6
         },
         "habilidades": ["patada_esmagadora", "bico_perfurante", "grito_aterrorizante"],
+        "ataques_base_ids": ["patada", "bicada"],
         "comportamento_ia": "agressivo_elite", # Usa habilidades de forma mais inteligente
         "loot_table": [
             {"id_item": "pena_de_urso_coruja", "chance": 0.5, "quantidade": [2, 5]},
@@ -171,6 +180,7 @@ MONSTROS_AREA1 = {
             "inteligencia": 10, "sabedoria": 9, "carisma": 11
         },
         "habilidades": ["golpe_com_escudo", "arremessar_faca"],
+        "ataques_base_ids": ["soco", "chute"],
         "comportamento_ia": "oportunista",
         "loot_table": [
             {"id_item": "armadura_de_couro_gasta", "chance": 0.2, "quantidade": [1, 1]},
@@ -188,6 +198,7 @@ MONSTROS_AREA1 = {
             "inteligencia": 7, "sabedoria": 14, "carisma": 8
         },
         "habilidades": ["pancada_de_galho", "casca_reforçada"],
+        "ataques_base_ids": ["pancada"],
         "comportamento_ia": "defensor_territorial", # Não persegue longe, mas bate forte
         "loot_table": [
             {"id_item": "madeira_viva", "chance": 0.3, "quantidade": [1, 2]},

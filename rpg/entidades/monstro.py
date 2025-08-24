@@ -3,6 +3,7 @@ from typing import List, Dict, Any, Optional, TYPE_CHECKING
 
 from .personagem import Personagem
 from ..dados.habilidades import TODAS_HABILIDADES
+from ..dados.ataques_base import ATAQUES_BASE
 
 if TYPE_CHECKING:
     from .item import Item
@@ -22,6 +23,7 @@ class Monstro(Personagem):
                  loot_table: List[Dict[str, Any]],
                  stats_base: Dict[str, int],
                  habilidades_ids: List[str],
+                 ataques_base_ids: List[str],
                  comportamento_ia: str = "agressivo"):
 
         super().__init__(nome, nivel)
@@ -39,6 +41,9 @@ class Monstro(Personagem):
         self.aplicar_stats_base(stats_base)
         # Converte os IDs de habilidades em objetos de habilidade completos
         self.habilidades = [TODAS_HABILIDADES[id_h] for id_h in habilidades_ids if id_h in TODAS_HABILIDADES]
+        # Converte os IDs de ataques básicos em objetos de ataque completos
+        self.ataques_base = [ATAQUES_BASE[id_a] for id_a in ataques_base_ids if id_a in ATAQUES_BASE]
+
 
         # --- Inteligência Artificial ---
         self.comportamento_ia = comportamento_ia # "agressivo", "defensivo", "suporte", "oportunista"
@@ -108,8 +113,15 @@ class Monstro(Personagem):
             return {"tipo": "usar_habilidade", "habilidade": habilidade_ofensiva, "alvo": self.foco_atual}
 
         # 5. Ação Padrão: Ataque Básico
-        print(f"[IA - Padrão] {self.nome} recorre a um ataque básico.")
-        return {"tipo": "ataque_basico", "alvo": self.foco_atual}
+        ataque_escolhido = random.choice(self.ataques_base) if self.ataques_base else None
+        if ataque_escolhido:
+            print(f"[IA - Padrão] {self.nome} recorre a um ataque básico: {ataque_escolhido['nome']}.")
+            return {"tipo": "ataque_basico", "ataque": ataque_escolhido, "alvo": self.foco_atual}
+        else:
+            # Caso o monstro não tenha ataques básicos definidos (fallback de segurança)
+            print(f"[IA - Padrão] {self.nome} tenta atacar mas não tem ações disponíveis.")
+            return {"tipo": "passar_turno"}
+
 
     def encontrar_habilidade_por_efeito(self, tipo_efeito: str, tipo_alvo: str) -> Optional[Dict]:
         """Encontra a primeira habilidade disponível que corresponde a um tipo de efeito e alvo."""

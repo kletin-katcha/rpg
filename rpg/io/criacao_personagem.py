@@ -228,6 +228,11 @@ def iniciar_criacao_personagem() -> 'Personagem':
     funcoes_gerais.imprimir_cabecalho("Personagem Criado", nivel=2)
     raca_nome = RACAS[jogador.raca]['nome']
     classe_nome = CLASSES_INICIAIS[jogador.classe]['nome']
+
+    # Garante que o jogador comece com HP e MP cheios após todos os cálculos
+    jogador.hp_atual = jogador.hp_max
+    jogador.mp_atual = jogador.mp_max
+
     print(f"Raça: {raca_nome} | Classe: {classe_nome}")
     print(jogador)
     print(f"Habilidades: {', '.join(hab.replace('_', ' ').capitalize() for hab in jogador.habilidades)}")
