@@ -11,6 +11,7 @@
 
 from .habilidades_fisicas import HABILIDADES_FISICAS
 from .habilidades_magicas import HABILIDADES_MAGICAS
+from .habilidades_raciais import HABILIDADES_RACIAIS
 # Futuramente, importar outros tipos de habilidades aqui
 # from .habilidades_suporte import HABILIDADES_SUPORTE
 
@@ -18,6 +19,7 @@ from .habilidades_magicas import HABILIDADES_MAGICAS
 TODAS_HABILIDADES = {}
 TODAS_HABILIDADES.update(HABILIDADES_FISICAS)
 TODAS_HABILIDADES.update(HABILIDADES_MAGICAS)
+TODAS_HABILIDADES.update(HABILIDADES_RACIAIS)
 
 # Habilidades específicas de monstros da Área 1 para garantir que os testes passem
 HABILIDADES_MONSTROS = {

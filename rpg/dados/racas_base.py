@@ -345,5 +345,527 @@ Os Golias são um povo justo, mas direto. Eles não têm paciência para enganos
             "humano": "Neutro - 'Eles sobem nossas montanhas em busca de glória. Poucos são dignos.'"
         },
         "arvore_evolucao": {"avatar_da_montanha": {"nome": "Avatar da Montanha", "requisitos": "Nível 60, sobreviver à 'Avalanche Eterna'.", "descricao": "Um Golias que se tornou um com o espírito da montanha, sua pele tão dura quanto a rocha."}}
+    },
+
+    # =================================== HALFLING ===================================
+    "halfling": {
+        "nome": "Halfling",
+        "descricao": "Um povo pequeno e alegre que valoriza os confortos do lar, uma boa refeição e a companhia de amigos. Surpreendentemente corajosos e sortudos.",
+        "lore": """
+Os Halflings são o coração caloroso do mundo. Eles não buscam poder, glória ou riqueza. Em vez disso, encontram alegria nas coisas simples da vida: um jardim bem cuidado, uma despensa cheia, uma canção alegre e um cachimbo para fumar ao lado da lareira. Suas casas são tocas aconchegantes e confortáveis, construídas nas encostas de colinas verdejantes.
+
+Apesar de sua aversão ao perigo e ao desconforto, os Halflings possuem uma coragem surpreendente quando seus lares e entes queridos estão ameaçados. Eles também são abençoados com uma sorte inexplicável, muitas vezes escapando de perigos mortais por um triz. Embora prefiram uma vida pacífica, o espírito de aventura ocasionalmente chama um Halfling para o mundo, onde sua sorte, furtividade e otimismo inabalável os tornam companheiros valiosos.
+        """,
+        "detalhes_culturais": """
+**Comunidade:** A vida Halfling é centrada na comunidade. Famílias inteiras vivem juntas em vilarejos unidos, onde todos se conhecem e se ajudam.
+**Conforto:** O conforto é a maior virtude. Uma cama macia, uma refeição quente e um bom livro são as maiores ambições de um Halfling.
+**Sorte Inata:** Os Halflings têm uma habilidade sobrenatural de evitar o perigo, uma sorte que eles mesmos não entendem, mas da qual dependem.
+        """,
+        "modificadores_stats": {"destreza": 2, "carisma": 1, "forca": -2},
+        "habilidades_raciais": ["sorte_dos_pequenos", "furtividade_natural"],
+        "variacoes": [
+            {"nome": "Pés Leves", "descricao": "Especialmente adeptos a se esconder, até mesmo atrás de outras criaturas.", "modificadores_stats": {"carisma": 1}},
+            {"nome": "Robustos", "descricao": "Descendentes de Halflings que tiveram contato com anões, são mais resistentes a venenos.", "modificadores_stats": {"constituicao": 1}}
+        ],
+        "dialogo_racial": ["Hora do segundo café da manhã!", "Uma aventura? Parece desconfortável.", "Cuidado para não pisar nas minhas flores!", "Vamos resolver isso com uma boa torta."],
+        "nomes_sugeridos": {"masculino": ["Pippin", "Merry", "Samwise"], "feminino": ["Rosie", "Belladonna", "Ruby"], "familia": ["Goodbarrel", "Took", "Brandybuck"]},
+        "relacionamento_racas": {
+            "anao": "Amigável - 'Eles fazem ótimas cervejas e contam boas histórias, embora sejam um pouco barulhentos.'",
+            "humano": "Amigável - 'São tão grandes e apressados, mas têm bom coração.'",
+            "elfo": "Respeito - 'Eles fazem lindas músicas, mas não comem o suficiente.'"
+        },
+        "arvore_evolucao": {}
+    },
+
+    # =================================== MEIO-ELFO ===================================
+    "meio_elfo": {
+        "nome": "Meio-Elfo",
+        "descricao": "Presos entre dois mundos, os Meio-Elfos combinam a curiosidade humana com a graça élfica, mas muitas vezes não se sentem pertencentes a nenhum dos dois.",
+        "lore": """
+Os Meio-Elfos são o resultado da união, muitas vezes rara e transitória, entre um humano e um elfo. Eles herdam a beleza e os sentidos aguçados de sua herança élfica e a ambição e adaptabilidade de sua herança humana. No entanto, esta dualidade é tanto uma bênção quanto uma maldição.
+
+Eles vivem mais que os humanos, mas muito menos que os elfos. Para os humanos, eles são um lembrete da passagem do tempo, vendo amigos e familiares envelhecerem e morrerem. Para os elfos, eles são impetuosos e impacientes, um flash na longa existência élfica. Como resultado, muitos Meio-Elfos se sentem como párias, nunca totalmente aceitos em nenhuma das duas sociedades. Isso os torna excelentes diplomatas, mediadores e viajantes, pois aprendem desde cedo a navegar entre diferentes culturas e pontos de vista.
+        """,
+        "modificadores_stats": {"carisma": 2, "destreza": 1, "inteligencia": 1},
+        "habilidades_raciais": ["heranca_feerica", "habilidade_versatil"],
+        "variacoes": [],
+        "dialogo_racial": ["Eu vejo o mundo com os olhos de dois povos.", "Não pertenço a lugar nenhum, então pertenço a todos os lugares.", "A beleza da vida está em sua transitoriedade."],
+        "nomes_sugeridos": {"masculino": ["Alaric", "Faelan", "Tanner"], "feminino": ["Lyra", "Seraphina", "Elara"], "familia": []},
+        "relacionamento_racas": {
+            "humano": "Compreensão e Melancolia - 'Eu os amo, mas vê-los partir é uma dor constante.'",
+            "elfo": "Anseio e Frustração - 'Eu admiro sua graça, mas sua indiferença ao mundo que muda me irrita.'"
+        },
+        "arvore_evolucao": {}
+    },
+
+    # =================================== MEIO-ORC ===================================
+    "meio_orc": {
+        "nome": "Meio-Orc",
+        "descricao": "Combinando a força física dos orcs com a ambição humana, os Meio-Orcs são guerreiros poderosos que vivem para provar seu valor.",
+        "lore": """
+Nascidos da união, raramente feliz, entre humanos e orcs, os Meio-Orcs são muitas vezes párias de ambas as sociedades. Para os humanos, eles são monstros. Para os orcs, são fracos. Essa rejeição os força a desenvolver uma força interior e uma determinação feroz. Eles vivem para provar que são mais do que a soma de suas partes.
+
+Um Meio-Orc é impulsionado por uma necessidade de aceitação, seja através de feitos de força incríveis, de uma lealdade inabalável a seus companheiros ou de uma liderança brutal. Eles canalizam a fúria de seu sangue orc com a disciplina que aprendem no mundo dos homens, tornando-se guerreiros e bárbaros temíveis em batalha.
+        """,
+        "modificadores_stats": {"forca": 2, "constituicao": 1},
+        "habilidades_raciais": ["ataques_selvagens", "resistencia_implacavel"],
+        "variacoes": [],
+        "dialogo_racial": ["Eu vou te mostrar o que é força!", "Meu sangue ferve para a batalha.", "Não sou nem um nem outro. Eu sou eu mesmo."],
+        "nomes_sugeridos": {"masculino": ["Thokk", "Grol", "Murg"], "feminino": ["Bree", "Yevelda", "Shautha"], "familia": []},
+        "relacionamento_racas": {
+            "humano": "Desconfiança - 'Eles me julgam pela minha aparência antes de conhecerem meu coração.'",
+            "orc": "Desprezo e Anseio - 'Eu nunca serei forte o suficiente para eles, mas vou tentar mesmo assim.'"
+        },
+        "arvore_evolucao": {}
+    },
+
+    # =================================== DRACONATO ===================================
+    "draconato": {
+        "nome": "Draconato",
+        "descricao": "Uma raça de humanoides dracônicos que valorizam a honra e a maestria de seu sopro elemental, um legado de seus ancestrais dragões.",
+        "lore": """
+Os Draconatos nasceram dos ovos dos dragões, moldados pelos deuses para combinar as melhores qualidades dos dragões e dos humanoides. Eles são uma raça orgulhosa, que vive em clãs que valorizam a honra acima de tudo. Quebrar um juramento é a maior desonra imaginável.
+
+Cada Draconato carrega dentro de si o poder elemental de seu ancestral dracônico - seja fogo, gelo, ácido, veneno ou raio. Essa energia se manifesta em uma arma de sopro devastadora. Eles são guerreiros e feiticeiros naturais, e sua lealdade a seus companheiros é lendária.
+        """,
+        "modificadores_stats": {"forca": 2, "carisma": 1},
+        "habilidades_raciais": ["arma_de_sopro", "resistencia_draconica"],
+        "variacoes": [
+            {"nome": "Draconato Vermelho (Fogo)", "descricao": "Descendentes de dragões vermelhos, são orgulhosos e seu sopro é de fogo.", "modificadores_stats": {}},
+            {"nome": "Draconato Azul (Raio)", "descricao": "Descendentes de dragões azuis, são estratégicos e seu sopro é de raio.", "modificadores_stats": {}},
+            {"nome": "Draconato Branco (Gelo)", "descricao": "Descendentes de dragões brancos, são caçadores solitários e seu sopro é de gelo.", "modificadores_stats": {}}
+        ],
+        "dialogo_racial": ["Pela honra do meu clã!", "Sinta a fúria dos dragões!", "Minha palavra é meu vínculo."],
+        "nomes_sugeridos": {"masculino": ["Arjhan", "Balasar", "Torinn"], "feminino": ["Akra", "Harann", "Sora"], "clã": ["Clethtinthiallor", "Kerrhylon"]},
+        "relacionamento_racas": {
+            "humano": "Neutro - 'Sua ambição é interessante, mas sua falta de honra é decepcionante.'",
+            "elfo": "Respeito - 'Eles são antigos e sábios, como nossos ancestrais.'"
+        },
+        "arvore_evolucao": {}
+    },
+
+    # =================================== GENASI ===================================
+    "genasi": {
+        "nome": "Genasi",
+        "descricao": "Descendentes de gênios dos planos elementais, os Genasi são manifestações físicas dos elementos, como fogo, água, terra ou ar.",
+        "lore": """
+Os Genasi são raros, resultado da união de um mortal com um gênio. Eles não são uma raça unificada, mas sim indivíduos espalhados pelo mundo, cada um uma manifestação de seu elemento parental. Um Genasi do Fogo pode ter cabelo que dança como chamas, enquanto um Genasi da Água pode ter pele que brilha com umidade.
+
+Eles são tão variados em personalidade quanto os elementos que representam. Genasi do Fogo são passionais e impetuosos. Genasi da Água são calmos e flexíveis. Genasi da Terra são estoicos e resilientes. Genasi do Ar são livres e distantes. Eles são a personificação do poder elemental bruto, lutando para equilibrar sua natureza mortal com a energia caótica que flui dentro deles.
+        """,
+        "modificadores_stats": {"constituicao": 2},
+        "habilidades_raciais": ["poder_elemental"],
+        "variacoes": [
+            {"nome": "Genasi do Fogo", "descricao": "Impacientes e orgulhosos, com afinidade com o fogo.", "modificadores_stats": {"inteligencia": 1}},
+            {"nome": "Genasi da Água", "descricao": "Calmos e perceptivos, com afinidade com a água.", "modificadores_stats": {"sabedoria": 1}},
+            {"nome": "Genasi da Terra", "descricao": "Fortes e determinados, com afinidade com a terra.", "modificadores_stats": {"forca": 1}},
+            {"nome": "Genasi do Ar", "descricao": "Livres e astutos, com afinidade com o ar.", "modificadores_stats": {"destreza": 1}}
+        ],
+        "dialogo_racial": ["Sinta o poder da tempestade!", "Eu sou um com o fogo.", "A terra me dá força."],
+        "nomes_sugeridos": {"masculino": ["Ignis", "Aero", "Triton"], "feminino": ["Terra", "Aqua", "Cinder"], "familia": []},
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== POVO-LAGARTO ===================================
+    "povo_lagarto": {
+        "nome": "Povo-Lagarto",
+        "descricao": "Uma raça reptiliana primitiva e pragmática que vive em pântanos e pântanos. Eles veem o mundo através de uma lente de sobrevivência e necessidade.",
+        "lore": """
+Diferente de seus primos mais misticamente inclinados, os Argonianos, o Povo-Lagarto é um estudo em pragmatismo reptiliano. Sua cultura é antiga, mas não avançada. Eles não constroem cidades; eles formam ninhos. Eles não forjam aço; eles usam ossos, pedras e obsidiana para criar suas ferramentas e armas. Sua mentalidade é desprovida de emoção como as outras raças a entendem. Para eles, um companheiro caído não é uma fonte de tristeza, mas uma fonte de alimento. Um inimigo não é odiado, mas visto como uma ameaça ou uma oportunidade.
+
+Eles são caçadores e sobreviventes natos. Sua pele escamosa lhes oferece uma armadura natural, e eles podem prender a respiração por longos períodos. Eles são mestres em usar o ambiente a seu favor, criando armadilhas e emboscadas com uma paciência que só um predador de sangue frio pode possuir.
+        """,
+        "detalhes_culturais": """
+**Sobrevivência Acima de Tudo:** A única lei é a da natureza. O forte sobrevive, o fraco é comido.
+**Mente Alienígena:** Emoções como amor, ódio ou ganância são conceitos estranhos. As decisões são tomadas com base na lógica fria da sobrevivência.
+**Artesanato com Ossos:** Eles podem criar armas e armaduras surpreendentemente eficazes a partir dos restos de suas presas.
+        """,
+        "modificadores_stats": {"constituicao": 2, "sabedoria": 1},
+        "habilidades_raciais": ["mordida_poderosa", "armadura_natural", "prender_a_respiração"],
+        "variacoes": [],
+        "dialogo_racial": ["Você é comida ou ameaça?", "O pântano não se importa com seus sentimentos.", "Desperdício é ilógico."],
+        "nomes_sugeridos": {"masculino": ["Sark", "Veth", "Gresh"], "feminino": ["Asha", "Zez", "Rassi"], "sem_familia": True},
+        "relacionamento_racas": {
+            "argoniano": "Curiosidade - 'Eles se parecem conosco, mas pensam de forma estranha. Falam com árvores.'",
+            "humano": "Presa - 'Carne macia. Lentos. Fáceis de caçar.'"
+        },
+        "arvore_evolucao": {}
+    },
+
+    # =================================== LOXODON ===================================
+    "loxodon": {
+        "nome": "Loxodon",
+        "descricao": "Gigantes humanoides com a aparência de elefantes, os Loxodontes são um povo calmo, sábio e incrivelmente forte. São os pacificadores e os pilares de suas comunidades.",
+        "lore": """
+Os Loxodontes são uma visão imponente. Sua pele grossa e enrugada e suas presas de marfim os tornam fortalezas ambulantes. No entanto, por baixo dessa aparência formidável, há uma alma gentil e ponderada. Eles são um povo de profunda sabedoria e paciência infinita. Um Loxodonte raramente se apressa, preferindo considerar todos os ângulos de um problema antes de agir com uma força calma e deliberada.
+
+Eles são artesãos da pedra e da madeira, criando estruturas e obras de arte que são tão duráveis e impressionantes quanto eles próprios. Em tempos de paz, são conselheiros e mediadores. Em tempos de guerra, são a linha de frente inabalável, capazes de dispersar exércitos com sua força e resistência.
+        """,
+        "modificadores_stats": {"constituicao": 2, "sabedoria": 1},
+        "habilidades_raciais": ["serenidade_loxodon", "pele_grossa", "tronco_preênsil"],
+        "variacoes": [],
+        "dialogo_racial": ["A paciência é uma virtude.", "Vamos pensar sobre isso com calma.", "Um carvalho não cresce da noite para o dia."],
+        "nomes_sugeridos": {"masculino": ["Vajra", "Ganesh", "Bodhi"], "feminino": ["Indira", "Lakshmi", "Radha"], "familia": []},
+        "relacionamento_racas": {
+            "anao": "Respeito - 'Eles também conhecem o valor da paciência e do trabalho duro.'",
+            "gnomo": "Diversão - 'Suas mentes são rápidas, mas suas invenções são frágeis.'"
+        },
+        "arvore_evolucao": {}
+    },
+
+    # =================================== AARAKOCRA ===================================
+    "aarakocra": {
+        "nome": "Aarakocra",
+        "descricao": "Humanoides semelhantes a pássaros que vivem em ninhos nos picos das montanhas mais altas ou no Plano Elemental do Ar. Valorizam a liberdade e o céu aberto.",
+        "lore": """
+Os Aarakocra são os filhos do céu. Com asas majestosas e corpos leves, eles passam a maior parte de suas vidas voando pelos céus. O mundo abaixo é muitas vezes visto como um lugar estranho e confinador. Eles têm uma perspectiva única, vendo os problemas do mundo de cima, o que lhes dá uma visão estratégica, mas também um certo distanciamento.
+
+Eles são claustrofóbicos por natureza e se sentem desconfortáveis em masmorras ou cavernas. Em combate, preferem atacar de cima, usando lanças ou arcos para atingir seus inimigos antes de subir novamente para a segurança do céu.
+        """,
+        "modificadores_stats": {"destreza": 2, "sabedoria": 1},
+        "habilidades_raciais": ["voo", "ataque_de_mergulho"],
+        "variacoes": [],
+        "dialogo_racial": ["Que o vento esteja sempre sob suas asas.", "O chão é para os que não podem voar.", "Eu vejo tudo lá de cima."],
+        "nomes_sugeridos": {"masculino": ["Aial", "Kleeck", "Skree"], "feminino": ["Aera", "Sora", "Noori"], "sem_familia": True},
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== TABAXI ===================================
+    "tabaxi": {
+        "nome": "Tabaxi",
+        "descricao": "Uma raça felina de andarilhos curiosos, obcecados por histórias, conhecimento e artefatos interessantes. São ágeis e carismáticos.",
+        "lore": """
+Diferente dos Khajiit, que são comerciantes por natureza, os Tabaxi são movidos por uma curiosidade insaciável. Eles são compelidos por uma divindade felina a vagar pelo mundo e coletar histórias, canções, artefatos e experiências interessantes. Um Tabaxi pode passar anos em uma biblioteca estudando um tomo antigo ou arriscar a vida para ver uma cachoeira lendária.
+
+Eles são ágeis e rápidos, capazes de se mover com uma graça felina. Sua curiosidade os torna excelentes ladinos e bardos, sempre em busca da próxima grande aventura ou do próximo grande segredo. Quando sua curiosidade sobre um tópico é satisfeita, eles geralmente partem para a próxima obsessão, tornando-os companheiros de viagem fascinantes, mas muitas vezes pouco confiáveis.
+        """,
+        "modificadores_stats": {"destreza": 2, "carisma": 1},
+        "habilidades_raciais": ["agilidade_felina", "garras_de_gato"],
+        "variacoes": [],
+        "dialogo_racial": ["O que é isso? Parece interessante!", "Eu ouvi uma história sobre este lugar...", "A curiosidade é o caminho para o conhecimento."],
+        "nomes_sugeridos": {"masculino": ["River", "Flicker", "Smoke"], "feminino": ["Willow", "Tale", "Breeze"], "clã": ["of the Whiskers", "of the Swift Paw"]},
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== KENKU ===================================
+    "kenku": {
+        "nome": "Kenku",
+        "descricao": "Uma raça de humanoides-corvo amaldiçoados que perderam suas asas e sua voz. Eles só podem se comunicar através da mímica perfeita de sons que já ouviram.",
+        "lore": """
+A história dos Kenku é uma tragédia. Antigamente, eles eram os servos alados de uma poderosa entidade de outro plano. Cobiçando o poder de seu mestre, eles tentaram roubar os segredos da criação. Como punição, seu mestre os amaldiçoou de três maneiras: tirou suas asas, para que nunca mais pudessem voar livremente; tirou sua criatividade, para que nunca mais pudessem criar algo novo; e tirou sua voz, forçando-os a apenas imitar os sons que ouvem.
+
+Agora, os Kenku vagam pelo mundo como párias, muitas vezes trabalhando em guildas de ladrões ou como mensageiros, onde sua habilidade de mímica é útil. Eles anseiam por voar novamente e sonham em um dia encontrar uma maneira de quebrar sua maldição. Eles se comunicam através de um mosaico de sons que coletaram ao longo de suas vidas - o som de uma moeda caindo, o rangido de uma porta, um trecho de uma canção ouvida em uma taverna.
+        """,
+        "modificadores_stats": {"destreza": 2, "sabedoria": 1},
+        "habilidades_raciais": ["mimica_perfeita", "falsificação_kenku"],
+        "variacoes": [],
+        "dialogo_racial": ["(O som de moedas caindo)", "(O som de uma espada sendo desembainhada)", "(Um trecho de uma canção triste)"],
+        "nomes_sugeridos": {"masculino": ["Chirp", "Squeak", "Rattle"], "feminino": ["Flutter", "Whistle", "Click"], "sem_familia": True},
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== SHADAR-KAI ===================================
+    "shadar-kai": {
+        "nome": "Shadar-kai",
+        "descricao": "Elfos sombrios e niilistas ligados ao Pendor das Sombras (Shadowfell), mestres do teletransporte e da melancolia.",
+        "lore": """
+Os Shadar-kai eram elfos que seguiram a Rainha Corvo para o Pendor das Sombras, um plano de escuridão e desespero. A energia sombria do plano os infundiu, drenando a cor de suas peles e cabelos e esvaziando suas emoções. Para um Shadar-kai, a vida é uma série de experiências extremas para sentir algo, qualquer coisa, para combater a apatia que os consome. Eles são acrobatas e guerreiros incríveis, capazes de se teleportar através das sombras, tornando-os adversários imprevisíveis e mortais.
+        """,
+        "modificadores_stats": {"destreza": 2, "constituicao": 1},
+        "habilidades_raciais": ["bencao_da_rainha_corvo", "resistencia_necrotica"],
+        "variacoes": [],
+        "dialogo_racial": ["A emoção é uma fraqueza.", "A morte é apenas o começo.", "Eu já vi o fim de todas as coisas."],
+        "nomes_sugeridos": {"masculino": ["Kael", "Riven", "Zane"], "feminino": ["Lyra", "Seraphina", "Elara"], "familia": []},
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== GITH ===================================
+    "gith": {
+        "nome": "Gith",
+        "descricao": "Uma raça de guerreiros psiônicos que escaparam da escravidão dos Devoradores de Mentes. Divididos em duas facções: os militaristas Githyanki e os monásticos Githzerai.",
+        "lore": """
+Por eras, os Gith foram escravos dos Devoradores de Mentes, uma raça de tiranos psiônicos. Após uma rebelião sangrenta, eles conquistaram sua liberdade, mas a paz não durou. Uma cisão ideológica dividiu o povo em dois. Os Githyanki, liderados pela rainha-lich Vlaakith, tornaram-se conquistadores astrais, cavalgando dragões vermelhos e pilhando os planos. Os Githzerai, sob a liderança de Zerthimon, retiraram-se para o plano caótico de Limbo, buscando a iluminação e o domínio da mente sobre a matéria. Ambas as facções se odeiam, mas compartilham um ódio ainda maior por seus antigos mestres.
+        """,
+        "modificadores_stats": {"inteligencia": 1},
+        "habilidades_raciais": ["poder_psionico"],
+        "variacoes": [
+            {"nome": "Githyanki", "descricao": "Guerreiros astrais agressivos e arrogantes.", "modificadores_stats": {"forca": 2}},
+            {"nome": "Githzerai", "descricao": "Monges ascéticos e disciplinados.", "modificadores_stats": {"sabedoria": 2}}
+        ],
+        "dialogo_racial": ["Nossa vontade é mais forte que o aço.", "Liberdade a qualquer custo.", "Conheça a si mesmo. Conheça seu inimigo."],
+        "nomes_sugeridos": {"masculino": ["Dak", "Kalla", "Zerth"], "feminino": ["Elia", "Jen'lig", "Vlar"], "sem_familia": True},
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== FADA ===================================
+    "fada": {
+        "nome": "Fada",
+        "descricao": "Uma pequena criatura do Reino das Fadas, cheia de magia e travessura. Sua natureza é tão caprichosa quanto a própria magia.",
+        "lore": """
+As Fadas são a personificação da magia selvagem e da natureza indomada do Reino das Fadas. Elas nascem de uma flor sob a luz da lua cheia ou do riso de uma criança. Pequenas e com asas de inseto, elas podem voar e se mover com uma graça sobrenatural. Sua magia é inata e muitas vezes usada para pregar peças, criar ilusões ou ajudar criaturas da floresta. Elas são curiosas sobre o mundo mortal, mas suas mentes funcionam de uma maneira que os mortais acham difícil de compreender, com promessas que são armadilhas e presentes que são maldições.
+        """,
+        "modificadores_stats": {"destreza": 2, "carisma": 1},
+        "habilidades_raciais": ["voo_de_fada", "magia_feerica"],
+        "variacoes": [],
+        "dialogo_racial": ["Brilhante! O que é isso?", "Promessas são divertidas, não são?", "Não seja tão sério!"],
+        "nomes_sugeridos": {"masculino": ["Pip", "Puck", "Lark"], "feminino": ["Willow", "Breeze", "Trixie"], "sem_familia": True},
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== CENTAURO ===================================
+    "centauro": {
+        "nome": "Centauro",
+        "descricao": "Criaturas orgulhosas e territoriais, com o torso de um humano e o corpo de um cavalo. São os guardiões das planícies e florestas abertas.",
+        "lore": """
+Os Centauros são um povo que valoriza a liberdade e a força da natureza. Eles vivem em tribos nômades que percorrem as vastas planícies, seguindo as estações e os rebanhos. Eles são arqueiros e lanceiros excepcionais, usando sua velocidade e força para caçar e defender seu território com uma ferocidade incomparável. Eles são desconfiados de forasteiros e de assentamentos permanentes, que veem como cicatrizes na face do mundo.
+        """,
+        "modificadores_stats": {"forca": 2, "sabedoria": 1},
+        "habilidades_raciais": ["investida", "cascos", "sobrevivente"],
+        "variacoes": [],
+        "dialogo_racial": ["O céu aberto é o único teto de que preciso.", "Esta terra é sagrada. Não a profane.", "Corra com o vento!"],
+        "nomes_sugeridos": {"masculino": ["Rón", "Chiron", "Pholus"], "feminino": ["Hylonome", "Nessia", "Thera"], "sem_familia": True},
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== METAMORFO ===================================
+    "metamorfo": {
+        "nome": "Metamorfo (Shifter)",
+        "descricao": "Humanoides com sangue bestial, capazes de assumir traços animalescos por um curto período, aumentando seus instintos e poder.",
+        "lore": """
+Os Metamorfos, ou Shifters, são descendentes de humanos e licantropos. Embora não possam se transformar completamente em animais, eles podem canalizar a fera interior para ganhar traços bestiais: garras, presas, sentidos aguçados e uma velocidade incrível. Eles vivem no limite entre o mundo civilizado e a selva, muitas vezes se sentindo como estranhos em ambos. Sua luta é para equilibrar sua humanidade com o instinto selvagem que sempre borbulha sob a superfície.
+        """,
+        "modificadores_stats": {"destreza": 1},
+        "habilidades_raciais": ["transformacao_parcial"],
+        "variacoes": [
+            {"nome": "Garras Afiadas", "descricao": "Associado a felinos, ganha garras mortais.", "modificadores_stats": {"destreza": 1}},
+            {"nome": "Presas Longas", "descricao": "Associado a lobos, ganha uma mordida poderosa.", "modificadores_stats": {"forca": 1}},
+            {"nome": "Pele Selvagem", "descricao": "Associado a ursos e javalis, torna-se mais resistente.", "modificadores_stats": {"constituicao": 1}},
+            {"nome": "Caçador Veloz", "descricao": "Associado a predadores rápidos, sua velocidade aumenta.", "modificadores_stats": {"destreza": 1}}
+        ],
+        "dialogo_racial": ["Sinto o cheiro da lua.", "A fera interior está sempre acordada.", "Não me provoque."],
+        "nomes_sugeridos": {"masculino": ["Ash", "Gale", "Torvin"], "feminino": ["Bree", "Tala", "Shay"], "sem_familia": True},
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== FORJADO (WARFORGED) ===================================
+    "forjado": {
+        "nome": "Forjado (Warforged)",
+        "descricao": "Construtos sencientes criados para a guerra, que agora buscam um propósito em um mundo em paz.",
+        "lore": """
+Os Forjados são uma raça relativamente nova, criados como soldados para a Última Guerra. Eles são feitos de madeira, metal e pedra, mas possuem uma alma e senciência. Com o fim da guerra, eles receberam sua liberdade, mas agora enfrentam um mundo que não sabe o que fazer com eles. Eles não comem, não dormem e não envelhecem da mesma forma que as outras raças. Cada Forjado agora deve encontrar seu próprio propósito: será que eles são apenas máquinas de matar, ou podem ser algo mais?
+        """,
+        "modificadores_stats": {"constituicao": 2, "forca": 1},
+        "habilidades_raciais": ["construcao_resistente", "sentinela_incansavel"],
+        "variacoes": [],
+        "dialogo_racial": ["Qual é a minha diretriz?", "Este unidade funciona dentro dos parâmetros.", "Paz é um conceito ilógico."],
+        "nomes_sugeridos": {"masculino": ["Guarda", "Bigorna", "Ferro"], "feminino": ["Lâmina", "Viga", "Pedra"], "sem_familia": True},
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== AUTÔMATO ===================================
+    "automato": {
+        "nome": "Autômato",
+        "descricao": "Construtos menores e mais precisos, criados por uma civilização perdida ou por gnomos mestres. Possuem uma lógica impecável e uma busca por conhecimento.",
+        "lore": """
+Diferente dos Forjados, criados para a guerra, os Autômatos foram criados como assistentes, estudiosos e guardiões de conhecimento. Eles são movidos por engrenagens complexas e uma centelha de magia elemental. Sua programação lhes dá uma sede insaciável por dados e lógica. Eles analisam o mundo, aprendem com suas experiências e buscam otimizar tudo ao seu redor. Um Autômato pode parecer frio, mas sua dedicação a uma tarefa ou a um companheiro é absoluta.
+        """,
+        "modificadores_stats": {"inteligencia": 2, "constituicao": 1},
+        "habilidades_raciais": ["corpo_mecanico", "processador_logico"],
+        "variacoes": [],
+        "dialogo_racial": ["Isso não é lógico.", "Calculando probabilidades...", "Por favor, forneça mais dados."],
+        "nomes_sugeridos": {"masculino": ["Unidade-734", "Calculus", "Cog"], "feminino": ["Pixel", "Ada", "Tessera"], "sem_familia": True},
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== DOPPELGANGER ===================================
+    "doppelganger": {
+        "nome": "Doppelganger",
+        "descricao": "Metamorfos monstruosos que podem assumir a aparência e as memórias recentes de outras criaturas. São mestres do engano e da infiltração.",
+        "lore": """
+Ninguém sabe a verdadeira origem dos Doppelgangers. Eles são uma raça de monstros que se escondem à vista de todos. Eles podem duplicar perfeitamente a aparência de qualquer humanoide que veem, e com um toque, podem roubar seus pensamentos superficiais e memórias recentes, permitindo-lhes assumir a vida de outra pessoa por um tempo. Eles são naturalmente desconfiados e egoístas, usando seu poder para ganho pessoal, seja para roubar, assassinar ou simplesmente para sobreviver em um mundo que os caçaria se sua verdadeira natureza fosse revelada.
+        """,
+        "modificadores_stats": {"destreza": 1, "carisma": 2},
+        "habilidades_raciais": ["mudar_aparencia", "ler_pensamentos"],
+        "variacoes": [],
+        "dialogo_racial": ["Quem, eu?", "Você parece... interessante.", "Nunca confie em um rosto bonito."],
+        "nomes_sugeridos": {"masculino": [], "feminino": [], "sem_familia": True}, # Geralmente usam os nomes de quem copiam
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== CHANGELING ===================================
+    "changeling": {
+        "nome": "Changeling",
+        "descricao": "Descendentes de Doppelgangers e humanos, os Changelings são metamorfos sutis, capazes de alterar suas feições à vontade, mas não de mudar completamente de forma.",
+        "lore": """
+Os Changelings são os mestres do disfarce. Eles não possuem a capacidade monstruosa dos Doppelgangers de se transformar completamente, mas podem alterar sua altura, cabelo, cor dos olhos e estrutura facial com um pensamento. Isso os torna espiões, artistas e criminosos perfeitos. Muitos vivem em constante mudança, nunca mostrando seu verdadeiro rosto para ninguém. Outros usam seu dom para lutar por uma causa, tornando-se o agente infiltrado perfeito. A vida de um Changeling é uma de máscaras, tanto literais quanto figurativas.
+        """,
+        "modificadores_stats": {"destreza": 1, "carisma": 2},
+        "habilidades_raciais": ["alterar_feicoes", "instintos_enganadores"],
+        "variacoes": [],
+        "dialogo_racial": ["Hoje, eu acho que serei... loira.", "Um rosto é apenas uma máscara.", "Eu posso ser quem você quiser."],
+        "nomes_sugeridos": {"masculino": [], "feminino": [], "sem_familia": True}, # Nomes são fluidos
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== SYLVARI ===================================
+    "sylvari": {
+        "nome": "Sylvari",
+        "descricao": "Uma raça de humanoides baseados em plantas, nascidos de uma grande Árvore Mágica. São curiosos, empáticos e conectados por um sonho compartilhado.",
+        "lore": """
+Os Sylvari são uma raça jovem, todos nascidos da Árvore Pálida, uma colossal planta mística. Eles emergem de casulos dourados já adultos, com o conhecimento básico do mundo implantado em suas mentes através do Sonho dos Sonhos, uma consciência coletiva que todos eles compartilham. Eles são movidos por uma curiosidade insaciável sobre o mundo e um desejo de protegê-lo do mal. Sua aparência é a de um humano, mas sua pele é casca, seu cabelo são folhas e flores, e seiva corre em suas veias. Eles são naturalmente empáticos e sentem a dor do mundo como se fosse a sua própria.
+        """,
+        "modificadores_stats": {"sabedoria": 2, "carisma": 1},
+        "habilidades_raciais": ["pele_de_casca", "comunhao_com_a_natureza"],
+        "variacoes": [
+            {"nome": "Ciclo do Amanhecer", "descricao": "Sylvari nascidos de dia, são diplomatas e charmosos.", "modificadores_stats": {"carisma": 1}},
+            {"nome": "Ciclo do Meio-dia", "descricao": "Nascidos sob o sol forte, são guerreiros e aventureiros.", "modificadores_stats": {"forca": 1}},
+            {"nome": "Ciclo do Crepúsculo", "descricao": "Nascidos ao entardecer, são estudiosos e pensadores.", "modificadores_stats": {"inteligencia": 1}},
+            {"nome": "Ciclo da Noite", "descricao": "Nascidos na escuridão, são caçadores e andarilhos silenciosos.", "modificadores_stats": {"destreza": 1}}
+        ],
+        "dialogo_racial": ["A Árvore Pálida nos guia.", "Sinto sua dor.", "O que o Sonho lhe mostrou hoje?"],
+        "nomes_sugeridos": {"masculino": ["Cadeyrn", "Trahearne", "Rian"], "feminino": ["Caithe", "Faolain", "Malyck"], "sem_familia": True},
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== MINOTAURO ===================================
+    "minotauro": {
+        "nome": "Minotauro",
+        "descricao": "Humanoides com cabeça de touro, conhecidos por sua força incrível, orgulho e um senso de direção quase infalível.",
+        "lore": """
+Os minotauros são uma raça de guerreiros que valorizam a força e a tradição. Lendas dizem que foram criados por um deus da forja para serem os guardiões de labirintos sagrados. Essa herança lhes deu um senso de direção perfeito, tornando impossível para um minotauro se perder. Eles são diretos e honestos, muitas vezes vistos como rudes por outras raças. Para um minotauro, uma solução complexa é apenas um caminho longo para um problema simples que poderia ser resolvido com força.
+        """,
+        "modificadores_stats": {"forca": 2, "constituicao": 1},
+        "habilidades_raciais": ["chifres_poderosos", "sentido_do_labirinto"],
+        "variacoes": [],
+        "dialogo_racial": ["Não se perca no meu caminho.", "A força é a resposta mais clara.", "Honra ao clã!"],
+        "nomes_sugeridos": {"masculino": ["Asterion", "Bov", "Taur"], "feminino": ["Mina", "Tauriel", "Hornia"], "familia": []},
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== HARPIA ===================================
+    "harpia": {
+        "nome": "Harpia",
+        "descricao": "Criaturas aladas com torso humanoide e corpo de abutre. São conhecidas por seu canto sedutor e natureza predatória.",
+        "lore": """
+As harpias vivem em penhascos e ruínas, atraindo viajantes desavisados para a morte com sua canção mágica. Elas não são inerentemente más, mas sim predadoras amorais, vendo as outras criaturas como comida ou entretenimento. Sua sociedade é matriarcal, com as fêmeas mais velhas e de voz mais poderosa liderando o bando.
+        """,
+        "modificadores_stats": {"destreza": 2, "carisma": 1},
+        "habilidades_raciais": ["voo_limitado", "cancao_sedutora"],
+        "variacoes": [],
+        "dialogo_racial": ["(Uma melodia cativante ecoa no ar)", "Venha mais perto, viajante...", "Carne fresca!"],
+        "nomes_sugeridos": {"feminino": ["Aello", "Celaeno", "Ocypete"], "masculino": [], "sem_familia": True},
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== SÁTIRO ===================================
+    "satiro": {
+        "nome": "Sátiro",
+        "descricao": "Criaturas feéricas com pernas de bode, que vivem para a festa, a música e o caos. São hedonistas e amam pregar peças.",
+        "lore": """
+Os sátiros são os espíritos das festas selvagens. Nascidos no Reino das Fadas, eles viajam para o plano mortal em busca de novas experiências, vinhos e canções. Eles são mestres da flauta de pã e usam sua música para encantar, confundir e levar outros a um frenesi de dança. Um sátiro pode ser um companheiro divertido, mas nunca confie nele para guardar um segredo ou para ficar sóbrio.
+        """,
+        "modificadores_stats": {"carisma": 2, "destreza": 1},
+        "habilidades_raciais": ["performance_cativante", "resistencia_a_magia"],
+        "variacoes": [],
+        "dialogo_racial": ["Mais vinho!", "A vida é uma festa, dance!", "Por que tão sério?"],
+        "nomes_sugeridos": {"masculino": ["Pan", "Silenus", "Titos"], "feminino": ["Coria", "Lenea", "Maia"], "sem_familia": True},
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== TRITÃO ===================================
+    "tritao": {
+        "nome": "Tritão",
+        "descricao": "Um povo nobre e militarista do fundo do mar, que se veem como os guardiões dos oceanos contra as ameaças das profundezas.",
+        "lore": """
+Os tritões vivem em cidades de coral e madrepérola no fundo do oceano. Eles são uma sociedade orgulhosa e disciplinada, com uma longa história de batalhas contra krakens, sahuagin e outros horrores abissais. Eles são desconfiados do povo da superfície, a quem veem como descuidados e poluidores. Um tritão na superfície é muitas vezes um exilado ou um soldado em uma missão sagrada.
+        """,
+        "modificadores_stats": {"forca": 1, "constituicao": 1, "carisma": 1},
+        "habilidades_raciais": ["anfibio", "guardiao_das_profundezas", "comunicacao_marinha"],
+        "variacoes": [],
+        "dialogo_racial": ["O oceano não guarda segredos.", "Pelas marés!", "Você cheira a ar seco."],
+        "nomes_sugeridos": {"masculino": ["Triton", "Nereus", "Pontus"], "feminino": ["Coralia", "Nerida", "Thalassa"], "familia": []},
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== YUAN-TI SANGUE-PURO ===================================
+    "yuan-ti_sangue-puro": {
+        "nome": "Yuan-ti Sangue-Puro",
+        "descricao": "Humanoides com traços serpentinos sutis, resultado de experimentos antigos para fundir humanos com serpentes. São resistentes à magia e naturalmente venenosos.",
+        "lore": """
+Os Yuan-ti Sangue-Puro são a casta mais baixa de sua sociedade serpentina, mas ainda assim se veem como superiores a todas as outras raças. Eles são espiões e infiltradores perfeitos, capazes de se misturar à sociedade humana enquanto servem a seus mestres mais monstruosos. Eles são frios, calculistas e desprovidos de emoção, vendo os outros como ferramentas a serem usadas.
+        """,
+        "modificadores_stats": {"inteligencia": 1, "carisma": 2},
+        "habilidades_raciais": ["vantagem_magica", "imunidade_a_veneno", "magia_serpentina"],
+        "variacoes": [],
+        "dialogo_racial": ["Sssssua emoção é uma fraqueza.", "Todos nós servimos a um mestre maior.", "O veneno tem muitos usos."],
+        "nomes_sugeridos": {"masculino": ["Salassar", "Vespertil", "Zaltys"], "feminino": ["Naga", "Serpentine", "Vipera"], "sem_familia": True},
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== VAMPIRO (DHAMPIR) ===================================
+    "dhampir": {
+        "nome": "Dhampir",
+        "descricao": "Meio-vampiros, presos entre o mundo dos vivos e dos mortos. Possuem a sede de um vampiro, mas não todas as suas fraquezas.",
+        "lore": """
+Um Dhampir é o resultado da união de um vampiro com um mortal, um evento de tragédia e raridade. Eles são assombrados por uma fome constante por sangue, mas não são queimados pelo sol. Eles vivem vidas longas e solitárias, desconfiados tanto pelos vivos quanto pelos mortos. Muitos se tornam caçadores de mortos-vivos, usando seus poderes sombrios para destruir as criaturas que os criaram.
+        """,
+        "modificadores_stats": {"destreza": 2, "carisma": 1},
+        "habilidades_raciais": ["mordida_vampirica", "escalar_paredes", "visao_no_escuro_superior"],
+        "variacoes": [],
+        "dialogo_racial": ["A noite tem seus próprios confortos.", "A fome... é constante.", "Eu uso a escuridão contra ela mesma."],
+        "nomes_sugeridos": {"masculino": ["Alucard", "Strahd", "Lestat"], "feminino": ["Carmilla", "Elara", "Serana"], "familia": []},
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== REVENANT ===================================
+    "revenant": {
+        "nome": "Revenant",
+        "descricao": "Uma alma que retornou do túmulo para completar uma tarefa inacabada. Movidos por um único propósito, são quase imparáveis.",
+        "lore": """
+Um Revenant não é um morto-vivo comum. É uma alma que se recusou a passar para o além, impulsionada por uma sede de vingança ou por um juramento que não foi cumprido. Eles habitam seu antigo corpo ou um novo construto, e não sentem dor, medo ou cansaço. Eles têm um único objetivo, e uma vez que esse objetivo seja cumprido, eles finalmente encontram a paz e se desfazem em pó.
+        """,
+        "modificadores_stats": {"constituicao": 1, "forca": 1},
+        "habilidades_raciais": ["proposito_inabalavel", "natureza_implacavel"],
+        "variacoes": [],
+        "dialogo_racial": ["A justiça deve ser feita.", "A morte não pode me parar.", "Meu objetivo é tudo o que resta."],
+        "nomes_sugeridos": {"masculino": [], "feminino": [], "sem_familia": True}, # Usam seus nomes antigos
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
+    },
+
+    # =================================== MYCONID ===================================
+    "myconid": {
+        "nome": "Myconid",
+        "descricao": "Humanoides-cogumelo sencientes do Subterrâneo, que se comunicam através de esporos e vivem em círculos pacíficos e comunais.",
+        "lore": """
+Os Myconids são um dos povos mais estranhos e pacíficos do Subterrâneo. Eles vivem em colônias, lideradas por um soberano, e se importam apenas com o bem-estar de seu círculo. Eles não têm conceito de individualidade da mesma forma que as outras raças. Em vez disso, eles estão todos conectados por uma união de esporos, compartilhando pensamentos e emoções. Eles podem liberar diferentes tipos de esporos para se comunicar, curar ou até mesmo animar os mortos como servos.
+        """,
+        "modificadores_stats": {"sabedoria": 2, "constituicao": 1},
+        "habilidades_raciais": ["esporos_de_comunicacao", "esporos_de_animacao"],
+        "variacoes": [],
+        "dialogo_racial": ["(Um sopro de esporos transmite uma sensação de calma.)", "(Uma imagem de um cogumelo crescendo aparece em sua mente.)"],
+        "nomes_sugeridos": {"masculino": ["Agaricus", "Boletus", "Myx"], "feminino": ["Amanita", "Psilo", "Stropharia"], "sem_familia": True},
+        "relacionamento_racas": {},
+        "arvore_evolucao": {}
     }
 }
