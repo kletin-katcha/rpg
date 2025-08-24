@@ -59,5 +59,38 @@ class TestCombatSystem(unittest.TestCase):
             self.assertFalse(self.monstro.esta_vivo(), "O monstro deveria estar morto ao final da batalha.")
             self.assertTrue(self.jogador.esta_vivo(), "O jogador deveria estar vivo ao final da batalha.")
 
+    def test_regeneration_function(self):
+        """
+        Testa a função _regenerar_recursos diretamente para garantir que ela
+        aumenta os recursos do personagem como esperado.
+        """
+        # Define os recursos para um valor baixo, mas não zero
+        self.jogador.stamina_atual = 10
+        self.jogador.mp_atual = 10
+
+        # Chama a função de regeneração
+        combate._regenerar_recursos(self.jogador)
+
+        # Verifica se os recursos aumentaram
+        self.assertGreater(self.jogador.stamina_atual, 10, "O Vigor deveria ter regenerado.")
+        self.assertGreater(self.jogador.mp_atual, 10, "A Mana deveria ter regenerado.")
+
+        # Verifica se não ultrapassou o máximo
+        self.assertLessEqual(self.jogador.stamina_atual, self.jogador.stamina_max)
+        self.assertLessEqual(self.jogador.mp_atual, self.jogador.mp_max)
+
+    @patch('rpg.sistemas.combate.narrador')
+    def test_defender_action_executes(self, mock_narrador):
+        """
+        Testa se a ação de 'defender' é executada corretamente,
+        chamando o narrador com a mensagem apropriada.
+        """
+        acao = {"tipo": "defender"}
+        combate.executar_acao(self.jogador, acao, [], [])
+
+        # Verifica se a função de narrar foi chamada com a mensagem de defesa
+        mock_narrador.narrar.assert_called_with(f"{self.jogador.nome} assume uma postura defensiva para recuperar o fôlego.")
+
+
 if __name__ == '__main__':
     unittest.main()
