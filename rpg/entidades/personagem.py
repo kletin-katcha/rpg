@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     # from ..dados.habilidades import Habilidade
     # from ..dados.racas import Raca
     # from ..dados.classes import Classe
+from rpg.dados.ataques_base import ATAQUES_BASE
 
 class Personagem:
     """
@@ -71,6 +72,7 @@ class Personagem:
 
         # --- Habilidades e Efeitos ---
         self.habilidades: List[str] = [] # Lista de IDs de habilidades
+        self.ataques_base: List[Dict] = [ATAQUES_BASE["soco"], ATAQUES_BASE["chute"]] # Ataques básicos disponíveis
         self.efeitos_ativos: List['Efeito'] = []
 
         # --- Quests ---
@@ -175,7 +177,7 @@ class Personagem:
         A lógica de cálculo (com defesa/resistências) acontece no sistema de combate.
         """
         dano_final = max(0, quantidade_dano)
-        self.hp_atual -= dano_final
+        self.hp_atual = max(0, self.hp_atual - dano_final)
         print(f"{self.nome} tomou {dano_final} de dano. HP restante: {self.hp_atual}/{self.hp_max}")
         if not self.esta_vivo():
             print(f"{self.nome} foi derrotado.")
