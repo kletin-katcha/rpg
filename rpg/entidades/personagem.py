@@ -27,12 +27,12 @@ class Personagem:
         self.xp_para_proximo_nivel: int = self.calcular_xp_necessario(nivel)
 
         # --- Atributos Primários ---
-        self.forca: int = 10         # Dano físico, capacidade de carga
-        self.destreza: int = 10      # Precisão, esquiva, dano à distância
-        self.constituicao: int = 10  # Pontos de vida, resistência a dano físico
-        self.inteligencia: int = 10  # Dano mágico, mana, resistência mágica
-        self.sabedoria: int = 10     # Poder de cura, resistência a debuffs, percepção
-        self.carisma: int = 10       # Interação com NPCs, preços em lojas, liderança
+        self.forca: int = 5         # Dano físico, capacidade de carga
+        self.destreza: int = 5      # Precisão, esquiva, dano à distância
+        self.constituicao: int = 5  # Pontos de vida, resistência a dano físico
+        self.inteligencia: int = 5  # Dano mágico, mana, resistência mágica
+        self.sabedoria: int = 5     # Poder de cura, resistência a debuffs, percepção
+        self.carisma: int = 5       # Interação com NPCs, preços em lojas, liderança
 
         # --- Recursos (HP, MP, Stamina) ---
         self.hp_max: int = self.calcular_hp_max()

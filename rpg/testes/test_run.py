@@ -41,16 +41,12 @@ class TestGameFlow(unittest.TestCase):
         user_inputs = [
             '1',        # 1. Menu: Novo Jogo
             'Jules',    # 2. Nome do Personagem
-            # 3. Distribuição de Atributos (20 pontos em Força)
+            # 3. Escolha de Raça (Anão)
+            '3', 's',
+            # 4. Escolha de Classe (Guerreiro)
+            '1', 's',
+            # 5. Distribuição de Atributos (20 pontos em Força)
             '1', '20',
-            # 4. Escolha de Raça (Anão)
-            '3', # Ver detalhes do Anão
-            's', # Confirmar
-            'fim', # Finalizar seleção
-            # 5. Escolha de Classe (Clérigo)
-            '4', # Ver detalhes do Clérigo
-            's', # Confirmar
-            'fim', # Finalizar seleção
             # 6. Resto do jogo
             '1',  # Falar com Elara (Pega quest 1 e 2)
         ]
@@ -58,14 +54,8 @@ class TestGameFlow(unittest.TestCase):
         # Loop para matar 5 goblins
         for i in range(5):
             user_inputs.append('2') # Explorar
-            if i == 0: # Na primeira luta, usar uma habilidade de cura
-                user_inputs.extend(['1', # Atacar primeiro para tomar dano
-                                    '2', # Menu Habilidade
-                                    '3', # Escolher Cura Leve (1 e 2 são raciais)
-                                    '1'  # Alvo é o próprio jogador
-                                    ])
             # Adiciona ataques para garantir a vitória
-            user_inputs.extend(['1'] * 10)
+            user_inputs.extend(['1'] * 5)
 
         # Continua com o resto do fluxo do jogo
         user_inputs.extend([

@@ -23,8 +23,9 @@ def distribuir_atributos(personagem: 'Personagem'):
 
     funcoes_gerais.limpar_tela()
     funcoes_gerais.imprimir_cabecalho("Distribuição de Atributos", nivel=2)
-    print(f"Você tem {pontos_para_distribuir} pontos para distribuir entre seus atributos.")
-    print("Cada atributo começa com um valor base de 10.")
+    print("Sua raça e classe influenciaram seus atributos iniciais.")
+    print(f"Agora, você tem {pontos_para_distribuir} pontos para distribuir livremente.")
+    print("Cada atributo começa com um valor base de 5 mais os bônus raciais.")
     funcoes_gerais.pausar()
 
     while pontos_para_distribuir > 0:
@@ -104,7 +105,8 @@ def escolher_raca(personagem: 'Personagem'):
                 print(f"Descrição: {raca_data['descricao']}")
                 print("\n--- Modificadores de Atributos ---")
                 for stat, mod in raca_data['modificadores_stats'].items():
-                    print(f"{stat.capitalize()}: +{mod}")
+                    sinal = "+" if mod >= 0 else ""
+                    print(f"{stat.capitalize()}: {sinal}{mod}")
                 print("\n--- Habilidades Raciais ---")
                 for hab in raca_data['habilidades_raciais']:
                     print(f"- {hab.replace('_', ' ').capitalize()}")
@@ -217,9 +219,10 @@ def iniciar_criacao_personagem() -> 'Personagem':
 
     print(f"\nBem-vindo, {nome}!")
 
-    distribuir_atributos(jogador)
+    # Nova ordem de criação
     escolher_raca(jogador)
     escolher_classe(jogador)
+    distribuir_atributos(jogador)
 
     funcoes_gerais.limpar_tela()
     funcoes_gerais.imprimir_cabecalho("Personagem Criado", nivel=2)

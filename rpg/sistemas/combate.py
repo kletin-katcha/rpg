@@ -169,14 +169,17 @@ def menu_acao_jogador(jogador: 'Personagem', aliados: List['Personagem'], inimig
             return None
 
 def menu_escolher_habilidade(ator: 'Personagem', aliados: List['Personagem'], inimigos: List['Monstro']) -> Dict:
-    """Exibe as habilidades do jogador e retorna a ação de usar habilidade."""
-    if not ator.habilidades:
-        narrador.narrar("Você não tem nenhuma habilidade para usar!")
+    """Exibe as habilidades ativas do jogador e retorna a ação de usar habilidade."""
+    habilidades_ativas = [hab_id for hab_id in ator.habilidades if TODAS_HABILIDADES.get(hab_id, {}).get("tipo") == "ativa"]
+
+    if not habilidades_ativas:
+        narrador.narrar("Você não tem nenhuma habilidade ativa para usar em combate!")
+        funcoes_gerais.pausar()
         return None
 
     while True:
         print("\n--- HABILIDADES ---")
-        for i, hab_id in enumerate(ator.habilidades, 1):
+        for i, hab_id in enumerate(habilidades_ativas, 1):
             habilidade = TODAS_HABILIDADES.get(hab_id)
             if habilidade:
                 custo = habilidade.get('custo_valor', 0)
@@ -193,11 +196,11 @@ def menu_escolher_habilidade(ator: 'Personagem', aliados: List['Personagem'], in
         if escolha_idx == 0:
             return None
 
-        if not 1 <= escolha_idx <= len(ator.habilidades):
+        if not 1 <= escolha_idx <= len(habilidades_ativas):
             print("Escolha inválida.")
             continue
 
-        hab_id_escolhido = ator.habilidades[escolha_idx - 1]
+        hab_id_escolhido = habilidades_ativas[escolha_idx - 1]
         habilidade = TODAS_HABILIDADES[hab_id_escolhido]
 
         # Verificar custo
