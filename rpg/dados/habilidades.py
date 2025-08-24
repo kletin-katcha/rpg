@@ -4,25 +4,28 @@
 #
 # Este arquivo importa todas as listas de habilidades de outros arquivos
 # e as une em um único dicionário para fácil acesso em todo o jogo.
-# Também serve como um local temporário para habilidades de monstros
-# que ainda não têm seu próprio arquivo.
 #
 # ==============================================================================
 
 from .habilidades_fisicas import HABILIDADES_FISICAS
 from .habilidades_magicas import HABILIDADES_MAGICAS
 from .habilidades_raciais import HABILIDADES_RACIAIS
-# Futuramente, importar outros tipos de habilidades aqui
-# from .habilidades_suporte import HABILIDADES_SUPORTE
+from .habilidades_suporte import HABILIDADES_SUPORTE
+from .habilidades_passivas import HABILIDADES_PASSIVAS
 
 # Dicionário mestre com todas as habilidades do jogo
 TODAS_HABILIDADES = {}
 TODAS_HABILIDADES.update(HABILIDADES_FISICAS)
 TODAS_HABILIDADES.update(HABILIDADES_MAGICAS)
 TODAS_HABILIDADES.update(HABILIDADES_RACIAIS)
+TODAS_HABILIDADES.update(HABILIDADES_SUPORTE)
+TODAS_HABILIDADES.update(HABILIDADES_PASSIVAS)
 
-# Habilidades específicas de monstros da Área 1 para garantir que os testes passem
-HABILIDADES_MONSTROS = {
+
+# TODO: Mover estas habilidades de monstros para arquivos dedicados ou
+# garantir que estejam nos arquivos de habilidades apropriados.
+# Por enquanto, são mantidas aqui para garantir a funcionalidade do jogo.
+HABILIDADES_MONSTROS_LEGACY = {
     "mordida_feroz": {
         "nome": "Mordida Feroz", "custo_tipo": "stamina", "custo_valor": 10,
         "descricao": "Uma mordida selvagem.", "tipo_alvo": "inimigo_unico",
@@ -61,13 +64,7 @@ HABILIDADES_MONSTROS = {
             {"tipo": "dano_magico", "escala_com": "constituicao", "elemento": "acido", "multiplicador_dano": 0.6},
             {"tipo": "aplicar_efeito", "id_efeito": "debuff_defesa_pequeno", "chance": 1.0, "duracao": 2}
         ]
-    }
-}
-
-TODAS_HABILIDADES.update(HABILIDADES_MONSTROS)
-
-# Habilidades para a expansão de monstros
-HABILIDADES_MONSTROS_EXPANSAO = {
+    },
     "uivo_de_comando": {
         "nome": "Uivo de Comando", "custo_tipo": "mp", "custo_valor": 15,
         "descricao": "Um uivo que inspira a matilha, aumentando o dano de todos os lobos aliados na batalha.", "tipo_alvo": "aliados_area",
@@ -114,4 +111,5 @@ HABILIDADES_MONSTROS_EXPANSAO = {
         "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "buff_defesa_grande", "duracao": 3}]
     }
 }
-TODAS_HABILIDADES.update(HABILIDADES_MONSTROS_EXPANSAO)
+
+TODAS_HABILIDADES.update(HABILIDADES_MONSTROS_LEGACY)

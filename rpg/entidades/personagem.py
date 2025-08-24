@@ -20,8 +20,8 @@ class Personagem:
     def __init__(self, nome: str, nivel: int = 1):
         # --- Identificação Básica ---
         self.nome: str = nome
-        # self.raca: 'Raca' = raca
-        # self.classe: 'Classe' = classe
+        self.raca: Optional[str] = None # ID da raça
+        self.classe: Optional[str] = None # ID da classe
         self.nivel: int = nivel
         self.xp_atual: int = 0
         self.xp_para_proximo_nivel: int = self.calcular_xp_necessario(nivel)
@@ -70,7 +70,7 @@ class Personagem:
         }
 
         # --- Habilidades e Efeitos ---
-        # self.habilidades: List['Habilidade'] = []
+        self.habilidades: List[str] = [] # Lista de IDs de habilidades
         self.efeitos_ativos: List['Efeito'] = []
 
         # --- Quests ---
