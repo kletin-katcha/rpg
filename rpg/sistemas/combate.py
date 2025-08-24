@@ -59,6 +59,12 @@ def executar_acao(ator: 'Personagem', acao: Dict, todos_aliados: List['Personage
         narrador.narrar(f"{ator.nome} não faz nada.")
         return
 
+    if tipo_acao == "defender":
+        # Por enquanto, apenas passa o turno para permitir a regeneração de recursos.
+        # Poderia ser expandido para adicionar um buff de defesa temporário.
+        narrador.narrar(f"{ator.nome} assume uma postura defensiva para recuperar o fôlego.")
+        return
+
     if tipo_acao == "ataque_basico":
         ataque = acao.get("ataque")
         if not ataque or not alvo_entidade:
@@ -88,7 +94,9 @@ def executar_acao(ator: 'Personagem', acao: Dict, todos_aliados: List['Personage
         tipo_dano = ataque.get("tipo_dano", "fisico")
 
         if tipo_dano == "fisico":
-            dano_base = ator.ataque_fisico * multiplicador_dano
+            # Dano base agora inclui o bônus da arma antes do multiplicador do ataque
+            dano_base_personagem = ator.ataque_fisico + ator.dano_arma_bonus
+            dano_base = dano_base_personagem * multiplicador_dano
             defesa_alvo = alvo_entidade.defesa_fisica
         else: # Supondo 'magico' ou outros tipos se existirem
             dano_base = ator.poder_magico * multiplicador_dano
@@ -122,6 +130,17 @@ def executar_acao(ator: 'Personagem', acao: Dict, todos_aliados: List['Personage
 
         aplicar_efeitos_habilidade(ator, alvos, habilidade)
 
+def _regenerar_recursos(personagem: 'Personagem'):
+    """Restaura silenciosamente uma parte do Vigor e da Mana de um personagem no final do seu turno."""
+    # Regeneração de Vigor (maior): 10% do máximo + bônus de Constituição
+    vigor_regen = int(personagem.stamina_max * 0.10 + personagem.constituicao / 2)
+    personagem.stamina_atual = min(personagem.stamina_max, personagem.stamina_atual + vigor_regen)
+
+    # Regeneração de Mana (menor): 3% do máximo + bônus de Sabedoria
+    mana_regen = int(personagem.mp_max * 0.03 + personagem.sabedoria / 2)
+    personagem.mp_atual = min(personagem.mp_max, personagem.mp_atual + mana_regen)
+
+
 def iniciar_batalha(jogador: 'Personagem', inimigos: List['Monstro']) -> bool:
     """
     Gerencia o loop principal de uma batalha.
@@ -134,7 +153,7 @@ def iniciar_batalha(jogador: 'Personagem', inimigos: List['Monstro']) -> bool:
     while jogador.esta_vivo() and any(i.esta_vivo() for i in inimigos):
         # Exibir status
         print("\n" + "="*20)
-        print(f"{jogador.nome}: {jogador.hp_atual}/{jogador.hp_max} HP | {jogador.mp_atual}/{jogador.mp_max} MP")
+        print(f"{jogador.nome}: {jogador.hp_atual}/{jogador.hp_max} HP | {jogador.mp_atual}/{jogador.mp_max} MP | {jogador.stamina_atual}/{jogador.stamina_max} Vigor")
         for inimigo in inimigos:
             if inimigo.esta_vivo():
                 print(f"{inimigo.nome}: {inimigo.hp_atual}/{inimigo.hp_max} HP")
@@ -151,6 +170,9 @@ def iniciar_batalha(jogador: 'Personagem', inimigos: List['Monstro']) -> bool:
                     narrador.narrar("A fuga falhou!")
             else:
                 executar_acao(jogador, acao_jogador_dict, [jogador], inimigos)
+
+            # Regenera recursos do jogador no final do turno
+            _regenerar_recursos(jogador)
         else:
             continue
 
@@ -164,15 +186,25 @@ def iniciar_batalha(jogador: 'Personagem', inimigos: List['Monstro']) -> bool:
                 funcoes_gerais.pausar()
                 acao_inimigo = inimigo.decidir_acao(aliados=vivos_inimigos, inimigos=[jogador])
                 executar_acao(inimigo, acao_inimigo, vivos_inimigos, [jogador])
+                # Regenera recursos do inimigo no final do turno
+                _regenerar_recursos(inimigo)
 
     funcoes_gerais.imprimir_cabecalho("Fim da Batalha", nivel=2)
     if jogador.esta_vivo():
         narrador.narrar("Você venceu a batalha!")
         xp_total = sum(i.xp_recompensa for i in inimigos)
         ouro_total = sum(i.ouro for i in inimigos)
+
+        narrador.narrar(f"Você ganhou {xp_total} de XP e {ouro_total} de ouro.")
         jogador.ganhar_xp(xp_total)
         jogador.ouro += ouro_total
-        narrador.narrar(f"Você ganhou {ouro_total} de ouro.")
+
+        # Processar loot de itens
+        narrador.narrar("Você coleta os espólios:")
+        for inimigo in inimigos:
+            loot = inimigo.gerar_loot()
+            for item_drop in loot.get("itens", []):
+                jogador.adicionar_item(item_drop["id_item"], item_drop["quantidade"])
     else:
         narrador.narrar("Você foi derrotado...")
 
@@ -184,15 +216,18 @@ def menu_acao_jogador(jogador: 'Personagem', aliados: List['Personagem'], inimig
         print("\n--- AÇÕES ---")
         print("1. Atacar")
         print("2. Habilidade")
-        print("3. Item (não impl.)")
-        print("4. Fugir")
+        print("3. Defender")
+        print("4. Item (não impl.)")
+        print("5. Fugir")
 
         escolha = input("O que você faz? ")
         if escolha == '1':
             return menu_escolher_ataque_basico(jogador, inimigos)
         elif escolha == '2':
             return menu_escolher_habilidade(jogador, aliados, inimigos)
-        elif escolha == '4':
+        elif escolha == '3':
+            return {"tipo": "defender"}
+        elif escolha == '5':
             return {"tipo": "fugir"}
         else:
             print("Ação inválida ou não implementada.")

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 # Importação dos módulos do projeto
 from .entidades.personagem import Personagem
 from .entidades.monstro import Monstro
-from .io import menu, criacao_personagem, salvar_carregar
+from .io import menu, criacao_personagem, salvar_carregar, menu_inventario, menu_equipamento
 from .sistemas import combate, quests
 from .utilitarios import funcoes_gerais, narrador
 from .dados.monstros_area1 import MONSTROS_AREA1
@@ -54,9 +54,11 @@ def jogar(jogador: 'Personagem'):
         print("1. Falar com Elara (Curandeira da Vila)")
         print("2. Explorar a Floresta dos Sussurros")
         print("3. Ver Diário de Missões")
-        print("4. Ver status do personagem")
-        print("5. Salvar Jogo")
-        print("6. Sair para o Menu Principal")
+        print("4. Abrir Inventário")
+        print("5. Ver Equipamento")
+        print("6. Ver status do personagem")
+        print("7. Salvar Jogo")
+        print("8. Sair para o Menu Principal")
 
         escolha = input("\nSua escolha: ")
 
@@ -95,13 +97,19 @@ def jogar(jogador: 'Personagem'):
         elif escolha == '3': # Diário de Missões
             quests.exibir_journal(jogador)
 
-        elif escolha == '4': # Status
+        elif escolha == '4': # Inventário
+            menu_inventario.exibir_inventario(jogador)
+
+        elif escolha == '5': # Equipamento
+            menu_equipamento.exibir_equipamento(jogador)
+
+        elif escolha == '6': # Status
             funcoes_gerais.limpar_tela()
             funcoes_gerais.imprimir_cabecalho("Status do Personagem", nivel=2)
             print(jogador)
             funcoes_gerais.pausar()
 
-        elif escolha == '5': # Salvar
+        elif escolha == '7': # Salvar
             nome_save = input("Digite o nome para o seu save: ").strip()
             if nome_save:
                 salvar_carregar.salvar_jogo(jogador, nome_save)
@@ -109,7 +117,7 @@ def jogar(jogador: 'Personagem'):
                 print("Nome de save inválido.")
             funcoes_gerais.pausar()
 
-        elif escolha == '6': # Sair
+        elif escolha == '8': # Sair
             print("\nVoltando ao menu principal...")
             funcoes_gerais.pausar()
             break

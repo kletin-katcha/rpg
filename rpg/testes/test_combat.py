@@ -21,12 +21,14 @@ class TestCombatSystem(unittest.TestCase):
     def setUp(self):
         """Prepara um jogador e um monstro padrão para os testes."""
         self.jogador = Personagem(nome="Herói de Teste", nivel=5)
-        # Aumentar os stats do jogador para garantir uma vitória previsível
-        self.jogador.forca = 30
-        self.jogador.destreza = 20
-        self.jogador.constituicao = 20
+        # Aumentar os stats BASE do jogador para garantir uma vitória previsível
+        self.jogador.base_forca = 30
+        self.jogador.base_destreza = 20
+        self.jogador.base_constituicao = 20
         self.jogador.recalcular_stats_completos()
         self.jogador.hp_atual = self.jogador.hp_max # Garante que o HP está cheio
+        self.jogador.mp_atual = self.jogador.mp_max
+        self.jogador.stamina_atual = self.jogador.stamina_max
 
         self.monstro = criar_monstro_por_id("goblin_batedor")
 
@@ -39,10 +41,10 @@ class TestCombatSystem(unittest.TestCase):
         # Mock para garantir que os ataques sempre acertem e não haja variabilidade
         mock_random.random.return_value = 0.0 # Garante 100% de chance de acerto nos testes
 
-        # O log do teste mostra que cada "Chute" causa 43 de dano. O goblin tem 220 HP.
-        # 220 / 43 = 5.11, então são necessários 6 ataques para garantir a vitória.
+        # Com base_forca=30, o dano de um "Chute" é 55. O goblin tem 220 HP.
+        # 220 / 55 = 4. São necessários 4 ataques.
         combat_inputs = []
-        for _ in range(6):
+        for _ in range(4):
             # 1. Atacar -> 2. Chute -> 1. Primeiro Alvo (o único goblin)
             combat_inputs.extend(['1', '2', '1'])
 
@@ -58,6 +60,70 @@ class TestCombatSystem(unittest.TestCase):
             self.assertTrue(vitoria, "O jogador deveria ter vencido a batalha.")
             self.assertFalse(self.monstro.esta_vivo(), "O monstro deveria estar morto ao final da batalha.")
             self.assertTrue(self.jogador.esta_vivo(), "O jogador deveria estar vivo ao final da batalha.")
+
+    def test_regeneration_function(self):
+        """
+        Testa a função _regenerar_recursos diretamente para garantir que ela
+        aumenta os recursos do personagem como esperado.
+        """
+        # Define os recursos para um valor baixo, mas não zero
+        self.jogador.stamina_atual = 10
+        self.jogador.mp_atual = 10
+
+        # Chama a função de regeneração
+        combate._regenerar_recursos(self.jogador)
+
+        # Verifica se os recursos aumentaram
+        self.assertGreater(self.jogador.stamina_atual, 10, "O Vigor deveria ter regenerado.")
+        self.assertGreater(self.jogador.mp_atual, 10, "A Mana deveria ter regenerado.")
+
+        # Verifica se não ultrapassou o máximo
+        self.assertLessEqual(self.jogador.stamina_atual, self.jogador.stamina_max)
+        self.assertLessEqual(self.jogador.mp_atual, self.jogador.mp_max)
+
+    @patch('rpg.sistemas.combate.narrador')
+    def test_defender_action_executes(self, mock_narrador):
+        """
+        Testa se a ação de 'defender' é executada corretamente,
+        chamando o narrador com a mensagem apropriada.
+        """
+        acao = {"tipo": "defender"}
+        combate.executar_acao(self.jogador, acao, [], [])
+
+        # Verifica se a função de narrar foi chamada com a mensagem de defesa
+        mock_narrador.narrar.assert_called_with(f"{self.jogador.nome} assume uma postura defensiva para recuperar o fôlego.")
+
+    def test_damage_consistency(self):
+        """
+        Testa se o dano de um mesmo ataque é consistente em turnos consecutivos,
+        para isolar o bug do dano decrescente.
+        """
+        import copy
+        from rpg.dados.ataques_base import ATAQUES_BASE
+
+        chute_original = copy.deepcopy(ATAQUES_BASE["chute"])
+        acao = {"tipo": "ataque_basico", "ataque": ATAQUES_BASE["chute"], "alvo": self.monstro}
+
+        # Mock para silenciar o output e random
+        with patch('builtins.print'), patch('rpg.sistemas.combate.random') as mock_random:
+            mock_random.random.return_value = 0.0 # Garante acerto
+
+            # Ataque 1
+            hp_antes_1 = self.monstro.hp_atual
+            combate.executar_acao(self.jogador, acao, [], [self.monstro])
+            dano_1 = hp_antes_1 - self.monstro.hp_atual
+
+            # Verifica se o dicionário de ataque base foi modificado
+            self.assertEqual(ATAQUES_BASE["chute"], chute_original, "O dicionário ATAQUES_BASE não deveria ser modificado.")
+
+            # Ataque 2
+            hp_antes_2 = self.monstro.hp_atual
+            combate.executar_acao(self.jogador, acao, [], [self.monstro])
+            dano_2 = hp_antes_2 - self.monstro.hp_atual
+
+        # O dano deveria ser o mesmo nas duas execuções
+        self.assertEqual(dano_1, dano_2, "O dano do mesmo ataque deveria ser consistente entre os turnos.")
+
 
 if __name__ == '__main__':
     unittest.main()

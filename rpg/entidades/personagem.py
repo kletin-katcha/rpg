@@ -1,5 +1,5 @@
 import random
-from typing import List, Dict, Optional, TYPE_CHECKING
+from typing import List, Dict, Optional, TYPE_CHECKING, Any
 
 # Usamos TYPE_CHECKING para evitar importações circulares em tempo de execução,
 # já que outras entidades podem depender de Personagem e vice-versa.
@@ -12,6 +12,9 @@ if TYPE_CHECKING:
     # from ..dados.racas import Raca
     # from ..dados.classes import Classe
 from rpg.dados.ataques_base import ATAQUES_BASE
+from ..dados.itens import TODOS_OS_ITENS
+from .item import Item
+
 
 class Personagem:
     """
@@ -27,24 +30,35 @@ class Personagem:
         self.xp_atual: int = 0
         self.xp_para_proximo_nivel: int = self.calcular_xp_necessario(nivel)
 
-        # --- Atributos Primários ---
-        self.forca: int = 5         # Dano físico, capacidade de carga
-        self.destreza: int = 5      # Precisão, esquiva, dano à distância
-        self.constituicao: int = 5  # Pontos de vida, resistência a dano físico
-        self.inteligencia: int = 5  # Dano mágico, mana, resistência mágica
-        self.sabedoria: int = 5     # Poder de cura, resistência a debuffs, percepção
-        self.carisma: int = 5       # Interação com NPCs, preços em lojas, liderança
+        # --- Atributos Primários (Base) ---
+        # Estes são os atributos inerentes do personagem, sem modificadores.
+        self.base_forca: int = 5
+        self.base_destreza: int = 5
+        self.base_constituicao: int = 5
+        self.base_inteligencia: int = 5
+        self.base_sabedoria: int = 5
+        self.base_carisma: int = 5
+
+        # --- Atributos Primários (Totais) ---
+        # Estes incluem bônus de equipamentos e outros efeitos. São recalculados.
+        self.forca: int = 0
+        self.destreza: int = 0
+        self.constituicao: int = 0
+        self.inteligencia: int = 0
+        self.sabedoria: int = 0
+        self.carisma: int = 0
 
         # --- Recursos (HP, MP, Stamina) ---
-        self.hp_max: int = self.calcular_hp_max()
-        self.hp_atual: int = self.hp_max
-        self.mp_max: int = self.calcular_mp_max()
-        self.mp_atual: int = self.mp_max
+        self.hp_max: int = 0
+        self.hp_atual: int = 0
+        self.mp_max: int = 0
+        self.mp_atual: int = 0
         self.stamina_max: int = 100
-        self.stamina_atual: int = self.stamina_max
+        self.stamina_atual: int = 100
 
         # --- Atributos de Combate Derivados ---
         # Estes serão recalculados com base nos atributos primários e equipamentos
+        self.dano_arma_bonus: int = 0
         self.ataque_fisico: int = 0
         self.poder_magico: int = 0
         self.defesa_fisica: int = 0
@@ -62,7 +76,9 @@ class Personagem:
         }
 
         # --- Inventário e Equipamentos ---
-        self.inventario: List['Item'] = []
+        # O inventário agora é um dicionário para empilhar itens.
+        # Estrutura: { "id_item": {"item": ObjetoItem, "quantidade": int} }
+        self.inventario: Dict[str, Dict[str, Any]] = {}
         self.ouro: int = 100
         self.equipamentos: Dict[str, Optional['Item']] = {
             "arma_principal": None, "arma_secundaria": None,
@@ -86,6 +102,10 @@ class Personagem:
 
         # Recalcular todos os stats derivados na inicialização
         self.recalcular_stats_completos()
+        # Garante que o personagem começa com os recursos no máximo
+        self.hp_atual = self.hp_max
+        self.mp_atual = self.mp_max
+        self.stamina_atual = self.stamina_max
 
     def calcular_xp_necessario(self, nivel: int) -> int:
         """Calcula o XP necessário para o próximo nível com base em uma curva exponencial."""
@@ -100,34 +120,63 @@ class Personagem:
         return 30 + (self.inteligencia * 7) + (self.sabedoria * 3) + (self.nivel * 10)
 
     def recalcular_stats_completos(self):
-        """
-        Recalcula todos os atributos derivados do personagem.
-        Deve ser chamado ao subir de nível, equipar/desequipar itens ou ao receber buffs/debuffs permanentes.
-        """
-        # Resetar stats base
-        self.hp_max = self.calcular_hp_max()
-        self.mp_max = self.calcular_mp_max()
+        # Etapa 1: Acumular todos os bônus de equipamentos em uma única passagem.
+        bonus = {
+            'forca': 0, 'destreza': 0, 'constituicao': 0, 'inteligencia': 0,
+            'sabedoria': 0, 'carisma': 0, 'hp_max': 0, 'mp_max': 0,
+            'ataque_fisico': 0, 'poder_magico': 0, 'defesa_fisica': 0,
+            'defesa_magica': 0, 'precisao': 0, 'esquiva': 0,
+            'dano_arma_bonus': 0, 'chance_critico': 0
+        }
 
-        # Stats de combate baseados nos atributos primários
+        for item in self.equipamentos.values():
+            if item and item.modificadores:
+                for mod, valor in item.modificadores.items():
+                    # Renomeia 'dano_arma' para 'dano_arma_bonus' para consistência
+                    mod_real = 'dano_arma_bonus' if mod == 'dano_arma' else mod
+                    if mod_real in bonus:
+                        bonus[mod_real] += valor
+
+        # Etapa 2: Aplicar bônus aos atributos primários.
+        self.forca = self.base_forca + bonus['forca']
+        self.destreza = self.base_destreza + bonus['destreza']
+        self.constituicao = self.base_constituicao + bonus['constituicao']
+        self.inteligencia = self.base_inteligencia + bonus['inteligencia']
+        self.sabedoria = self.base_sabedoria + bonus['sabedoria']
+        self.carisma = self.base_carisma + bonus['carisma']
+
+        # Etapa 3: Manter controle do HP/MP para ajustar o valor atual.
+        hp_antigo = self.hp_max
+        mp_antigo = self.mp_max
+
+        # Etapa 4: Calcular os status derivados usando os atributos finais e os bônus diretos.
+        # Primeiro, o cálculo base a partir dos atributos primários.
+        self.hp_max = self.calcular_hp_max() # Supondo que isso use self.constituicao
+        self.mp_max = self.calcular_mp_max() # Supondo que isso use self.inteligencia/sabedoria
         self.ataque_fisico = self.forca * 2
         self.poder_magico = self.inteligencia * 2
         self.defesa_fisica = self.constituicao // 2
-        self.defesa_magica = self.inteligencia // 2 + self.sabedoria // 2
+        self.defesa_magica = (self.inteligencia + self.sabedoria) // 2
         self.precisao = self.destreza * 3
         self.esquiva = self.destreza * 2
 
-        # TODO: Adicionar lógica para aplicar modificadores de equipamentos
-        # for slot, item in self.equipamentos.items():
-        #     if item:
-        #         # Aplicar item.modificadores
-        #         pass
+        # Agora, adicione os bônus diretos (flat bonuses) de equipamentos.
+        self.hp_max += bonus['hp_max']
+        self.mp_max += bonus['mp_max']
+        self.ataque_fisico += bonus['ataque_fisico']
+        self.poder_magico += bonus['poder_magico']
+        self.defesa_fisica += bonus['defesa_fisica']
+        self.defesa_magica += bonus['defesa_magica']
+        self.precisao += bonus['precisao']
+        self.esquiva += bonus['esquiva']
+        self.dano_arma_bonus = bonus['dano_arma_bonus'] # É um valor direto, não somado.
 
-        # TODO: Adicionar lógica para aplicar modificadores de efeitos ativos (buffs/debuffs)
-        # for efeito in self.efeitos_ativos:
-        #     # Aplicar efeito.modificadores
-        #     pass
+        # Etapa 5: Ajustar HP e MP atuais após mudança no máximo.
+        if self.hp_max > hp_antigo and hp_antigo != 0:
+            self.hp_atual += self.hp_max - hp_antigo
+        if self.mp_max > mp_antigo and mp_antigo != 0:
+            self.mp_atual += self.mp_max - mp_antigo
 
-        # Garantir que HP/MP atuais não excedam o novo máximo
         self.hp_atual = min(self.hp_atual, self.hp_max)
         self.mp_atual = min(self.mp_atual, self.mp_max)
 
@@ -156,12 +205,12 @@ class Personagem:
         self.xp_para_proximo_nivel = self.calcular_xp_necessario(self.nivel)
 
         # Lógica de ganho de atributos (exemplo simples, pode ser baseado na classe)
-        self.forca += 1
-        self.destreza += 1
-        self.constituicao += 2
-        self.inteligencia += 1
-        self.sabedoria += 1
-        self.carisma += 1
+        self.base_forca += 1
+        self.base_destreza += 1
+        self.base_constituicao += 2
+        self.base_inteligencia += 1
+        self.base_sabedoria += 1
+        self.base_carisma += 1
 
         # Recalcula tudo e cura o personagem
         self.recalcular_stats_completos()
@@ -186,6 +235,121 @@ class Personagem:
         """Cura o personagem, sem exceder o HP máximo."""
         self.hp_atual = min(self.hp_max, self.hp_atual + quantidade)
         print(f"{self.nome} recuperou {quantidade} de HP. HP atual: {self.hp_atual}/{self.hp_max}")
+
+    def adicionar_item(self, id_item: str, quantidade: int = 1):
+        """Adiciona um item ao inventário, empilhando se já existir."""
+        dados_item = TODOS_OS_ITENS.get(id_item)
+        if not dados_item:
+            print(f"ALERTA: Tentativa de adicionar item desconhecido: {id_item}")
+            return
+
+        if id_item in self.inventario:
+            self.inventario[id_item]["quantidade"] += quantidade
+        else:
+            novo_item = Item(id_item=id_item, **dados_item)
+            self.inventario[id_item] = {"item": novo_item, "quantidade": quantidade}
+
+        # O narrador seria melhor aqui, mas print para consistência com outras funções.
+        print(f"{quantidade}x {dados_item['nome']} adicionado(s) ao inventário.")
+
+    def remover_item(self, id_item: str, quantidade: int = 1) -> bool:
+        """Remove uma quantidade de um item do inventário. Retorna True se bem-sucedido."""
+        if id_item not in self.inventario:
+            # print(f"ALERTA: Tentativa de remover item que não está no inventário: {id_item}")
+            return False
+
+        if self.inventario[id_item]["quantidade"] < quantidade:
+            # print(f"ALERTA: Não há quantidade suficiente de {id_item} para remover.")
+            return False
+
+        self.inventario[id_item]["quantidade"] -= quantidade
+        nome_item = self.inventario[id_item]["item"].nome
+        print(f"{quantidade}x {nome_item} removido(s) do inventário.")
+
+        if self.inventario[id_item]["quantidade"] <= 0:
+            del self.inventario[id_item]
+
+        return True
+
+    def usar_item(self, id_item: str):
+        """Usa um item do inventário, aplicando seu efeito."""
+        if id_item not in self.inventario:
+            print("Você não possui este item.")
+            return
+
+        item = self.inventario[id_item]["item"]
+        if not item.é_consumivel():
+            print(f"{item.nome} não pode ser usado.")
+            return
+
+        efeito = item.efeito_consumo
+        tipo_efeito = efeito.get("tipo")
+        quantidade_efeito = efeito.get("quantidade", 0)
+
+        print(f"Você usa {item.nome}...")
+
+        if tipo_efeito == "cura_hp":
+            self.curar(quantidade_efeito)
+        elif tipo_efeito == "cura_mp":
+            # Precisamos de um método para restaurar mana, similar ao curar()
+            self.mp_atual = min(self.mp_max, self.mp_atual + quantidade_efeito)
+            print(f"{self.nome} recuperou {quantidade_efeito} de Mana. MP atual: {self.mp_atual}/{self.mp_max}")
+        # TODO: Adicionar outros tipos de efeitos (ex: remover_efeito, buff_temporario)
+        else:
+            print("Este item não tem um efeito conhecido.")
+            return # Não remove o item se o efeito não for aplicado
+
+        # Remove o item do inventário após o uso
+        self.remover_item(id_item, 1)
+
+    def equipar_item(self, id_item: str):
+        """Equipa um item do inventário."""
+        if id_item not in self.inventario:
+            print("Você não possui este item para equipar.")
+            return
+
+        item_para_equipar = self.inventario[id_item]["item"]
+
+        if not item_para_equipar.é_equipavel():
+            print(f"{item_para_equipar.nome} não é um item equipável.")
+            return
+
+        # Verifica se o personagem cumpre os requisitos
+        if not item_para_equipar.pode_equipar(self):
+            print(f"Você não cumpre os requisitos para equipar {item_para_equipar.nome}.")
+            return
+
+        slot = item_para_equipar.slot_equipamento
+
+        # Se já houver um item no slot, desequipa primeiro
+        if self.equipamentos.get(slot) is not None:
+            self.desequipar_item(slot)
+
+        # Remove o item do inventário e o coloca no slot de equipamento
+        if self.remover_item(id_item, 1):
+            self.equipamentos[slot] = item_para_equipar
+            print(f"{item_para_equipar.nome} equipado no slot {slot.replace('_', ' ')}.")
+            self.recalcular_stats_completos()
+        else:
+            # Isso não deveria acontecer se a verificação inicial passou, mas é uma segurança
+            print(f"Erro ao tentar equipar {item_para_equipar.nome}.")
+
+    def desequipar_item(self, slot: str):
+        """Desequipa um item, movendo-o de volta para o inventário."""
+        if slot not in self.equipamentos or self.equipamentos[slot] is None:
+            print(f"Nenhum item equipado no slot {slot.replace('_', ' ')}.")
+            return
+
+        item_para_desequipar = self.equipamentos[slot]
+
+        # Adiciona o item de volta ao inventário
+        self.adicionar_item(item_para_desequipar.id_item, 1)
+
+        # Limpa o slot de equipamento
+        self.equipamentos[slot] = None
+
+        print(f"{item_para_desequipar.nome} desequipado.")
+        self.recalcular_stats_completos()
 
     def __str__(self) -> str:
         return (
