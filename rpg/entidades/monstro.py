@@ -64,32 +64,69 @@ class Monstro(Personagem):
     def decidir_acao(self, aliados: List['Monstro'], inimigos: List['Personagem']) -> Dict[str, Any]:
         """
         O cérebro do monstro. Decide qual ação tomar com base na IA.
-        Esta é uma implementação placeholder. A lógica complexa (B, C, D) será adicionada na Fase 4.
+        Esta é a primeira implementação da IA adaptativa.
         """
-        # Placeholder: Lógica de IA muito simples
-        # Na Fase 4, isso será expandido para:
-        # 1. Analisar status (HP baixo -> usar habilidade de cura ou fugir?)
-        # 2. Analisar buffs/debuffs do inimigo (inimigo com reflexão de dano -> usar debuff em vez de ataque direto)
-        # 3. Analisar ações do inimigo (inimigo usa muita magia de fogo -> usar habilidade de resistência a fogo)
-        # 4. Coordenar com aliados (se HP do aliado X está baixo, usar habilidade de cura nele)
-        # 5. Gerenciar cooldowns
-
-        # Define o alvo principal se não tiver um
+        # Define o alvo principal se não tiver um, ou se o alvo atual estiver morto.
         if not self.foco_atual or not self.foco_atual.esta_vivo():
-            self.foco_atual = random.choice(inimigos)
+            # Comportamento de foco: 'oportunista' foca no inimigo com menos HP.
+            if self.comportamento_ia == "oportunista":
+                self.foco_atual = min(inimigos, key=lambda i: i.hp_atual)
+            else:
+                self.foco_atual = random.choice(inimigos)
 
-        acao_escolhida = {"tipo": "ataque_basico", "alvo": self.foco_atual}
+        # --- Lógica de Decisão Baseada em Regras ---
 
-        # Tenta usar uma habilidade se tiver MP e se houver habilidades
-        if self.habilidades:
-            # Agora 'h' é um dicionário, então h.get() funciona
-            habilidades_disponiveis = [h for h in self.habilidades if self.mp_atual >= h.get('custo_valor', 0)]
-            if habilidades_disponiveis:
-                habilidade_aleatoria = random.choice(habilidades_disponiveis)
-                acao_escolhida = {"tipo": "usar_habilidade", "habilidade": habilidade_aleatoria, "alvo": self.foco_atual}
+        # 1. Autopreservação (Prioridade Alta)
+        if self.hp_atual / self.hp_max < 0.3: # Se com menos de 30% de vida
+            habilidade_cura = self.encontrar_habilidade_por_efeito("cura", "self")
+            if habilidade_cura:
+                print(f"[IA - Autopreservação] {self.nome} está com pouca vida e decide se curar.")
+                return {"tipo": "usar_habilidade", "habilidade": habilidade_cura, "alvo": self}
 
-        print(f"[IA] {self.nome} decide: {acao_escolhida['tipo']} em {acao_escolhida['alvo'].nome}")
-        return acao_escolhida
+        # 2. Sinergia / Suporte (Prioridade Média)
+        if self.comportamento_ia == "suporte":
+            aliado_ferido = self.encontrar_aliado_ferido(aliados)
+            if aliado_ferido:
+                habilidade_cura_aliado = self.encontrar_habilidade_por_efeito("cura", "aliado_unico")
+                if habilidade_cura_aliado:
+                    print(f"[IA - Suporte] {self.nome} decide curar seu aliado {aliado_ferido.nome}.")
+                    return {"tipo": "usar_habilidade", "habilidade": habilidade_cura_aliado, "alvo": aliado_ferido}
+
+        # 3. Análise do Jogador (Prioridade Média)
+        # Exemplo simples: se o jogador estiver com um buff de defesa, usar um debuff em vez de ataque direto.
+        efeitos_alvo = self.foco_atual.efeitos_ativos
+        if any(e.id_efeito == "buff_defesa_grande" for e in efeitos_alvo):
+            habilidade_debuff = self.encontrar_habilidade_por_efeito("debuff", "inimigo_unico")
+            if habilidade_debuff:
+                print(f"[IA - Análise] {self.nome} vê a defesa do alvo e tenta aplicar um debuff.")
+                return {"tipo": "usar_habilidade", "habilidade": habilidade_debuff, "alvo": self.foco_atual}
+
+        # 4. Ofensiva Padrão (Prioridade Baixa)
+        habilidade_ofensiva = self.encontrar_habilidade_por_efeito("dano", "inimigo_unico")
+        if habilidade_ofensiva:
+            print(f"[IA - Ofensiva] {self.nome} decide usar uma habilidade de ataque.")
+            return {"tipo": "usar_habilidade", "habilidade": habilidade_ofensiva, "alvo": self.foco_atual}
+
+        # 5. Ação Padrão: Ataque Básico
+        print(f"[IA - Padrão] {self.nome} recorre a um ataque básico.")
+        return {"tipo": "ataque_basico", "alvo": self.foco_atual}
+
+    def encontrar_habilidade_por_efeito(self, tipo_efeito: str, tipo_alvo: str) -> Optional[Dict]:
+        """Encontra a primeira habilidade disponível que corresponde a um tipo de efeito e alvo."""
+        habilidades_disponiveis = [h for h in self.habilidades if self.mp_atual >= h.get('custo_valor', 0)]
+        for h in habilidades_disponiveis:
+            if h.get("tipo_alvo") == tipo_alvo:
+                for efeito in h.get("efeitos", []):
+                    if efeito.get("tipo", "").startswith(tipo_efeito):
+                        return h
+        return None
+
+    def encontrar_aliado_ferido(self, aliados: List['Monstro']) -> Optional['Monstro']:
+        """Encontra o aliado (excluindo a si mesmo) com a menor porcentagem de vida, se abaixo de 50%."""
+        aliados_feridos = [a for a in aliados if a is not self and (a.hp_atual / a.hp_max) < 0.5]
+        if not aliados_feridos:
+            return None
+        return min(aliados_feridos, key=lambda a: a.hp_atual / a.hp_max)
 
     def gerar_loot(self) -> Dict[str, Any]:
         """Gera loot para o jogador com base na tabela de loot."""

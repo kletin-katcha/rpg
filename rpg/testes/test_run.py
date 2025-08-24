@@ -4,7 +4,6 @@ import os
 import sys
 
 # Adiciona o diretório raiz do projeto ao sys.path para permitir importações relativas
-# Isso é necessário para rodar o teste diretamente, mas o ideal é usar `python -m unittest`
 if os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')) not in sys.path:
     sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
@@ -33,53 +32,48 @@ class TestGameFlow(unittest.TestCase):
     def test_smoke_test_full_run(self, mock_random):
         """
         Teste de fumaça (smoke test) que simula uma execução completa e determinística do jogo.
-        O objetivo é garantir que o jogo não quebre em nenhum ponto do fluxo principal.
         """
         # Configura o comportamento do random para ser determinístico
-        # Primeira exploração -> encontro. Demais -> sem encontro.
-        mock_random.random.side_effect = [0.1, 0.9, 0.9, 0.9, 0.9, 0.9]
-        # Sempre encontra o monstro mais fraco
-        mock_random.choice.return_value = 'slime_verde'
+        mock_random.random.return_value = 0.1 # Sempre encontra um monstro
+        mock_random.choice.return_value = 'goblin_batedor' # Sempre o alvo da quest
 
-        # Sequência de inputs do usuário para simular uma jogada determinística.
+        # Sequência de inputs do usuário para simular uma jogada completa da quest
         user_inputs = [
             '1',  # 1. Menu: Novo Jogo
             'Jules', # 2. Nome do Personagem
-
-            # Loop de jogo: A primeira exploração causa uma batalha com um Slime
-            '1',  # 3. Explorar a floresta
+            '1',  # 3. Falar com Elara (Pega quest 1 e 2)
         ]
-        # Adiciona 26 ataques para garantir a vitória contra o Slime (280 HP / 11 de dano por golpe)
-        user_inputs.extend(['1'] * 26)
+
+        # Loop para matar 5 goblins
+        for _ in range(5):
+            user_inputs.append('2') # Explorar
+            # Adiciona 15 ataques para garantir a vitória contra um goblin (220 HP / 15 de dano)
+            user_inputs.extend(['1'] * 15)
 
         # Continua com o resto do fluxo do jogo
         user_inputs.extend([
-            '1',  # Explorar novamente (sem encontro desta vez)
-            '2',  # Ver status do personagem
-            '3',  # Salvar Jogo
+            '1',  # Falar com Elara (Completar quest 2, pegar quest 3)
+            '3',  # Ver Diário de Missões
+            '5',  # Salvar Jogo
             self.SAVE_FILE_NAME, # Nome do save
-            '4',  # Sair para o Menu Principal
+            '6',  # Sair para o Menu Principal
             '2',  # Menu: Carregar Jogo
             '1',  # Escolher o primeiro save
-            '4',  # Sair para o Menu Principal
+            '6',  # Sair para o Menu Principal
             '3',  # Menu: Sair do jogo
         ])
 
-        # Mockamos 'input', 'pausar', 'limpar_tela' e 'narrar'
         with patch('builtins.input', side_effect=user_inputs), \
              patch('rpg.utilitarios.funcoes_gerais.limpar_tela', MagicMock()), \
              patch('rpg.utilitarios.narrador.narrar', MagicMock()), \
              patch('rpg.utilitarios.funcoes_gerais.pausar', MagicMock()):
             try:
-                # Executa a função principal do jogo
                 game_main()
             except StopIteration:
-                # É normal que o side_effect de input se esgote
                 pass
             except Exception as e:
                 self.fail(f"O jogo quebrou com a exceção inesperada: {e}")
 
-        # Verificação final: o arquivo de save foi realmente criado?
         self.assertTrue(os.path.exists(self.SAVE_FILE_PATH), "O arquivo de save não foi criado.")
 
 

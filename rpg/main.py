@@ -5,12 +5,12 @@ from typing import TYPE_CHECKING
 from .entidades.personagem import Personagem
 from .entidades.monstro import Monstro
 from .io import menu, criacao_personagem, salvar_carregar
-from .sistemas import combate
-from .utilitarios import funcoes_gerais
+from .sistemas import combate, quests
+from .utilitarios import funcoes_gerais, narrador
 from .dados.monstros_area1 import MONSTROS_AREA1
 
 if TYPE_CHECKING:
-    from entidades.personagem import Personagem
+    from .entidades.personagem import Personagem
 
 # --- Fábricas de Entidades (Funções de Ajuda) ---
 
@@ -20,10 +20,7 @@ def criar_monstro_por_id(id_monstro: str) -> Monstro:
     if not dados_monstro:
         raise ValueError(f"Monstro com ID '{id_monstro}' não encontrado.")
 
-    # Habilidades são apenas strings por enquanto, vamos passar a lista
     habilidades = dados_monstro.get("habilidades", [])
-
-    # A classe Monstro espera uma lista de dicionários para a loot table
     loot_table = dados_monstro.get("loot_table", [])
 
     return Monstro(
@@ -44,34 +41,65 @@ def criar_monstro_por_id(id_monstro: str) -> Monstro:
 
 def jogar(jogador: 'Personagem'):
     """O loop principal de gameplay para um personagem ativo."""
+    # Inicia a primeira quest automaticamente para dar um ponto de partida ao jogador
+    quests.iniciar_quest(jogador, "mq01_despertar")
+
     while jogador.esta_vivo():
         funcoes_gerais.limpar_tela()
-        funcoes_gerais.imprimir_cabecalho("FLORESTA DOS Sussurros", nivel=2)
-        print("Você está na entrada de uma floresta escura. O ar é pesado e úmido.")
+        funcoes_gerais.imprimir_cabecalho("Vila de Valesereno", nivel=2)
+        print("Você está no centro da pequena e tranquila vila de Valesereno.")
         print("\nO que você faz?")
-        print("1. Explorar a floresta")
-        print("2. Ver status do personagem")
-        print("3. Salvar Jogo")
-        print("4. Sair para o Menu Principal")
+        print("1. Falar com Elara (Curandeira da Vila)")
+        print("2. Explorar a Floresta dos Sussurros")
+        print("3. Ver Diário de Missões")
+        print("4. Ver status do personagem")
+        print("5. Salvar Jogo")
+        print("6. Sair para o Menu Principal")
 
         escolha = input("\nSua escolha: ")
 
-        if escolha == '1':
-            if random.random() < 0.75: # 75% de chance de encontro
-                id_monstro_encontrado = random.choice(list(MONSTROS_AREA1.keys()))
-                monstro = criar_monstro_por_id(id_monstro_encontrado)
-                combate.iniciar_batalha(jogador, [monstro])
-            else:
-                print("\nVocê explora a floresta, mas não encontra nada de interessante, apenas o som do vento nas árvores.")
+        if escolha == '1': # Falar com Elara
+            narrador.narrar("Você se aproxima de Elara, a curandeira local. Ela sorri calorosamente.")
+
+            # Lógica para a quest mq01: Falar com Elara para completá-la
+            quest_despertar = next((q for q in jogador.quests_ativas if q.id_quest == "mq01_despertar"), None)
+            if quest_despertar:
+                quests.atualizar_progresso_quests(jogador, "falar_com", "elara_curandeira")
+                if quest_despertar.esta_completa():
+                    quests.concluir_quest(jogador, quest_despertar)
+
+            # Lógica para a quest mq02: Pegar e entregar
+            if "mq01_despertar" in jogador.quests_concluidas:
+                quests.iniciar_quest(jogador, "mq02_ameaca_local")
+
+            quest_ameaca = next((q for q in jogador.quests_ativas if q.id_quest == "mq02_ameaca_local"), None)
+            if quest_ameaca and quest_ameaca.esta_completa():
+                quests.concluir_quest(jogador, quest_ameaca)
+                quests.iniciar_quest(jogador, "mq03_primeira_sombra")
+
             funcoes_gerais.pausar()
 
-        elif escolha == '2':
+        elif escolha == '2': # Explorar
+            if random.random() < 0.75:
+                id_monstro_encontrado = random.choice(list(MONSTROS_AREA1.keys()))
+                monstro = criar_monstro_por_id(id_monstro_encontrado)
+                vitoria = combate.iniciar_batalha(jogador, [monstro])
+                if vitoria:
+                    quests.atualizar_progresso_quests(jogador, "matar", id_monstro_encontrado)
+            else:
+                narrador.narrar("\nVocê explora a floresta, mas não encontra nada de interessante, apenas o som do vento nas árvores.")
+            funcoes_gerais.pausar()
+
+        elif escolha == '3': # Diário de Missões
+            quests.exibir_journal(jogador)
+
+        elif escolha == '4': # Status
             funcoes_gerais.limpar_tela()
             funcoes_gerais.imprimir_cabecalho("Status do Personagem", nivel=2)
             print(jogador)
             funcoes_gerais.pausar()
 
-        elif escolha == '3':
+        elif escolha == '5': # Salvar
             nome_save = input("Digite o nome para o seu save: ").strip()
             if nome_save:
                 salvar_carregar.salvar_jogo(jogador, nome_save)
@@ -79,7 +107,7 @@ def jogar(jogador: 'Personagem'):
                 print("Nome de save inválido.")
             funcoes_gerais.pausar()
 
-        elif escolha == '4':
+        elif escolha == '6': # Sair
             print("\nVoltando ao menu principal...")
             funcoes_gerais.pausar()
             break
@@ -90,7 +118,6 @@ def jogar(jogador: 'Personagem'):
 
     if not jogador.esta_vivo():
         funcoes_gerais.imprimir_cabecalho("FIM DE JOGO", nivel=1)
-        # TODO: Chamar sistema de meta.py aqui
         print("Sua jornada termina aqui, mas seu legado pode continuar...")
         funcoes_gerais.pausar()
 

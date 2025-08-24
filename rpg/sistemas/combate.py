@@ -1,18 +1,72 @@
-from typing import List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING, Dict, Any
 from ..utilitarios import funcoes_gerais, narrador
 import random
+from ..entidades.efeito import Efeito # Importar a classe Efeito
 
 if TYPE_CHECKING:
     from ..entidades.personagem import Personagem
     from ..entidades.monstro import Monstro
 
-def iniciar_batalha(jogador: 'Personagem', inimigos: List['Monstro']):
+def aplicar_efeito(ator: 'Personagem', alvo: 'Personagem', efeito_data: Dict):
+    """Aplica um único efeito de uma habilidade."""
+    tipo_efeito = efeito_data.get("tipo")
+
+    if tipo_efeito == "dano_fisico":
+        # TODO: Implementar lógica de escala e multiplicadores
+        dano_base = ator.ataque_fisico * efeito_data.get("multiplicador_dano", 1.0)
+        dano_final = max(0, dano_base - alvo.defesa_fisica)
+        alvo.tomar_dano(int(dano_final))
+
+    elif tipo_efeito == "dano_magico":
+        # TODO: Implementar lógica de escala e multiplicadores
+        dano_base = ator.poder_magico * efeito_data.get("multiplicador_dano", 1.0)
+        dano_final = max(0, dano_base - alvo.defesa_magica)
+        alvo.tomar_dano(int(dano_final))
+
+    elif tipo_efeito == "cura":
+        # TODO: Implementar lógica de escala e multiplicadores
+        cura = ator.poder_magico * efeito_data.get("multiplicador_cura", 1.0)
+        alvo.curar(int(cura))
+
+    elif tipo_efeito == "aplicar_efeito":
+        # TODO: Criar e registrar objetos de Efeito a partir dos IDs
+        narrador.narrar(f"{alvo.nome} é afetado por {efeito_data.get('id_efeito')}!")
+
+def executar_acao(ator: 'Personagem', acao: Dict, todos_aliados: List['Personagem'], todos_inimigos: List['Personagem']):
+    """Processa uma ação decidida pelo jogador ou IA."""
+    tipo_acao = acao.get("tipo")
+    alvo = acao.get("alvo")
+
+    if not alvo:
+        narrador.narrar(f"{ator.nome} não encontrou um alvo válido e perdeu o turno.")
+        return
+
+    if tipo_acao == "ataque_basico":
+        narrador.narrar(f"{ator.nome} ataca {alvo.nome}!")
+        dano = max(0, ator.ataque_fisico - alvo.defesa_fisica)
+        alvo.tomar_dano(dano)
+
+    elif tipo_acao == "usar_habilidade":
+        habilidade = acao.get("habilidade")
+        narrador.narrar(f"{ator.nome} usa {habilidade['nome']} em {alvo.nome}!")
+
+        # Deduz o custo da habilidade
+        custo = habilidade.get("custo_valor", 0)
+        if habilidade.get("custo_tipo") == "mp":
+            ator.mp_atual -= custo
+        elif habilidade.get("custo_tipo") == "stamina":
+            ator.stamina_atual -= custo
+
+        # Aplica os efeitos da habilidade
+        for efeito_data in habilidade.get("efeitos", []):
+            aplicar_efeito(ator, alvo, efeito_data)
+
+def iniciar_batalha(jogador: 'Personagem', inimigos: List['Monstro']) -> bool:
     """
     Gerencia o loop principal de uma batalha.
+    Retorna True se o jogador venceu, False caso contrário.
     """
     funcoes_gerais.imprimir_cabecalho(f"Batalha contra {[i.nome for i in inimigos]}!", nivel=2)
-
-    combatentes = [jogador] + inimigos
 
     # Loop de batalha
     while jogador.esta_vivo() and any(i.esta_vivo() for i in inimigos):
@@ -25,41 +79,32 @@ def iniciar_batalha(jogador: 'Personagem', inimigos: List['Monstro']):
         print("="*20)
 
         # Turno do Jogador
-        acao_jogador = menu_acao_jogador()
-
-        if acao_jogador == "atacar":
-            alvo = escolher_alvo(inimigos)
-            if alvo:
-                narrador.narrar(f"{jogador.nome} ataca {alvo.nome}!")
-                # Lógica de dano simplificada
-                dano = max(0, jogador.ataque_fisico - alvo.defesa_fisica)
-                alvo.tomar_dano(dano)
-
-        elif acao_jogador == "fugir":
-            narrador.narrar("Você tenta fugir...")
-            if random.random() < 0.3: # 30% de chance de fuga
-                narrador.narrar("Você conseguiu escapar!")
-                return # Encerra a função de batalha
+        acao_jogador_dict = menu_acao_jogador(jogador, inimigos)
+        if acao_jogador_dict:
+            if acao_jogador_dict.get("tipo") == "fugir":
+                narrador.narrar("Você tenta fugir...")
+                if random.random() < 0.3: # 30% de chance de fuga
+                    narrador.narrar("Você conseguiu escapar!")
+                    return False # Fuga não é vitória
+                else:
+                    narrador.narrar("A fuga falhou!")
             else:
-                narrador.narrar("A fuga falhou!")
+                executar_acao(jogador, acao_jogador_dict, [jogador], inimigos)
+        else:
+            continue # Pula o turno se a ação foi inválida
 
         # Verificar se a batalha terminou após o turno do jogador
-        if not any(i.esta_vivo() for i in inimigos):
+        vivos = [i for i in inimigos if i.esta_vivo()]
+        if not vivos:
             break
+        inimigos = vivos
 
         # Turno dos Inimigos
         for inimigo in inimigos:
-            if inimigo.esta_vivo():
+            if inimigo.esta_vivo() and jogador.esta_vivo():
                 funcoes_gerais.pausar()
-                # A IA do inimigo decide a ação
                 acao_inimigo = inimigo.decidir_acao(aliados=inimigos, inimigos=[jogador])
-
-                # Processar ação do inimigo (placeholder)
-                if acao_inimigo["tipo"] == "ataque_basico":
-                    narrador.narrar(f"{inimigo.nome} ataca {jogador.nome}!")
-                    dano = max(0, inimigo.ataque_fisico - jogador.defesa_fisica)
-                    jogador.tomar_dano(dano)
-                # TODO: Implementar lógica para 'usar_habilidade'
+                executar_acao(inimigo, acao_inimigo, inimigos, [jogador])
 
     # Fim da batalha
     funcoes_gerais.imprimir_cabecalho("Fim da Batalha", nivel=2)
@@ -78,8 +123,10 @@ def iniciar_batalha(jogador: 'Personagem', inimigos: List['Monstro']):
         narrador.narrar("Você foi derrotado...")
         # TODO: Implementar lógica de game over ou meta-progressão
 
-def menu_acao_jogador() -> str:
-    """Exibe o menu de ações do jogador e retorna a escolha."""
+    return jogador.esta_vivo()
+
+def menu_acao_jogador(jogador: 'Personagem', inimigos: List['Monstro']) -> Dict:
+    """Exibe o menu de ações do jogador e retorna a ação como um dicionário."""
     while True:
         print("\n--- AÇÕES ---")
         print("1. Atacar")
@@ -89,11 +136,15 @@ def menu_acao_jogador() -> str:
 
         escolha = input("O que você faz? ")
         if escolha == '1':
-            return "atacar"
+            alvo = escolher_alvo(inimigos)
+            if alvo:
+                return {"tipo": "ataque_basico", "alvo": alvo}
+            return None # Cancelou a escolha de alvo
         elif escolha == '4':
-            return "fugir"
+            return {"tipo": "fugir"}
         else:
             print("Ação inválida ou não implementada.")
+            return None
 
 def escolher_alvo(inimigos: List['Monstro']) -> 'Monstro':
     """Permite ao jogador escolher um alvo entre os inimigos vivos."""
