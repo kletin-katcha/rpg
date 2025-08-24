@@ -1,5 +1,6 @@
 from typing import List, TYPE_CHECKING, Dict, Any, Optional
 from ..utilitarios import funcoes_gerais, narrador
+from ..io import menu_inventario
 import random
 from ..entidades.efeito import Efeito
 from ..dados.habilidades import TODAS_HABILIDADES
@@ -227,6 +228,12 @@ def menu_acao_jogador(jogador: 'Personagem', aliados: List['Personagem'], inimig
             return menu_escolher_habilidade(jogador, aliados, inimigos)
         elif escolha == '3':
             return {"tipo": "defender"}
+        elif escolha == '4':
+            # A função de inventário de combate retorna True se um turno foi gasto
+            if menu_inventario.exibir_inventario_combate(jogador):
+                return {"tipo": "passar_turno"} # A ação já foi executada, apenas passe o turno
+            else:
+                return None # O jogador cancelou, então mostre o menu de novo
         elif escolha == '5':
             return {"tipo": "fugir"}
         else:
