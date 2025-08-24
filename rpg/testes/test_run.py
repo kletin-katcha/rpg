@@ -39,16 +39,23 @@ class TestGameFlow(unittest.TestCase):
 
         # Sequência de inputs do usuário para simular uma jogada completa da quest
         user_inputs = [
-            '1',  # 1. Menu: Novo Jogo
-            'Jules', # 2. Nome do Personagem
-            '1',  # 3. Falar com Elara (Pega quest 1 e 2)
+            '1',        # 1. Menu: Novo Jogo
+            'Jules',    # 2. Nome do Personagem
+            # 3. Escolha de Raça (Anão)
+            '3', 's',
+            # 4. Escolha de Classe (Guerreiro)
+            '1', 's',
+            # 5. Distribuição de Atributos (20 pontos em Força)
+            '1', '20',
+            # 6. Resto do jogo
+            '1',  # Falar com Elara (Pega quest 1 e 2)
         ]
 
         # Loop para matar 5 goblins
-        for _ in range(5):
+        for i in range(5):
             user_inputs.append('2') # Explorar
-            # Adiciona 15 ataques para garantir a vitória contra um goblin (220 HP / 15 de dano)
-            user_inputs.extend(['1'] * 15)
+            # Adiciona ataques para garantir a vitória
+            user_inputs.extend(['1'] * 5)
 
         # Continua com o resto do fluxo do jogo
         user_inputs.extend([
