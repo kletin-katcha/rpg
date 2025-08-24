@@ -252,5 +252,98 @@ Apesar de seu tamanho pequeno, um gnomo nunca deve ser subestimado. Um inimigo q
             "goblin": "Rivalidade - 'Ladrões de ideias! E suas invenções sempre explodem. Quase sempre.'"
         },
         "arvore_evolucao": {"mestre_artifice": {"nome": "Mestre Artífice", "requisitos": "Nível 60, construir o 'Autômato Supremo'.", "descricao": "Um gnomo cuja mente se tornou uma com a própria arte da criação, capaz de construir maravilhas mecânicas."}}
+    },
+
+    # =================================== AASIMAR ===================================
+    "aasimar": {
+        "nome": "Aasimar",
+        "descricao": "Seres humanos com uma herança celestial, destinados a serem campeões do bem e da ordem, possuindo uma luz interior que pode inspirar ou purificar.",
+        "lore": """
+Os Aasimar são os 'tocados pelos céus'. Em algum ponto de sua linhagem, um de seus ancestrais teve um encontro com um ser celestial - um anjo, um arconte ou outra criatura do bem. Essa herança divina permanece adormecida por gerações, até que se manifesta em um recém-nascido, que carrega as marcas de sua ascendência: olhos que brilham como ouro líquido, cabelos com um brilho metálico ou uma aura de paz quase palpável.
+
+Criados entre os mortais, os Aasimar muitas vezes se sentem como estranhos. Eles são guiados por um senso inato de justiça e compaixão, e muitas vezes recebem visões e sussurros de seus guias celestiais, que os impelem a lutar contra o mal. Eles são faróis de esperança em um mundo sombrio, destinados a grandes feitos. No entanto, esse destino é um fardo pesado. A pressão para serem perfeitos, para sempre fazerem a coisa certa, pode levar um Aasimar a uma profunda angústia ou a uma rebelião severa contra a própria natureza que os define.
+        """,
+        "detalhes_culturais": """
+**O Guia Celestial:** Cada Aasimar tem um guia celestial que se comunica com eles, geralmente em sonhos. Este guia atua como um mentor e uma consciência, mas sua orientação nem sempre é clara.
+**O Fardo da Virtude:** A sociedade muitas vezes espera que os Aasimar sejam santos perfeitos, uma expectativa impossível que pode causar grande sofrimento psicológico.
+**Conflito Interno:** Um Aasimar que se desvia do caminho da retidão sente um conflito interno profundo, pois sua própria alma anseia pelo bem.
+        """,
+        "modificadores_stats": {"sabedoria": 2, "carisma": 1},
+        "habilidades_raciais": ["resistencia_celestial", "toque_curativo"],
+        "variacoes": [
+            {"nome": "Aasimar Protetor", "descricao": "Destinados a serem os guardiões dos fracos, podem manifestar asas de luz.", "modificadores_stats": {"forca": 1}},
+            {"nome": "Aasimar Flagelado", "descricao": "Carregam uma energia celestial tão poderosa que ela vaza, causando dano a si mesmos e aos outros.", "modificadores_stats": {"constituicao": 1}},
+            {"nome": "Aasimar Caído", "descricao": "Um Aasimar que se voltou para as trevas, transformando sua luz interior em uma chama necrótica.", "modificadores_stats": {"inteligencia": 1}}
+        ],
+        "dialogo_racial": ["Que a luz guie suas ações.", "Eu sinto uma grande escuridão neste lugar.", "Não teste minha paciência, criatura do mal.", "Todos merecem uma chance de redenção."],
+        "nomes_sugeridos": {"masculino": ["Valerius", "Seraphiel", "Mikael"], "feminino": ["Celestia", "Sariel", "Laila"], "familia": ["Lightbringer", "Sunstrider"]},
+        "relacionamento_racas": {
+            "tiefling": "Piedade e Rivalidade - 'Eles são o espelho sombrio de nós mesmos. Uma alma para ser salva ou um mal a ser purgado.'",
+            "humano": "Protetorado - 'Eles são o rebanho que devemos guiar e proteger.'",
+            "clerigo": "Afinidade - 'Nós compartilhamos um propósito, se não a mesma fonte de poder.'"
+        },
+        "arvore_evolucao": {"anjo_encarnado": {"nome": "Anjo Encarnado", "requisitos": "Nível 70, completar a 'Ascensão Celestial'.", "descricao": "Um Aasimar que abraçou completamente sua herança, tornando-se um mortal com o poder de um anjo."}}
+    },
+
+    # =================================== TIEFLING ===================================
+    "tiefling": {
+        "nome": "Tiefling",
+        "descricao": "Seres humanos com uma herança infernal, marcados por traços demoníacos e uma afinidade com o fogo e as sombras. Lutam para encontrar seu lugar em um mundo que os teme.",
+        "lore": """
+Onde os Aasimar são tocados pelos céus, os Tieflings são manchados pelos infernos. Em algum ponto de seu passado, um de seus ancestrais fez um pacto com um demônio, e essa mácula infernal ecoa através das gerações. Um Tiefling nasce parecendo humano, mas logo desenvolve as marcas de sua herança: pequenos chifres, uma cauda preênsil, olhos de fogo ou uma pele de cor anormal.
+
+A sociedade os vê com medo e desconfiança. Eles são frequentemente confundidos com adoradores de demônios ou monstros, e são forçados a viver nas margens da sociedade, em guetos ou como párias. Essa desconfiança constante molda sua personalidade. Tieflings tendem a ser cínicos, sarcásticos e autossuficientes. Eles não confiam em ninguém, porque o mundo nunca lhes deu uma razão para confiar.
+
+Apesar de sua herança, os Tieflings não são inerentemente maus. O sangue infernal lhes dá poder sobre o fogo e as trevas, mas a escolha de como usar esse poder é inteiramente deles. Muitos lutam contra sua própria natureza e contra os preconceitos do mundo para se tornarem heróis, talvez os mais improváveis de todos. Outros abraçam a escuridão, tornando-se os monstros que o mundo sempre disse que eles eram. A jornada de um Tiefling é uma de autodefinição, uma luta constante para provar que eles são mais do que o sangue que corre em suas veias.
+        """,
+        "detalhes_culturais": """
+**A Mácula:** A aparência de um Tiefling varia muito, dependendo do demônio específico em sua linhagem. Alguns podem ter traços sutis, enquanto outros são abertamente monstruosos.
+**Autossuficiência:** Forçados a se virar sozinhos, os Tieflings são mestres da sobrevivência urbana, muitas vezes se tornando ladrões, espiões ou mercenários.
+**Nomes Virtuosos:** Muitos Tieflings adotam nomes que representam uma virtude (Esperança, Glória, Tormento) como um lembrete de sua luta pessoal ou como um ato de desafio contra o mundo.
+        """,
+        "modificadores_stats": {"inteligencia": 1, "carisma": 2},
+        "habilidades_raciais": ["resistencia_infernal", "magia_das_sombras"],
+        "variacoes": [
+            {"nome": "Tiefling de Asmodeus", "descricao": "Descendentes do arquidemônio da tirania, são mestres da manipulação e do fogo.", "modificadores_stats": {"inteligencia": 1}},
+            {"nome": "Tiefling de Zariel", "descricao": "Com sangue de um anjo caído, são guerreiros formidáveis com poder sobre o fogo divino e infernal.", "modificadores_stats": {"forca": 1}},
+            {"nome": "Tiefling de Dispater", "descricao": "Descendentes do lorde do engano, são espiões e infiltradores natos, com poder sobre as sombras.", "modificadores_stats": {"destreza": 1}}
+        ],
+        "dialogo_racial": ["O que você está olhando?", "Confiança é para os tolos.", "O inferno está vazio e todos os demônios estão aqui.", "Eu faço meu próprio destino."],
+        "nomes_sugeridos": {"masculino": ["Akmenos", "Damakos", "Kairon"], "feminino": ["Akta", "Rieta", "Kallista"], "virtude": ["Esperança", "Tormento", "Desafio"]},
+        "relacionamento_racas": {
+            "aasimar": "Inveja e Desdém - 'Eles não sabem o que é lutar. A vida lhes foi dada em uma bandeja de prata.'",
+            "humano": "Ressentimento - 'Eles nos temem e nos odeiam, mas são rápidos em pedir nossa ajuda quando a escuridão chega.'",
+            "demonio": "Medo e Ódio - 'Eu sou mais do que meu sangue. Eu nunca serei como eles.'"
+        },
+        "arvore_evolucao": {"lorde_demonio_renegado": {"nome": "Lorde Demônio Renegado", "requisitos": "Nível 70, derrotar seu ancestral demoníaco.", "descricao": "Um Tiefling que dominou sua herança infernal, roubando o poder de seu ancestral para si mesmo."}}
+    },
+
+    # =================================== GOLIATH ===================================
+    "goliath": {
+        "nome": "Goliath",
+        "descricao": "Uma raça nômade de humanoides gigantescos que vivem nos picos das montanhas mais altas, valorizando a competição e a autossuficiência.",
+        "lore": """
+Os Golias são um povo esculpido pelo vento e pelo gelo dos picos das montanhas. Eles vivem em uma sociedade tribal onde a competição justa é o alicerce de tudo. Para um Golias, a vida é uma grande competição, e eles se esforçam para superar não apenas seus rivais, mas a si mesmos, todos os dias. Eles veem a derrota como uma lição para se tornarem mais fortes, e a vitória como uma prova temporária de seu valor.
+
+Sua fisiologia é adaptada à vida em grandes altitudes. Eles são altos e musculosos, com uma resistência incrível ao frio e ao ar rarefeito. A pele deles é muitas vezes cinzenta e manchada, coberta de litografias - tatuagens que contam a história de seus feitos e de sua família.
+
+Os Golias são um povo justo, mas direto. Eles não têm paciência para enganos ou diplomacia complicada. Eles dizem o que pensam e esperam o mesmo dos outros. Sua obsessão com a competição se estende a tudo, desde beber e contar histórias até caçar e lutar. Eles são aliados poderosos e confiáveis, desde que você possa provar seu valor para eles.
+        """,
+        "detalhes_culturais": """
+**A Competição:** Tudo é uma competição. Manter um placar de seus feitos é uma obsessão nacional.
+**Autossuficiência:** Cada membro da tribo deve ser capaz de contribuir para a sobrevivência do grupo. A fraqueza não é tolerada.
+**Hospitalidade da Montanha:** Apesar de sua natureza competitiva, eles são hospitaleiros com aqueles que enfrentam os perigos de suas casas nas montanhas, pois respeitam a força necessária para chegar até eles.
+        """,
+        "modificadores_stats": {"forca": 2, "constituicao": 1},
+        "habilidades_raciais": ["resistencia_da_montanha", "forca_do_gigante"],
+        "variacoes": [],
+        "dialogo_racial": ["Você é forte o suficiente para esta montanha?", "Prove seu valor!", "Hoje é um bom dia para um desafio.", "O eco é a única testemunha de nossas batalhas."],
+        "nomes_sugeridos": {"masculino": ["Keothi", "Numea", "Thotham"], "feminino": ["Gae-Al", "Kuori", "Manneo"], "clã": ["Akannathi", "Gathakanathi"]},
+        "relacionamento_racas": {
+            "anao": "Respeito - 'Eles conhecem a montanha. Eles são fortes. Bons competidores.'",
+            "gnomo": "Confusão - 'Pequenos e fracos, mas suas geringonças são... intrigantes. Uma competição estranha.'",
+            "humano": "Neutro - 'Eles sobem nossas montanhas em busca de glória. Poucos são dignos.'"
+        },
+        "arvore_evolucao": {"avatar_da_montanha": {"nome": "Avatar da Montanha", "requisitos": "Nível 60, sobreviver à 'Avalanche Eterna'.", "descricao": "Um Golias que se tornou um com o espírito da montanha, sua pele tão dura quanto a rocha."}}
     }
 }

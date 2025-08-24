@@ -109,5 +109,61 @@ O poder de um druida é tão antigo quanto o próprio mundo. Eles podem invocar 
         "stats_primarios": ["sabedoria", "constituicao"],
         "habilidades_iniciais": ["forma_de_urso", "enraizar"],
         "equipamento_inicial": {"arma_principal": "cajado_de_galho_retorcido", "peitoral": "armadura_de_peles_e_folhas"}
+    },
+
+    # =================================== RANGER ===================================
+    "ranger": {
+        "nome": "Ranger",
+        "descricao": "Um caçador e rastreador mestre das terras selvagens. Combina o manejo de arco e lâminas com um conhecimento profundo da natureza e de seus habitantes.",
+        "lore": """
+O ranger é a ponte entre a civilização e a selva. Eles patrulham as fronteiras, protegem as estradas e caçam as bestas monstruosas que ameaçam as vilas. Diferente do bárbaro, que é parte da fúria da natureza, ou do druida, que é seu sacerdote, o ranger é seu estudante e guardião pragmático. Eles aprendem os segredos da floresta não por comunhão espiritual, mas por observação e experiência.
+
+Um ranger pode rastrear uma presa por dias, ler os sinais no vento e na terra, e montar armadilhas mortais. Em combate, são adversários versáteis, igualmente proficientes com um arco à distância ou com duas lâminas em combate próximo. Muitos rangers formam laços profundos com companheiros animais, lutando lado a lado com lobos, ursos ou falcões que eles criaram e treinaram.
+        """,
+        "stats_primarios": ["destreza", "sabedoria"],
+        "habilidades_iniciais": ["tiro_certeiro", "companheiro_animal_lobo"],
+        "equipamento_inicial": {"arma_principal": "arco_longo", "arma_secundaria": "espada_curta_ferro", "peitoral": "armadura_de_couro"}
+    },
+
+    # =================================== PALADINO ===================================
+    "paladino": {
+        "nome": "Paladino",
+        "descricao": "Um guerreiro sagrado vinculado por um juramento a uma causa maior. Combina proeza marcial com poder divino para proteger os inocentes e destruir o mal.",
+        "lore": """
+Um paladino é mais do que um guerreiro e mais do que um clérigo. É a encarnação de um juramento. Seja um juramento de devoção a um deus da justiça, um juramento de vingança contra as forças das trevas, ou um juramento de proteger a beleza e a vida, é esse voto que lhes concede poder. A força de um paladino não vem apenas de seus músculos, mas da força de sua convicção.
+
+Eles são cavaleiros da retidão, vestidos em armaduras pesadas e empunhando armas que brilham com luz divina. Seu poder lhes permite curar os feridos, proteger seus aliados com auras sagradas e desferir golpes esmagadores que fazem os demônios recuarem. No entanto, o caminho do paladino é exigente. Quebrar seu juramento significa perder seus poderes, tornando-os o mais trágico dos heróis: um campeão caído.
+        """,
+        "stats_primarios": ["forca", "carisma"],
+        "habilidades_iniciais": ["golpe_divino", "aura_de_protecao"],
+        "equipamento_inicial": {"arma_principal": "espada_longa", "escudo": "escudo_de_aço", "peitoral": "armadura_de_placas"}
+    },
+
+    # =================================== FEITICEIRO ===================================
+    "feiticeiro": {
+        "nome": "Feiticeiro",
+        "descricao": "Um conjurador que nasceu com magia em seu sangue. Sua magia é inata e poderosa, mas muitas vezes selvagem e difícil de controlar.",
+        "lore": """
+Enquanto o mago estuda a magia, o feiticeiro *é* a magia. O poder arcano flui em suas veias, um dom ou uma maldição de uma linhagem ancestral. Talvez um de seus ancestrais fosse um dragão, um anjo, ou talvez eles tenham nascido durante uma rara conjunção celestial. Seja qual for a origem, a magia de um feiticeiro é parte deles, uma expressão de sua própria alma.
+
+Eles não precisam de livros de feitiços ou de gestos complexos. Eles simplesmente desejam que a realidade se dobre à sua vontade, e muitas vezes ela o faz, de maneiras espetaculares e imprevisíveis. Este poder bruto os torna incrivelmente potentes, mas também perigosos. Um jovem feiticeiro pode acidentalmente incendiar uma taverna com um espirro ou congelar um lago com uma birra. O desafio de um feiticeiro não é aprender a magia, mas aprender a controlá-la antes que ela os consuma.
+        """,
+        "stats_primarios": ["carisma", "constituicao"],
+        "habilidades_iniciais": ["raio_do_caos", "onda_de_forca"],
+        "equipamento_inicial": {"arma_principal": "adaga_ornamentada", "peitoral": "roupas_finas"}
+    },
+
+    # =================================== BRUXO ===================================
+    "bruxo": {
+        "nome": "Bruxo",
+        "descricao": "Um conjurador que obtém seu poder através de um pacto com uma entidade de outro mundo. Sua magia é poderosa, mas sempre tem um preço.",
+        "lore": """
+O poder pode ser conquistado, pode ser herdado, ou pode ser... negociado. O bruxo escolhe o terceiro caminho. Em busca de conhecimento proibido ou poder para superar seus limites, eles fazem um pacto com um ser de poder imenso: um arquidemônio dos infernos, um grande ser antigo de além das estrelas, uma fada ardilosa ou um celestial enigmático.
+
+Este patrono concede ao bruxo uma fração de seu poder, permitindo-lhes lançar feitiços estranhos e potentes que outros mortais não ousam tocar. No entanto, esse poder nunca é gratuito. O bruxo deve servir a seu patrono, cumprindo tarefas, coletando almas ou simplesmente agindo como seu agente no mundo mortal. A vida de um bruxo é um equilíbrio perigoso entre usar o poder que lhes foi dado e não se tornar um mero peão no jogo de seu mestre sobrenatural.
+        """,
+        "stats_primarios": ["carisma", "inteligencia"],
+        "habilidades_iniciais": ["explosao_mistica", "maldição_do_patrono"],
+        "equipamento_inicial": {"arma_principal": "grimorio_sombrio", "peitoral": "robe_escuro"}
     }
 }

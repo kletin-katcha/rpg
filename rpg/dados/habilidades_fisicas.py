@@ -136,5 +136,124 @@ HABILIDADES_FISICAS = {
                 "penetracao_armadura": 0.3 # Ignora 30% da defesa física do alvo
             }
         ]
+    },
+
+    # --- HABILIDADES DE RANGER ---
+    "tiro_certeiro": {
+        "nome": "Tiro Certeiro",
+        "descricao": "Um disparo cuidadosamente mirado que causa dano extra e tem alta chance de acerto crítico.",
+        "lore": "O ranger respira fundo, acalma o coração e se torna um com seu arco. O mundo desaparece, e apenas o alvo permanece. A flecha nunca erra.",
+        "custo_tipo": "stamina",
+        "custo_valor": 15,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [
+            {
+                "tipo": "dano_fisico",
+                "escala_com": "destreza",
+                "multiplicador_dano": 1.3,
+                "bonus_chance_critico": 0.25 # Adiciona 25% de chance de crítico
+            }
+        ]
+    },
+
+    # --- HABILIDADES DE PALADINO ---
+    "golpe_divino": {
+        "nome": "Golpe Divino",
+        "descricao": "Imbui sua arma com energia sagrada, causando dano físico e mágico extra no próximo ataque.",
+        "lore": "Canalizando a força de seu juramento, o paladino transforma sua arma em um instrumento da vontade divina, capaz de punir os injustos com fogo sagrado.",
+        "custo_tipo": "mp",
+        "custo_valor": 20,
+        "tipo_alvo": "self",
+        "efeitos": [
+            {
+                "tipo": "aplicar_efeito",
+                "id_efeito": "buff_golpe_divino", # Efeito que adiciona dano sagrado ao próximo ataque
+                "duracao": 1 # Dura apenas para o próximo ataque
+            }
+        ]
+    },
+
+    # --- HABILIDADES FÍSICAS ADICIONAIS (NÍVEL 1-10) ---
+
+    # --- Geral / Espadas ---
+    "corte_transversal": {
+        "nome": "Corte Transversal",
+        "descricao": "Um rápido corte horizontal que pode atingir múltiplos inimigos próximos.",
+        "lore": "Uma técnica fundamental para lidar com multidões, ensinada em todas as escolas de esgrima.",
+        "custo_tipo": "stamina",
+        "custo_valor": 20,
+        "tipo_alvo": "inimigos_area",
+        "efeitos": [{"tipo": "dano_fisico", "escala_com": "forca", "multiplicador_dano": 0.8}]
+    },
+    "aparar": {
+        "nome": "Aparar",
+        "descricao": "Antecipa um ataque corpo a corpo, bloqueando-o e criando uma abertura para um contra-ataque.",
+        "lore": "Mais do que força, a esgrima é sobre tempo. Um mestre espadachim pode transformar a agressão de um inimigo em sua própria ruína.",
+        "custo_tipo": "stamina",
+        "custo_valor": 10,
+        "tipo_alvo": "self",
+        "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "buff_aparar", "duracao": 1}] # Efeito que contra-ataca se atingido
+    },
+
+    # --- Arcos ---
+    "tiro_duplo": {
+        "nome": "Tiro Duplo",
+        "descricao": "Dispara duas flechas em rápida sucessão no mesmo alvo.",
+        "lore": "Uma demonstração de velocidade e precisão, o tiro duplo é a marca de um arqueiro experiente.",
+        "custo_tipo": "stamina",
+        "custo_valor": 25,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [
+            {"tipo": "dano_fisico", "escala_com": "destreza", "multiplicador_dano": 0.9},
+            {"tipo": "dano_fisico", "escala_com": "destreza", "multiplicador_dano": 0.9}
+        ]
+    },
+    "flecha_farpada": {
+        "nome": "Flecha Farpada",
+        "descricao": "Dispara uma flecha com farpas que causa dano de sangramento ao longo do tempo.",
+        "lore": "Uma invenção cruel, mas eficaz. A flecha é projetada para ser mais difícil de remover do que de entrar, causando dor contínua.",
+        "custo_tipo": "stamina",
+        "custo_valor": 15,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [
+            {"tipo": "dano_fisico", "escala_com": "destreza", "multiplicador_dano": 0.7},
+            {"tipo": "aplicar_efeito", "id_efeito": "sangramento_fraco", "duracao": 3}
+        ]
+    },
+
+    # --- Armas de Haste (Lanças) ---
+    "estocada_perfurante": {
+        "nome": "Estocada Perfurante",
+        "descricao": "Uma estocada focada que visa as brechas na armadura do inimigo.",
+        "lore": "A lança não tem o poder de corte de uma espada, mas sua ponta pode encontrar o menor dos vãos em uma armadura de placas.",
+        "custo_tipo": "stamina",
+        "custo_valor": 15,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [{"tipo": "dano_fisico", "escala_com": "forca", "multiplicador_dano": 1.1, "penetracao_armadura": 0.4}]
+    },
+
+    # --- Armas de Impacto (Maças, Martelos) ---
+    "quebra_ossos": {
+        "nome": "Quebra-Ossos",
+        "descricao": "Um golpe poderoso que visa as articulações, com chance de reduzir a capacidade de ataque do inimigo.",
+        "lore": "Um golpe brutal que ensina ao inimigo uma lição dolorosa sobre o poder do impacto.",
+        "custo_tipo": "stamina",
+        "custo_valor": 20,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [
+            {"tipo": "dano_fisico", "escala_com": "forca", "multiplicador_dano": 1.3},
+            {"tipo": "aplicar_efeito", "id_efeito": "debuff_ataque_pequeno", "chance": 0.3, "duracao": 3}
+        ]
+    },
+
+    # --- Utilidade / Geral ---
+    "intimidar": {
+        "nome": "Intimidar",
+        "descricao": "Usa sua presença física para intimidar um alvo, potencialmente o assustando.",
+        "lore": "Às vezes, a melhor arma é a reputação e a aparência. Um olhar frio pode parar um inimigo antes mesmo que a luta comece.",
+        "custo_tipo": "stamina",
+        "custo_valor": 10,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "medo", "duracao": 2, "escala_com": "forca"}]
     }
 }

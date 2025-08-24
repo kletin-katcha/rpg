@@ -154,5 +154,135 @@ HABILIDADES_MAGICAS = {
                 "duracao": 3
             }
         ]
+    },
+
+    # --- HABILIDADES DE PALADINO ---
+    "aura_de_protecao": {
+        "nome": "Aura de Proteção",
+        "descricao": "Emite uma aura divina que concede resistência a dano para o paladino e aliados próximos.",
+        "lore": "A fé do paladino se manifesta como um escudo de luz visível, protegendo aqueles que se abrigam perto dele.",
+        "custo_tipo": "mp",
+        "custo_valor": 30,
+        "tipo_alvo": "aliados_area",
+        "efeitos": [
+            {"tipo": "aplicar_efeito", "id_efeito": "buff_aura_protecao", "duracao": 5}
+        ]
+    },
+
+    # --- HABILIDADES DE FEITICEIRO ---
+    "raio_do_caos": {
+        "nome": "Raio do Caos",
+        "descricao": "Dispara um raio de energia mágica imprevisível. O tipo de dano elemental é aleatório a cada uso.",
+        "lore": "A magia selvagem do feiticeiro se recusa a ser contida. Este feitiço é um reflexo direto de sua natureza, poderoso mas inconstante.",
+        "custo_tipo": "mp",
+        "custo_valor": 15,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [
+            {"tipo": "dano_magico_aleatorio", "escala_com": "carisma", "elementos_possiveis": ["fogo", "gelo", "raio"], "multiplicador_dano": 1.8}
+        ]
+    },
+    "onda_de_forca": {
+        "nome": "Onda de Força",
+        "descricao": "Libera uma onda de força telecinética que empurra todos os inimigos próximos para trás.",
+        "lore": "Uma manifestação bruta do poder do feiticeiro, uma explosão de pura força de vontade que afeta o mundo físico.",
+        "custo_tipo": "mp",
+        "custo_valor": 20,
+        "tipo_alvo": "inimigos_area",
+        "efeitos": [
+            {"tipo": "empurrar", "distancia": 3},
+            {"tipo": "dano_magico", "escala_com": "carisma", "elemento": "forca", "multiplicador_dano": 0.5}
+        ]
+    },
+
+    # --- HABILIDADES DE BRUXO ---
+    "explosao_mistica": {
+        "nome": "Explosão Mística",
+        "descricao": "Um raio de energia crepitante, a habilidade mais básica e confiável de um bruxo.",
+        "lore": "Um presente direto do patrono, esta habilidade é a assinatura de um bruxo. Pode não ser a mais chamativa, mas é uma fonte constante de poder que pode ser moldada e aprimorada de inúmeras maneiras.",
+        "custo_tipo": "nenhum", # Habilidade principal, sem custo
+        "custo_valor": 0,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [
+            {"tipo": "dano_magico", "escala_com": "carisma", "elemento": "mistico", "multiplicador_dano": 1.6}
+        ]
+    },
+    "maldição_do_patrono": {
+        "nome": "Maldição do Patrono",
+        "descricao": "Amaldiçoa um alvo, tornando-o mais vulnerável ao seu dano e concedendo um benefício ao bruxo quando o alvo morre.",
+        "lore": "O bruxo marca uma alma para seu patrono. A entidade sombria volta sua atenção para o amaldiçoado, enfraquecendo suas defesas e aguardando para reclamar sua essência.",
+        "custo_tipo": "mp",
+        "custo_valor": 15,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [
+            {"tipo": "aplicar_efeito", "id_efeito": "debuff_maldicao_bruxo", "duracao": -1}
+        ]
+    },
+
+    # --- HABILIDADES MÁGICAS ADICIONAIS (NÍVEL 1-10) ---
+
+    # --- Buffs / Debuffs ---
+    "pele_de_pedra": {
+        "nome": "Pele de Pedra",
+        "descricao": "A pele do alvo se torna dura como pedra, aumentando sua defesa física.",
+        "lore": "Uma magia de transmutação simples que imbui a carne com as propriedades da terra.",
+        "custo_tipo": "mp",
+        "custo_valor": 15,
+        "tipo_alvo": "aliado_unico",
+        "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "buff_defesa_media", "duracao": 5}]
+    },
+    "lentidao": {
+        "nome": "Lentidão",
+        "descricao": "Altera o fluxo do tempo ao redor de um inimigo, tornando seus movimentos lentos e desajeitados.",
+        "lore": "Uma manipulação temporal básica, mas eficaz. O alvo se sente como se estivesse se movendo através de melaço.",
+        "custo_tipo": "mp",
+        "custo_valor": 10,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "debuff_velocidade_grande", "duracao": 3}]
+    },
+    "forca_do_touro": {
+        "nome": "Força do Touro",
+        "descricao": "Concede a um aliado a força de um touro enfurecido.",
+        "lore": "Invocando o espírito do touro primordial, esta magia enche os músculos do alvo com poder bruto.",
+        "custo_tipo": "mp",
+        "custo_valor": 20,
+        "tipo_alvo": "aliado_unico",
+        "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "buff_forca_medio", "duracao": 4}]
+    },
+
+    # --- Ataques Elementais ---
+    "lanca_de_gelo": {
+        "nome": "Lança de Gelo",
+        "descricao": "Cria e lança uma lança de gelo sólido que perfura o alvo.",
+        "lore": "Uma versão mais focada e letal do Raio de Gelo, projetada para perfurar armaduras e congelar o sangue nas veias.",
+        "custo_tipo": "mp",
+        "custo_valor": 25,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [
+            {"tipo": "dano_magico", "escala_com": "inteligencia", "elemento": "gelo", "multiplicador_dano": 2.2}
+        ]
+    },
+    "corrente_de_raios": {
+        "nome": "Corrente de Raios",
+        "descricao": "Um raio que atinge um alvo e salta para outros inimigos próximos.",
+        "lore": "O conjurador se torna um conduíte para a fúria da tempestade, liberando uma energia que anseia por encontrar um caminho para a terra, saltando de corpo em corpo.",
+        "custo_tipo": "mp",
+        "custo_valor": 35,
+        "tipo_alvo": "inimigos_area",
+        "efeitos": [
+            {"tipo": "dano_magico_em_cadeia", "escala_com": "inteligencia", "elemento": "raio", "multiplicador_dano": 1.5, "max_saltos": 3, "reducao_por_salto": 0.3}
+        ]
+    },
+
+    # --- Invocações ---
+    "invocar_familiar_imp": {
+        "nome": "Invocar Familiar: Imp",
+        "descricao": "Invoca um diabrete (Imp) do plano infernal para ajudar em combate.",
+        "lore": "Uma invocação simples, muitas vezes o primeiro passo para um conjurador que se aprofunda na arte de chamar criaturas de outros planos.",
+        "custo_tipo": "mp",
+        "custo_valor": 40,
+        "tipo_alvo": "self",
+        "efeitos": [
+            {"tipo": "invocar_criatura", "id_criatura": "familiar_imp", "duracao": -1} # Dura até o fim do combate ou morte
+        ]
     }
 }
