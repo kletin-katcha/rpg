@@ -48,7 +48,12 @@ def concluir_quest(jogador: 'Personagem', quest: 'Quest'):
         if "ouro" in recompensas:
             jogador.ouro += recompensas["ouro"]
             narrador.narrar(f"Você recebeu {recompensas['ouro']} de ouro.")
-        # TODO: Implementar entrega de itens
+
+        itens_recompensa = recompensas.get("itens", [])
+        if itens_recompensa:
+            narrador.narrar("Você recebeu os seguintes itens:")
+            for item_info in itens_recompensa:
+                jogador.adicionar_item(item_info["id_item"], item_info["quantidade"])
     else:
         narrador.narrar("Você ainda não completou todos os objetivos desta missão.")
 

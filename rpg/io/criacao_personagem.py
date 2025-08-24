@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from unittest.mock import patch
 from ..entidades.personagem import Personagem
 from ..utilitarios import funcoes_gerais
 from ..dados.racas_base import RACAS
@@ -34,7 +35,8 @@ def distribuir_atributos(personagem: 'Personagem'):
 
         print("--- Atributos Atuais ---")
         for i, (key, nome) in enumerate(atributos.items(), 1):
-            print(f"{i}. {nome:<13}: {getattr(personagem, key)}")
+            # Exibe o atributo base durante a distribuição
+            print(f"{i}. {nome:<13}: {getattr(personagem, 'base_' + key)}")
         print("------------------------")
 
         escolha_attr = input("Digite o número do atributo para aumentar (ou 'ajuda'): ").lower().strip()
@@ -58,9 +60,10 @@ def distribuir_atributos(personagem: 'Personagem'):
             elif pontos_add > pontos_para_distribuir:
                 print(f"Você não tem pontos suficientes. Você só tem {pontos_para_distribuir} pontos restantes.")
             else:
-                setattr(personagem, attr_nome, getattr(personagem, attr_nome) + pontos_add)
+                base_attr_nome = 'base_' + attr_nome
+                setattr(personagem, base_attr_nome, getattr(personagem, base_attr_nome) + pontos_add)
                 pontos_para_distribuir -= pontos_add
-                print(f"{attr_display} aumentado para {getattr(personagem, attr_nome)}!")
+                print(f"{attr_display} aumentado para {getattr(personagem, base_attr_nome)}!")
         except ValueError:
             print("Entrada inválida. Por favor, digite um número.")
         funcoes_gerais.pausar()
@@ -127,7 +130,8 @@ def escolher_raca(personagem: 'Personagem'):
 
     raca_escolhida_data = RACAS[personagem.raca]
     for stat, mod in raca_escolhida_data['modificadores_stats'].items():
-        setattr(personagem, stat, getattr(personagem, stat) + mod)
+        base_stat_nome = 'base_' + stat
+        setattr(personagem, base_stat_nome, getattr(personagem, base_stat_nome) + mod)
 
     for habilidade in raca_escolhida_data['habilidades_raciais']:
         personagem.habilidades.append(habilidade)
@@ -193,11 +197,18 @@ def escolher_classe(personagem: 'Personagem'):
     for habilidade in classe_escolhida_data['habilidades_iniciais']:
         personagem.habilidades.append(habilidade)
 
-    # TODO: Implementar sistema de itens e equipar o equipamento inicial
-    # equipamento_inicial = classe_escolhida_data['equipamento_inicial']
+    # Equipa o equipamento inicial da classe
+    equipamento_inicial = classe_escolhida_data.get('equipamento_inicial', {})
+    if equipamento_inicial:
+        print("\nEquipando itens iniciais...")
+        # Mock do print dentro de adicionar_item e equipar_item para não poluir a tela
+        with patch('builtins.print'):
+            for slot, id_item in equipamento_inicial.items():
+                personagem.adicionar_item(id_item, 1)
+                personagem.equipar_item(id_item)
 
     personagem.recalcular_stats_completos()
-    print(f"\nSuas habilidades foram atualizadas com base na sua classe.")
+    print(f"\nSuas habilidades e equipamentos foram atualizados com base na sua classe.")
     funcoes_gerais.pausar()
 
 

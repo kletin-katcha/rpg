@@ -56,10 +56,17 @@ class TestQuestSystem(unittest.TestCase):
         xp_recompensa = quest_original.recompensas.get("xp", 0)
         ouro_recompensa = quest_original.recompensas.get("ouro", 0)
 
-        with patch('rpg.utilitarios.narrador.narrar', MagicMock()):
+        # Assertions para depuração
+        self.assertEqual(self.jogador.xp_atual, 0, "O jogador deveria começar com 0 XP.")
+        self.assertEqual(xp_recompensa, 200, "A recompensa de XP da quest deveria ser 200.")
+        self.assertEqual(self.jogador.xp_para_proximo_nivel, 100, "O XP para o próximo nível deveria ser 100.")
+
+        with patch('rpg.utilitarios.narrador.narrar', MagicMock()), \
+             patch('builtins.print', MagicMock()):
              quests.concluir_quest(self.jogador, quest_original)
 
         # 4. Verificar o resultado
+        self.assertEqual(self.jogador.nivel, 2, "O jogador deveria ter subido para o nível 2.")
         self.assertEqual(len(self.jogador.quests_ativas), 0)
         self.assertIn(id_quest, self.jogador.quests_concluidas)
         # O jogador sobe de nível (precisa de 100 XP), então o XP atual será o resto.

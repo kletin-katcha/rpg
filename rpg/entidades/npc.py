@@ -40,12 +40,12 @@ class NPC(Personagem):
 
     def aplicar_stats_base(self, stats: Dict[str, int]):
         """Aplica os atributos base definidos para este NPC."""
-        self.forca = stats.get("forca", 5)
-        self.destreza = stats.get("destreza", 5)
-        self.constituicao = stats.get("constituicao", 10)
-        self.inteligencia = stats.get("inteligencia", 10)
-        self.sabedoria = stats.get("sabedoria", 10)
-        self.carisma = stats.get("carisma", 15)
+        self.base_forca = stats.get("forca", 5)
+        self.base_destreza = stats.get("destreza", 5)
+        self.base_constituicao = stats.get("constituicao", 10)
+        self.base_inteligencia = stats.get("inteligencia", 10)
+        self.base_sabedoria = stats.get("sabedoria", 10)
+        self.base_carisma = stats.get("carisma", 15)
 
     def iniciar_dialogo(self, jogador: 'Personagem') -> Optional[str]:
         """

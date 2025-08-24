@@ -94,7 +94,9 @@ def executar_acao(ator: 'Personagem', acao: Dict, todos_aliados: List['Personage
         tipo_dano = ataque.get("tipo_dano", "fisico")
 
         if tipo_dano == "fisico":
-            dano_base = ator.ataque_fisico * multiplicador_dano
+            # Dano base agora inclui o bônus da arma antes do multiplicador do ataque
+            dano_base_personagem = ator.ataque_fisico + ator.dano_arma_bonus
+            dano_base = dano_base_personagem * multiplicador_dano
             defesa_alvo = alvo_entidade.defesa_fisica
         else: # Supondo 'magico' ou outros tipos se existirem
             dano_base = ator.poder_magico * multiplicador_dano
@@ -192,9 +194,17 @@ def iniciar_batalha(jogador: 'Personagem', inimigos: List['Monstro']) -> bool:
         narrador.narrar("Você venceu a batalha!")
         xp_total = sum(i.xp_recompensa for i in inimigos)
         ouro_total = sum(i.ouro for i in inimigos)
+
+        narrador.narrar(f"Você ganhou {xp_total} de XP e {ouro_total} de ouro.")
         jogador.ganhar_xp(xp_total)
         jogador.ouro += ouro_total
-        narrador.narrar(f"Você ganhou {ouro_total} de ouro.")
+
+        # Processar loot de itens
+        narrador.narrar("Você coleta os espólios:")
+        for inimigo in inimigos:
+            loot = inimigo.gerar_loot()
+            for item_drop in loot.get("itens", []):
+                jogador.adicionar_item(item_drop["id_item"], item_drop["quantidade"])
     else:
         narrador.narrar("Você foi derrotado...")
 

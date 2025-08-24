@@ -59,12 +59,14 @@ class Monstro(Personagem):
 
     def aplicar_stats_base(self, stats: Dict[str, int]):
         """Aplica os atributos base definidos para este tipo de monstro."""
-        self.forca = stats.get("forca", 10)
-        self.destreza = stats.get("destreza", 10)
-        self.constituicao = stats.get("constituicao", 10)
-        self.inteligencia = stats.get("inteligencia", 10)
-        self.sabedoria = stats.get("sabedoria", 10)
-        self.carisma = stats.get("carisma", 1) # Geralmente baixo para monstros
+        # Como monstros não usam equipamentos, seus stats base são seus stats totais.
+        # Nós os atribuímos aos `base_` atributos para consistência com a classe Personagem.
+        self.base_forca = stats.get("forca", 10)
+        self.base_destreza = stats.get("destreza", 10)
+        self.base_constituicao = stats.get("constituicao", 10)
+        self.base_inteligencia = stats.get("inteligencia", 10)
+        self.base_sabedoria = stats.get("sabedoria", 10)
+        self.base_carisma = stats.get("carisma", 1) # Geralmente baixo para monstros
 
     def decidir_acao(self, aliados: List['Monstro'], inimigos: List['Personagem']) -> Dict[str, Any]:
         """
@@ -148,7 +150,6 @@ class Monstro(Personagem):
                 quantidade = random.randint(item_drop["quantidade"][0], item_drop["quantidade"][1])
                 loot_gerado["itens"].append({"id_item": item_drop["id_item"], "quantidade": quantidade})
 
-        print(f"{self.nome} deixou cair {loot_gerado['ouro']} de ouro e {len(loot_gerado['itens'])} item(s).")
         return loot_gerado
 
     def __str__(self) -> str:

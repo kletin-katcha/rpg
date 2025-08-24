@@ -19,13 +19,13 @@ ITENS_COMUNS = {
         "nome": "Espada Curta de Ferro", "descricao": "Uma espada curta, simples e confiável. Comum entre aventureiros iniciantes.",
         "tipo": TipoItem.ARMA, "raridade": RaridadeItem.COMUM, "valor": 25,
         "slot_equipamento": "arma_principal",
-        "modificadores": {"ataque_fisico": 5}
+        "modificadores": {"dano_arma": 8}
     },
     "adaga_de_ferro": {
         "nome": "Adaga de Ferro", "descricao": "Uma adaga leve, ideal para ataques rápidos ou para ser usada na mão inábil.",
         "tipo": TipoItem.ARMA, "raridade": RaridadeItem.COMUM, "valor": 15,
-        "slot_equipamento": "arma_principal", # Pode ser equipada em qualquer mão
-        "modificadores": {"ataque_fisico": 3, "chance_critico": 0.02}
+        "slot_equipamento": "arma_principal",
+        "modificadores": {"dano_arma": 5, "chance_critico": 0.02}
     },
     "cajado_de_aprendiz": {
         "nome": "Cajado de Aprendiz", "descricao": "Um cajado de madeira com um pequeno cristal na ponta. Ajuda a canalizar as primeiras magias.",
@@ -37,7 +37,7 @@ ITENS_COMUNS = {
         "nome": "Maça Simples", "descricao": "Uma arma de impacto direta e eficaz, boa para amassar armaduras e ossos.",
         "tipo": TipoItem.ARMA, "raridade": RaridadeItem.COMUM, "valor": 22,
         "slot_equipamento": "arma_principal",
-        "modificadores": {"ataque_fisico": 6}
+        "modificadores": {"dano_arma": 10}
     },
     "peitoral_de_couro_batido": {
         "nome": "Peitoral de Couro Batido", "descricao": "Oferece proteção modesta sem restringir muito os movimentos.",
@@ -59,7 +59,7 @@ ITENS_COMUNS = {
     },
     "cota_de_malha": {
         "nome": "Cota de Malha", "descricao": "Uma armadura de anéis de metal interligados. Oferece boa proteção física, mas é pesada.",
-        "tipo": TipoItem.ARMADUA, "raridade": RaridadeItem.COMUM, "valor": 50,
+        "tipo": TipoItem.ARMADURA, "raridade": RaridadeItem.COMUM, "valor": 50,
         "slot_equipamento": "peitoral",
         "modificadores": {"defesa_fisica": 12}
     },
@@ -119,86 +119,10 @@ ITENS_COMUNS = {
         "tipo": TipoItem.INGREDIENTE, "raridade": RaridadeItem.COMUM, "valor": 2,
         "empilhavel": True, "max_pilha": 50
     },
-
-    # --- EXPANSÃO DE EQUIPAMENTOS COMUNS ---
-    # Armas
-    "arco_curto_simples": {
-        "nome": "Arco Curto Simples", "descricao": "Um arco de madeira simples, bom para caça ou para um arqueiro iniciante.",
-        "tipo": TipoItem.ARMA, "raridade": RaridadeItem.COMUM, "valor": 28,
-        "slot_equipamento": "arma_principal",
-        "modificadores": {"ataque_fisico": 4, "precisao": 5}
-    },
     "machado_de_batalha_ferro": {
         "nome": "Machado de Batalha de Ferro", "descricao": "Um machado de uma mão com uma lâmina pesada, capaz de causar ferimentos graves.",
         "tipo": TipoItem.ARMA, "raridade": RaridadeItem.COMUM, "valor": 35,
         "slot_equipamento": "arma_principal",
-        "modificadores": {"ataque_fisico": 7, "dano_critico": 0.1}
-    },
-    "lanca_curta": {
-        "nome": "Lança Curta", "descricao": "Uma lança simples, boa para manter os inimigos a uma pequena distância.",
-        "tipo": TipoItem.ARMA, "raridade": RaridadeItem.COMUM, "valor": 20,
-        "slot_equipamento": "arma_principal",
-        "modificadores": {"ataque_fisico": 6}
-    },
-    # Armaduras
-    "elmo_de_ferro": {
-        "nome": "Elmo de Ferro", "descricao": "Um capacete de ferro básico que oferece boa proteção para a cabeça.",
-        "tipo": TipoItem.ARMADURA, "raridade": RaridadeItem.COMUM, "valor": 25,
-        "slot_equipamento": "elmo",
-        "modificadores": {"defesa_fisica": 4}
-    },
-    "botas_de_couro": {
-        "nome": "Botas de Couro", "descricao": "Botas resistentes que protegem os pés sem fazer muito barulho.",
-        "tipo": TipoItem.ARMADURA, "raridade": RaridadeItem.COMUM, "valor": 15,
-        "slot_equipamento": "botas",
-        "modificadores": {"defesa_fisica": 2, "esquiva": 1}
-    },
-    "luvas_de_ferro": {
-        "nome": "Luvas de Ferro", "descricao": "Manoplas de ferro que protegem as mãos e os antebraços.",
-        "tipo": TipoItem.ARMADURA, "raridade": RaridadeItem.COMUM, "valor": 18,
-        "slot_equipamento": "luvas",
-        "modificadores": {"defesa_fisica": 3}
-    },
-    "calcas_de_pano": {
-        "nome": "Calças de Pano", "descricao": "Calças simples feitas de tecido grosso.",
-        "tipo": TipoItem.ARMADURA, "raridade": RaridadeItem.COMUM, "valor": 5,
-        "slot_equipamento": "calcas",
-        "modificadores": {"defesa_fisica": 1}
-    },
-
-    # --- EXPANSÃO DE CONSUMÍVEIS ---
-    "pocao_mana_fraca": {
-        "nome": "Poção de Mana Fraca", "descricao": "Um líquido azulado cintilante que restaura uma pequena quantidade de mana.",
-        "tipo": TipoItem.POCAO, "raridade": RaridadeItem.COMUM, "valor": 30,
-        "empilhavel": True, "max_pilha": 10,
-        "efeito_consumo": {"tipo": "cura_mp", "quantidade": 40}
-    },
-    "antidoto_simples": {
-        "nome": "Antídoto Simples", "descricao": "Uma mistura de ervas que neutraliza venenos fracos.",
-        "tipo": TipoItem.POCAO, "raridade": RaridadeItem.COMUM, "valor": 40,
-        "empilhavel": True, "max_pilha": 5,
-        "efeito_consumo": {"tipo": "remover_efeito", "id_efeito": "veneno_fraco"}
-    },
-
-    # --- EXPANSÃO DE MATERIAIS ---
-    "minerio_de_ferro": {
-        "nome": "Minério de Ferro", "descricao": "Uma rocha contendo ferro. Pode ser fundida em uma barra de ferro.",
-        "tipo": TipoItem.MATERIAL_CRAFTING, "raridade": RaridadeItem.COMUM, "valor": 10,
-        "empilhavel": True, "max_pilha": 20
-    },
-    "tora_de_pinho": {
-        "nome": "Tora de Pinho", "descricao": "Madeira de uma árvore de pinho. Usada para fazer arcos, cabos de armas e escudos.",
-        "tipo": TipoItem.MATERIAL_CRAFTING, "raridade": RaridadeItem.COMUM, "valor": 8,
-        "empilhavel": True, "max_pilha": 20
-    },
-    "erva_do_sol": {
-        "nome": "Erva do Sol", "descricao": "Uma erva com pétalas amarelas que floresce sob luz solar intensa. Ingrediente comum em poções de cura.",
-        "tipo": TipoItem.INGREDIENTE, "raridade": RaridadeItem.COMUM, "valor": 5,
-        "empilhavel": True, "max_pilha": 30
-    },
-    "raiz_da_terra": {
-        "nome": "Raiz da Terra", "descricao": "Uma raiz grossa e nodosa, conhecida por suas propriedades restauradoras de vigor.",
-        "tipo": TipoItem.INGREDIENTE, "raridade": RaridadeItem.COMUM, "valor": 7,
-        "empilhavel": True, "max_pilha": 30
+        "modificadores": {"dano_arma": 12, "dano_critico": 0.1}
     }
 }
