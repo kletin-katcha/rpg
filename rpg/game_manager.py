@@ -148,11 +148,7 @@ class GameManager:
 
             if self.jogador.hp_atual < self.jogador.hp_max or self.jogador.mp_atual < self.jogador.mp_max:
                 self._add_log("\n'Você parece cansado. Deixe-me restaurar suas energias.'")
-                # A UI precisará apresentar a opção de cura (s/n) e chamar outra função.
-                # Por agora, vamos assumir que a cura é uma ação separada ou automática.
-                # self.jogador.hp_atual = self.jogador.hp_max
-                # self.jogador.mp_atual = self.jogador.mp_max
-                # self._add_log("Você se sente revigorado! HP e MP totalmente restaurados.")
+                return {"tipo": "pergunta", "prompt": "Aceitar a cura? (s/n)", "acao": "curar_jogador", "log": self.game_log}
 
             return {"tipo": "feedback", "log": self.game_log}
 
@@ -197,6 +193,17 @@ class GameManager:
         else:
             self._add_log("Opção desconhecida.")
             return {"tipo": "feedback", "log": self.game_log}
+
+    def executar_acao_contextual(self, acao: str):
+        """Executa uma ação contextual, como aceitar uma cura."""
+        self.clear_log()
+        if acao == "curar_jogador":
+            self.jogador.hp_atual = self.jogador.hp_max
+            self.jogador.mp_atual = self.jogador.mp_max
+            self._add_log("Você se sente revigorado! HP e MP totalmente restaurados.")
+            return {"tipo": "feedback", "log": self.game_log}
+        return {"tipo": "feedback", "log": ["Ação contextual desconhecida."]}
+
 
     # --- Métodos da API de Combate ---
 
