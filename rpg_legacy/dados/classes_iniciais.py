@@ -2,9 +2,29 @@
 # ARQUIVO DE DADOS: CLASSES INICIAIS
 # ==============================================================================
 #
-# Este arquivo contém as definições para todas as classes jogáveis iniciais.
-# A estrutura é um dicionário onde a chave é o ID da classe e o valor é
-# outro dicionário com os detalhes da classe.
+# Este arquivo define as 50 classes iniciais disponíveis para os jogadores
+# no início do jogo. Cada classe oferece um ponto de partida único com
+# diferentes pontos fortes, habilidades e equipamentos.
+#
+# ESTRUTURA PRINCIPAL:
+# O arquivo define um único dicionário chamado `CLASSES_INICIAIS`.
+#
+#   "id_classe": { ...Dicionário de Detalhes... }
+#
+# Onde "id_classe" é uma string única em minúsculas (ex: "guerreiro").
+#
+# ESTRUTURA DO DICIONÁRIO DE DETALHES:
+# - nome (str): O nome da classe para exibição (ex: "Guerreiro").
+# - descricao (str): Uma descrição curta para menus de seleção.
+# - lore (str): Uma breve história ou filosofia da classe.
+# - stats_primarios (List[str]): Uma lista com os dois atributos mais importantes
+#   para a classe, para guiar o jogador na distribuição de pontos.
+# - ataques_base_disponiveis (List[str]): Lista de IDs de ataques básicos que
+#   a classe pode usar desde o início.
+# - habilidades_iniciais (List[str]): Lista de IDs de habilidades ativas ou passivas
+#   que a classe recebe no nível 1.
+# - equipamento_inicial (Dict[str, str]): Um dicionário onde a chave é o slot
+#   de equipamento e o valor é o ID do item inicial.
 #
 # ==============================================================================
 
