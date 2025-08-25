@@ -1,18 +1,16 @@
 from typing import List, TYPE_CHECKING, Dict, Any, Optional
-from ..utilitarios import funcoes_gerais, narrador
-from ..io import menu_inventario
 import random
-from ..entidades.efeito import Efeito
-from ..dados.habilidades import TODAS_HABILIDADES
-from ..dados.classes_iniciais import CLASSES_INICIAIS
 
 if TYPE_CHECKING:
     from ..entidades.personagem import Personagem
     from ..entidades.monstro import Monstro
 
-def aplicar_efeitos_habilidade(ator: 'Personagem', alvos: List['Personagem'], habilidade: Dict):
-    """Aplica todos os efeitos de uma habilidade em uma lista de alvos."""
-    narrador.narrar(f"{ator.nome} usa {habilidade['nome']}!")
+def aplicar_efeitos_habilidade(ator: 'Personagem', alvos: List['Personagem'], habilidade: Dict) -> list[str]:
+    """
+    Aplica todos os efeitos de uma habilidade em uma lista de alvos.
+    Retorna um log de eventos para a UI.
+    """
+    log_eventos = [f"{ator.nome} usa {habilidade['nome']}!"]
 
     for efeito_data in habilidade.get("efeitos", []):
         tipo_efeito = efeito_data.get("tipo")
@@ -21,7 +19,7 @@ def aplicar_efeitos_habilidade(ator: 'Personagem', alvos: List['Personagem'], ha
             if not alvo.esta_vivo(): continue
             chance = efeito_data.get("chance", 1.0)
             if random.random() > chance:
-                narrador.narrar(f"O efeito de {habilidade['nome']} falhou em {alvo.nome}!")
+                log_eventos.append(f"O efeito de {habilidade['nome']} falhou em {alvo.nome}!")
                 continue
 
             if tipo_efeito == "dano_fisico":
@@ -29,82 +27,85 @@ def aplicar_efeitos_habilidade(ator: 'Personagem', alvos: List['Personagem'], ha
                 dano_base = escala * efeito_data.get("multiplicador_dano", 1.0)
                 penetracao = efeito_data.get("penetracao_armadura", 0.0)
                 defesa_alvo = alvo.defesa_fisica * (1 - penetracao)
-                dano_final = max(0, dano_base - defesa_alvo)
-                alvo.tomar_dano(int(dano_final), tipo_efeito)
+                dano_final = max(0, int(dano_base - defesa_alvo))
+                alvo.tomar_dano(dano_final, tipo_efeito)
+                log_eventos.append(f"{alvo.nome} tomou {dano_final} de dano.")
 
             elif tipo_efeito == "dano_magico":
                 escala = getattr(ator, efeito_data.get("escala_com", "inteligencia"))
                 dano_base = escala * efeito_data.get("multiplicador_dano", 1.0)
                 penetracao = efeito_data.get("penetracao_armadura", 0.0)
                 defesa_alvo = alvo.defesa_magica * (1 - penetracao)
-                dano_final = max(0, dano_base - defesa_alvo)
-                alvo.tomar_dano(int(dano_final), tipo_efeito)
+                dano_final = max(0, int(dano_base - defesa_alvo))
+                alvo.tomar_dano(dano_final, tipo_efeito)
+                log_eventos.append(f"{alvo.nome} tomou {dano_final} de dano.")
 
             elif tipo_efeito == "cura":
                 escala = getattr(ator, efeito_data.get("escala_com", "sabedoria"))
-                cura = escala * efeito_data.get("multiplicador_cura", 1.0)
-                alvo.curar(int(cura))
+                cura = int(escala * efeito_data.get("multiplicador_cura", 1.0))
+                alvo.curar(cura)
+                log_eventos.append(f"{alvo.nome} recuperou {cura} de HP.")
 
             elif tipo_efeito == "aplicar_efeito":
-                narrador.narrar(f"{alvo.nome} é afetado por {efeito_data.get('id_efeito')}!")
+                log_eventos.append(f"{alvo.nome} é afetado por {efeito_data.get('id_efeito')}!")
 
             elif tipo_efeito == "aplicar_efeito_self":
-                 narrador.narrar(f"{ator.nome} é afetado por {efeito_data.get('id_efeito')}!")
+                 log_eventos.append(f"{ator.nome} é afetado por {efeito_data.get('id_efeito')}!")
 
-def executar_acao(ator: 'Personagem', acao: Dict, todos_aliados: List['Personagem'], todos_inimigos: List['Personagem']):
-    """Processa uma ação decidida pelo jogador ou IA."""
+    return log_eventos
+
+def executar_acao(ator: 'Personagem', acao: Dict, todos_aliados: List['Personagem'], todos_inimigos: List['Personagem']) -> list[str]:
+    """
+    Processa uma ação decidida pelo jogador ou IA.
+    Retorna um log de eventos para a UI.
+    """
     tipo_acao = acao.get("tipo")
     alvo_entidade = acao.get("alvo")
+    log_eventos = []
 
     if tipo_acao == "passar_turno":
-        narrador.narrar(f"{ator.nome} não faz nada.")
-        return
+        log_eventos.append(f"{ator.nome} não faz nada.")
+        return log_eventos
 
     if tipo_acao == "defender":
-        # Por enquanto, apenas passa o turno para permitir a regeneração de recursos.
-        # Poderia ser expandido para adicionar um buff de defesa temporário.
-        narrador.narrar(f"{ator.nome} assume uma postura defensiva para recuperar o fôlego.")
-        return
+        log_eventos.append(f"{ator.nome} assume uma postura defensiva para recuperar o fôlego.")
+        return log_eventos
 
     if tipo_acao == "ataque_basico":
         ataque = acao.get("ataque")
         if not ataque or not alvo_entidade:
-            narrador.narrar(f"{ator.nome} tenta atacar, mas algo deu errado.")
-            return
+            log_eventos.append(f"{ator.nome} tenta atacar, mas algo deu errado.")
+            return log_eventos
 
-        narrador.narrar(f"{ator.nome} usa {ataque['nome']} em {alvo_entidade.nome}!")
+        log_eventos.append(f"{ator.nome} usa {ataque['nome']} em {alvo_entidade.nome}!")
 
-        # Aplicar custo de stamina
         custo = ataque.get("custo_stamina", 0)
         if ator.stamina_atual < custo:
-            narrador.narrar(f"{ator.nome} não tem vigor suficiente para {ataque['nome']}!")
-            return
+            log_eventos.append(f"{ator.nome} não tem vigor suficiente para {ataque['nome']}!")
+            return log_eventos
         ator.stamina_atual -= custo
 
-        # Lógica de acerto/esquiva
-        # A precisão do atacante e a esquiva do alvo criam uma base. Modificador do ataque ajusta.
         chance_acerto_base = ator.precisao / (ator.precisao + alvo_entidade.esquiva) if (ator.precisao + alvo_entidade.esquiva) > 0 else 0.5
-        chance_acerto_final = min(0.95, max(0.10, chance_acerto_base * ataque.get("mod_precisao", 1.0))) # Garante entre 10% e 95%
+        chance_acerto_final = min(0.95, max(0.10, chance_acerto_base * ataque.get("mod_precisao", 1.0)))
 
         if random.random() > chance_acerto_final:
-            narrador.narrar(f"{alvo_entidade.nome} se esquiva do ataque de {ator.nome}!")
-            return
+            log_eventos.append(f"{alvo_entidade.nome} se esquiva do ataque de {ator.nome}!")
+            return log_eventos
 
-        # Calcular dano
         multiplicador_dano = ataque.get("multiplicador_dano", 1.0)
         tipo_dano = ataque.get("tipo_dano", "fisico")
 
         if tipo_dano == "fisico":
-            # Dano base agora inclui o bônus da arma antes do multiplicador do ataque
             dano_base_personagem = ator.ataque_fisico + ator.dano_arma_bonus
             dano_base = dano_base_personagem * multiplicador_dano
             defesa_alvo = alvo_entidade.defesa_fisica
-        else: # Supondo 'magico' ou outros tipos se existirem
+        else:
             dano_base = ator.poder_magico * multiplicador_dano
             defesa_alvo = alvo_entidade.defesa_magica
 
-        dano_final = max(0, dano_base - defesa_alvo)
-        alvo_entidade.tomar_dano(int(dano_final), tipo_dano)
+        dano_final = max(0, int(dano_base - defesa_alvo))
+        alvo_entidade.tomar_dano(dano_final, tipo_dano)
+        log_eventos.append(f"{alvo_entidade.nome} tomou {dano_final} de dano.")
 
     elif tipo_acao == "usar_habilidade":
         habilidade = acao.get("habilidade")
@@ -118,247 +119,20 @@ def executar_acao(ator: 'Personagem', acao: Dict, todos_aliados: List['Personage
 
         tipo_alvo_hab = habilidade.get("tipo_alvo")
         alvos = []
-        if tipo_alvo_hab == "inimigo_unico":
-            alvos = [alvo_entidade]
-        elif tipo_alvo_hab == "inimigos_area":
-            alvos = [inimigo for inimigo in todos_inimigos if inimigo.esta_vivo()]
-        elif tipo_alvo_hab == "aliado_unico":
-            alvos = [alvo_entidade]
-        elif tipo_alvo_hab == "aliados_area":
-            alvos = [aliado for aliado in todos_aliados if aliado.esta_vivo()]
-        elif tipo_alvo_hab == "self":
-            alvos = [ator]
+        if tipo_alvo_hab == "inimigo_unico": alvos = [alvo_entidade]
+        elif tipo_alvo_hab == "inimigos_area": alvos = [i for i in todos_inimigos if i.esta_vivo()]
+        elif tipo_alvo_hab == "aliado_unico": alvos = [alvo_entidade]
+        elif tipo_alvo_hab == "aliados_area": alvos = [a for a in todos_aliados if a.esta_vivo()]
+        elif tipo_alvo_hab == "self": alvos = [ator]
 
-        aplicar_efeitos_habilidade(ator, alvos, habilidade)
+        log_eventos.extend(aplicar_efeitos_habilidade(ator, alvos, habilidade))
+
+    return log_eventos
 
 def _regenerar_recursos(personagem: 'Personagem'):
     """Restaura silenciosamente uma parte do Vigor e da Mana de um personagem no final do seu turno."""
-    # Regeneração de Vigor (maior): 10% do máximo + bônus de Constituição
     vigor_regen = int(personagem.stamina_max * 0.10 + personagem.constituicao / 2)
     personagem.stamina_atual = min(personagem.stamina_max, personagem.stamina_atual + vigor_regen)
 
-    # Regeneração de Mana (menor): 3% do máximo + bônus de Sabedoria
     mana_regen = int(personagem.mp_max * 0.03 + personagem.sabedoria / 2)
     personagem.mp_atual = min(personagem.mp_max, personagem.mp_atual + mana_regen)
-
-
-def iniciar_batalha(jogador: 'Personagem', inimigos: List['Monstro']) -> bool:
-    """
-    Gerencia o loop principal de uma batalha.
-    Retorna True se o jogador venceu, False caso contrário.
-    """
-    funcoes_gerais.imprimir_cabecalho(f"Batalha contra {[i.nome for i in inimigos]}!", nivel=2)
-
-    participantes = [jogador] + inimigos
-
-    while jogador.esta_vivo() and any(i.esta_vivo() for i in inimigos):
-        # Exibir status
-        print("\n" + "="*20)
-        print(f"{jogador.nome}: {jogador.hp_atual}/{jogador.hp_max} HP | {jogador.mp_atual}/{jogador.mp_max} MP | {jogador.stamina_atual}/{jogador.stamina_max} Vigor")
-        for inimigo in inimigos:
-            if inimigo.esta_vivo():
-                print(f"{inimigo.nome}: {inimigo.hp_atual}/{inimigo.hp_max} HP")
-        print("="*20)
-
-        # Turno do Jogador
-        acao_jogador_dict = menu_acao_jogador(jogador, [jogador], inimigos)
-        if acao_jogador_dict:
-            if acao_jogador_dict.get("tipo") == "fugir":
-                if random.random() < 0.3:
-                    narrador.narrar("Você conseguiu escapar!")
-                    return False
-                else:
-                    narrador.narrar("A fuga falhou!")
-            else:
-                executar_acao(jogador, acao_jogador_dict, [jogador], inimigos)
-
-            # Regenera recursos do jogador no final do turno
-            _regenerar_recursos(jogador)
-        else:
-            continue
-
-        vivos_inimigos = [i for i in inimigos if i.esta_vivo()]
-        if not vivos_inimigos:
-            break
-
-        # Turno dos Inimigos
-        for inimigo in inimigos:
-            if inimigo.esta_vivo() and jogador.esta_vivo():
-                funcoes_gerais.pausar()
-                acao_inimigo = inimigo.decidir_acao(aliados=vivos_inimigos, inimigos=[jogador])
-                executar_acao(inimigo, acao_inimigo, vivos_inimigos, [jogador])
-                # Regenera recursos do inimigo no final do turno
-                _regenerar_recursos(inimigo)
-
-    funcoes_gerais.imprimir_cabecalho("Fim da Batalha", nivel=2)
-    if jogador.esta_vivo():
-        narrador.narrar("Você venceu a batalha!")
-        xp_total = sum(i.xp_recompensa for i in inimigos)
-        ouro_total = sum(i.ouro for i in inimigos)
-
-        narrador.narrar(f"Você ganhou {xp_total} de XP e {ouro_total} de ouro.")
-        jogador.ganhar_xp(xp_total)
-        jogador.ouro += ouro_total
-
-        # Processar loot de itens
-        narrador.narrar("Você coleta os espólios:")
-        for inimigo in inimigos:
-            loot = inimigo.gerar_loot()
-            for item_drop in loot.get("itens", []):
-                jogador.adicionar_item(item_drop["id_item"], item_drop["quantidade"])
-    else:
-        narrador.narrar("Você foi derrotado...")
-
-    return jogador.esta_vivo()
-
-def menu_acao_jogador(jogador: 'Personagem', aliados: List['Personagem'], inimigos: List['Monstro']) -> Dict:
-    """Exibe o menu de ações do jogador e retorna a ação como um dicionário."""
-    while True:
-        print("\n--- AÇÕES ---")
-        print("1. Atacar")
-        print("2. Habilidade")
-        print("3. Defender")
-        print("4. Item (não impl.)")
-        print("5. Fugir")
-
-        escolha = input("O que você faz? ")
-        if escolha == '1':
-            return menu_escolher_ataque_basico(jogador, inimigos)
-        elif escolha == '2':
-            return menu_escolher_habilidade(jogador, aliados, inimigos)
-        elif escolha == '3':
-            return {"tipo": "defender"}
-        elif escolha == '4':
-            # A função de inventário de combate retorna True se um turno foi gasto
-            if menu_inventario.exibir_inventario_combate(jogador):
-                return {"tipo": "passar_turno"} # A ação já foi executada, apenas passe o turno
-            else:
-                return None # O jogador cancelou, então mostre o menu de novo
-        elif escolha == '5':
-            return {"tipo": "fugir"}
-        else:
-            print("Ação inválida ou não implementada.")
-            return None
-
-def menu_escolher_ataque_basico(ator: 'Personagem', inimigos: List['Monstro']) -> Optional[Dict]:
-    """Exibe os ataques básicos disponíveis e retorna a ação de ataque."""
-    if not ator.ataques_base:
-        narrador.narrar("Você não tem nenhum ataque básico disponível!")
-        funcoes_gerais.pausar()
-        return None
-
-    while True:
-        print("\n--- ATAQUES BÁSICOS ---")
-        for i, ataque in enumerate(ator.ataques_base, 1):
-            custo = ataque.get('custo_stamina', 0)
-            print(f"{i}. {ataque['nome']} (Custo: {custo} Vigor) - {ataque['descricao']}")
-        print("0. Voltar")
-
-        escolha = input("Escolha um ataque: ")
-        if not escolha.isdigit():
-            print("Entrada inválida.")
-            continue
-
-        escolha_idx = int(escolha)
-        if escolha_idx == 0:
-            return None
-
-        if not 1 <= escolha_idx <= len(ator.ataques_base):
-            print("Escolha inválida.")
-            continue
-
-        ataque_escolhido = ator.ataques_base[escolha_idx - 1]
-
-        custo = ataque_escolhido.get('custo_stamina', 0)
-        if ator.stamina_atual < custo:
-            narrador.narrar("Você não tem Vigor suficiente!")
-            continue
-
-        alvo = escolher_alvo(inimigos)
-        if alvo:
-            return {"tipo": "ataque_basico", "ataque": ataque_escolhido, "alvo": alvo}
-        else:
-            # Jogador cancelou a escolha do alvo
-            return None
-
-
-def menu_escolher_habilidade(ator: 'Personagem', aliados: List['Personagem'], inimigos: List['Monstro']) -> Dict:
-    """Exibe as habilidades ativas do jogador e retorna a ação de usar habilidade."""
-    habilidades_ativas = [hab_id for hab_id in ator.habilidades if TODAS_HABILIDADES.get(hab_id, {}).get("tipo") == "ativa"]
-
-    if not habilidades_ativas:
-        narrador.narrar("Você não tem nenhuma habilidade ativa para usar em combate!")
-        funcoes_gerais.pausar()
-        return None
-
-    while True:
-        print("\n--- HABILIDADES ---")
-        for i, hab_id in enumerate(habilidades_ativas, 1):
-            habilidade = TODAS_HABILIDADES.get(hab_id)
-            if habilidade:
-                custo = habilidade.get('custo_valor', 0)
-                recurso = habilidade.get('custo_tipo', 'N/A').upper()
-                print(f"{i}. {habilidade['nome']} (Custo: {custo} {recurso})")
-        print("0. Voltar")
-
-        escolha = input("Escolha uma habilidade: ")
-        if not escolha.isdigit():
-            print("Entrada inválida.")
-            continue
-
-        escolha_idx = int(escolha)
-        if escolha_idx == 0:
-            return None
-
-        if not 1 <= escolha_idx <= len(habilidades_ativas):
-            print("Escolha inválida.")
-            continue
-
-        hab_id_escolhido = habilidades_ativas[escolha_idx - 1]
-        habilidade = TODAS_HABILIDADES[hab_id_escolhido]
-
-        custo = habilidade.get('custo_valor', 0)
-        recurso = habilidade.get('custo_tipo')
-        if recurso == 'mp' and ator.mp_atual < custo:
-            narrador.narrar("Você não tem Mana suficiente!")
-            continue
-        elif recurso == 'stamina' and ator.stamina_atual < custo:
-            narrador.narrar("Você não tem Vigor suficiente!")
-            continue
-
-        alvo = None
-        tipo_alvo_hab = habilidade.get("tipo_alvo")
-        if "inimigo" in tipo_alvo_hab:
-            alvo = escolher_alvo(inimigos)
-        elif "aliado" in tipo_alvo_hab:
-            alvo = escolher_alvo(aliados)
-        elif tipo_alvo_hab == "self":
-            alvo = ator
-
-        if alvo:
-            return {"tipo": "usar_habilidade", "habilidade": habilidade, "alvo": alvo}
-        else:
-            return None
-
-def escolher_alvo(entidades: List['Personagem']) -> 'Personagem':
-    """Permite ao jogador escolher um alvo entre uma lista de entidades vivas."""
-    vivos = [e for e in entidades if e.esta_vivo()]
-    if not vivos:
-        return None
-    if len(vivos) == 1:
-        return vivos[0]
-
-    while True:
-        print("\nEscolha um alvo:")
-        for idx, entidade in enumerate(vivos, 1):
-            print(f"{idx}. {entidade.nome}")
-        print("0. Cancelar")
-
-        escolha = input("Alvo: ")
-        if escolha.isdigit():
-            idx_escolhido = int(escolha) - 1
-            if idx_escolhido == -1:
-                return None
-            if 0 <= idx_escolhido < len(vivos):
-                return vivos[idx_escolhido]
-        print("Alvo inválido.")
