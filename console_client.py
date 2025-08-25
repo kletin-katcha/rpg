@@ -1,6 +1,5 @@
 from rpg.game_manager import GameManager
 from rpg.utilitarios import funcoes_gerais
-
 from rpg.io import menu_inventario, menu_equipamento
 from rpg.sistemas import quests
 
@@ -54,6 +53,9 @@ def main_loop():
                     menu_equipamento.exibir_equipamento(gm.jogador)
                 elif opcao_escolhida == "Ver Diário de Missões":
                     quests.exibir_journal(gm.jogador)
+                elif opcao_escolhida == "Ver status do personagem":
+                    print(gm.jogador) # Usa o __str__ do personagem
+                    funcoes_gerais.pausar()
                 else:
                     # Para outras ações, usa o GameManager e exibe o log
                     resultado = gm.executar_opcao_cidade(opcao_escolhida)
@@ -72,8 +74,8 @@ def main_loop():
                 print("Opção inválida.")
                 funcoes_gerais.pausar()
 
-        # TODO: Adicionar elif para gm.game_state == "combat"
         elif gm.game_state == "character_creation":
+            # (O código de criação de personagem permanece o mesmo)
             # Lida com o fluxo de criação de personagem
             dados_criacao = gm.get_dados_criacao_personagem()
             step = dados_criacao.get("step")
@@ -242,12 +244,14 @@ def main_loop():
                 # Exibir log de combate do turno anterior
                 for log_entry in gm.game_log:
                     print(log_entry)
+                gm.clear_log() # Limpa o log para o próximo turno
 
                 # Obter e executar ação do jogador
                 acao_jogador = loop_acao_jogador_console(gm)
                 if acao_jogador:
                     resultado_turno = gm.executar_turno_combate(acao_jogador)
-                    # O log do turno atual será exibido na próxima iteração do loop
+                    # Adiciona o novo log ao log principal do GameManager
+                    gm.game_log.extend(resultado_turno.get("log", []))
                 else:
                     # O jogador cancelou ou a ação foi inválida, continue o loop para obter nova ação
                     continue
@@ -260,58 +264,90 @@ def loop_acao_jogador_console(gm: GameManager) -> dict:
     Função auxiliar para obter a ação do jogador no console.
     Retorna o dicionário de ação ou None se o jogador cancelar.
     """
-    # Lógica de menus aninhados para escolher ação, ataque, alvo, etc.
-    # Esta é uma implementação simplificada.
     print("\nO que você faz?")
     opcoes_combate = gm.get_opcoes_combate()
     exibir_menu_numerado(opcoes_combate)
-    escolha = input("> ")
+    escolha_str = input("> ")
 
-    if escolha == '1': # Atacar
-        # Sub-menu de ataques
+    if not escolha_str.isdigit() or not 1 <= int(escolha_str) <= len(opcoes_combate):
+        print("Ação inválida ou cancelada.")
+        funcoes_gerais.pausar()
+        return None
+
+    escolha_acao = opcoes_combate[int(escolha_str) - 1]
+
+    if escolha_acao == 'Atacar':
         ataques = gm.jogador.ataques_base
         print("\nEscolha o ataque:")
         for i, ataque in enumerate(ataques, 1):
             print(f"{i}. {ataque['nome']}")
         print("0. Voltar")
 
-        escolha_ataque = input("> ")
-        if escolha_ataque.isdigit() and 1 <= int(escolha_ataque) <= len(ataques):
-            ataque_escolhido = ataques[int(escolha_ataque) - 1]
-            # Sub-menu de alvos
-            inimigos = gm.combat_state["inimigos"]
+        escolha_ataque_str = input("> ")
+        if escolha_ataque_str.isdigit() and 1 <= int(escolha_ataque_str) <= len(ataques):
+            ataque_escolhido = ataques[int(escolha_ataque_str) - 1]
+            inimigos = [i for i in gm.combat_state["inimigos"] if i.esta_vivo()]
             print("\nEscolha o alvo:")
             for i, inimigo in enumerate(inimigos, 1):
                 print(f"{i}. {inimigo.nome}")
-            escolha_alvo = input("> ")
-            if escolha_alvo.isdigit() and 1 <= int(escolha_alvo) <= len(inimigos):
-                alvo_escolhido = inimigos[int(escolha_alvo) - 1]
+            escolha_alvo_str = input("> ")
+            if escolha_alvo_str.isdigit() and 1 <= int(escolha_alvo_str) <= len(inimigos):
+                alvo_escolhido = inimigos[int(escolha_alvo_str) - 1]
                 return {"tipo": "ataque_basico", "ataque": ataque_escolhido, "alvo": alvo_escolhido}
 
-    elif escolha == '2': # Habilidade
-        print("TODO: Implementar menu de habilidades.")
+    elif escolha_acao == 'Habilidade':
+        habilidades_disponiveis = gm.get_habilidades_ativas_jogador()
 
-    elif escolha == '3': # Defender
+        if not habilidades_disponiveis:
+            print("Você não tem nenhuma habilidade que possa usar.")
+            funcoes_gerais.pausar()
+            return None
+
+        print("\nEscolha a habilidade:")
+        for i, hab in enumerate(habilidades_disponiveis, 1):
+            custo = hab.get('custo_valor', 0)
+            tipo_custo = hab.get('custo_tipo', 'nenhum').upper()
+            print(f"{i}. {hab['nome']} (Custo: {custo} {tipo_custo}) - {hab['descricao']}")
+        print("0. Voltar")
+
+        escolha_hab_str = input("> ")
+        if escolha_hab_str.isdigit() and 1 <= int(escolha_hab_str) <= len(habilidades_disponiveis):
+            habilidade_escolhida = habilidades_disponiveis[int(escolha_hab_str) - 1]
+
+            alvo = None
+            tipo_alvo_hab = habilidade_escolhida.get("tipo_alvo")
+
+            if tipo_alvo_hab == "self":
+                alvo = gm.jogador
+            elif tipo_alvo_hab in ["inimigo_unico", "inimigos_area"]:
+                inimigos = [i for i in gm.combat_state["inimigos"] if i.esta_vivo()]
+                print("\nEscolha o alvo:")
+                for i, inimigo in enumerate(inimigos, 1):
+                    print(f"{i}. {inimigo.nome}")
+                escolha_alvo_str = input("> ")
+                if escolha_alvo_str.isdigit() and 1 <= int(escolha_alvo_str) <= len(inimigos):
+                    alvo = inimigos[int(escolha_alvo_str) - 1]
+            # TODO: Adicionar lógica para alvos aliados
+
+            if alvo:
+                return {"tipo": "usar_habilidade", "habilidade": habilidade_escolhida, "alvo": alvo}
+
+    elif escolha_acao == 'Defender':
         return {"tipo": "defender"}
 
-    elif escolha == '4': # Item
-        # A lógica de usar o item já está embutida na função chamada.
-        # Ela retorna True se um turno foi gasto, False caso contrário.
+    elif escolha_acao == 'Item':
         from rpg.io.menu_inventario import exibir_inventario_combate
         if exibir_inventario_combate(gm.jogador):
             return {"tipo": "passar_turno"} # Ação já foi feita, apenas consuma o turno.
         else:
             return None # O jogador cancelou, então não consuma o turno.
 
-    elif escolha == '5': # Fugir
+    elif escolha_acao == 'Fugir':
         return {"tipo": "fugir"}
 
     print("Ação inválida ou cancelada.")
     funcoes_gerais.pausar()
     return None
-
-
-    print("\nObrigado por jogar!")
 
 if __name__ == "__main__":
     main_loop()
