@@ -2,13 +2,38 @@
 # ARQUIVO DE DADOS: RAÇAS BASE
 # ==============================================================================
 #
-# Este arquivo contém as definições para todas as raças jogáveis iniciais.
-# A estrutura é um dicionário onde a chave é o ID da raça (em minúsculas,
-# sem espaços) e o valor é outro dicionário com os detalhes da raça.
+# Este arquivo é o coração da identidade dos personagens no jogo, contendo
+# as definições para todas as 30 raças jogáveis iniciais. A estrutura de dados
+# foi projetada para ser extremamente rica e detalhada, fornecendo não apenas
+# modificadores de jogo, mas também uma profunda base para role-playing e imersão.
 #
-# Cada entrada de raça será expandida com uma quantidade massiva de lore,
-# detalhes culturais, variações, diálogos e possíveis evoluções para
-# atingir a meta de linhas e profundidade do projeto.
+# ESTRUTURA PRINCIPAL:
+# O arquivo define um único dicionário chamado `RACAS`.
+#
+#   "id_raca": { ...Dicionário de Detalhes... }
+#
+# Onde "id_raca" é uma string única em minúsculas (ex: "humano", "elfo_da_floresta").
+#
+# ESTRUTURA DO DICIONÁRIO DE DETALHES:
+# - nome (str): O nome da raça para exibição (ex: "Humano").
+# - descricao (str): Uma descrição curta e concisa para menus de seleção.
+# - lore (str): Uma história detalhada e imersiva sobre a origem, cultura e psicologia da raça.
+# - detalhes_culturais (str): Informações específicas sobre sociedade, religião, arte, etc.
+# - modificadores_stats (Dict[str, int]): Os bônus e penalidades nos atributos base.
+#   (forca, destreza, constituicao, inteligencia, sabedoria, carisma, sorte).
+# - habilidades_raciais (List[str]): Lista de IDs de habilidades que a raça recebe no início.
+# - variacoes (List[Dict]): Sub-raças que oferecem pequenas variações nos stats e na lore.
+#   - nome (str): Nome da sub-raça (ex: "Alto Elfo").
+#   - descricao (str): Descrição da sub-raça.
+#   - modificadores_stats (Dict[str, int]): Bônus adicionais.
+# - dialogo_racial (List[str]): Frases típicas que NPCs da raça podem dizer.
+# - nomes_sugeridos (Dict): Sugestões de nomes masculinos, femininos e de família/clã.
+# - relacionamento_racas (Dict): Como a raça geralmente percebe as outras.
+# - arvore_evolucao (Dict): Define as possíveis evoluções raciais de alto nível.
+#   - "id_evolucao": { ...Detalhes da Evolução... }
+#
+# Este arquivo serve como uma fonte de verdade para a criação de personagens e
+# para a geração de NPCs no mundo.
 #
 # ==============================================================================
 
