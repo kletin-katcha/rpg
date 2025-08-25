@@ -1,252 +1,90 @@
-from typing import TYPE_CHECKING
-from unittest.mock import patch
+from typing import TYPE_CHECKING, Dict, Any, List
 from ..entidades.personagem import Personagem
-from ..utilitarios import funcoes_gerais
 from ..dados.racas_base import RACAS
 from ..dados.classes_iniciais import CLASSES_INICIAIS
 
 if TYPE_CHECKING:
     from ..entidades.personagem import Personagem
 
-def distribuir_atributos(personagem: 'Personagem'):
-    """
-    Permite ao jogador distribuir um conjunto de pontos entre os atributos primários.
-    """
-    pontos_para_distribuir = 20
-    atributos = {
-        "forca": "Força", "destreza": "Destreza", "constituicao": "Constituição",
-        "inteligencia": "Inteligência", "sabedoria": "Sabedoria", "carisma": "Carisma"
-    }
-    mapa_escolha = {
-        "1": "forca", "2": "destreza", "3": "constituicao",
-        "4": "inteligencia", "5": "sabedoria", "6": "carisma"
-    }
+# Este módulo foi refatorado para ser uma API de lógica de negócios,
+# em vez de uma interface de console interativa. A UI (GUI ou Console)
+# chamará essas funções para construir o personagem passo a passo.
 
-    funcoes_gerais.limpar_tela()
-    funcoes_gerais.imprimir_cabecalho("Distribuição de Atributos", nivel=2)
-    print("Sua raça e classe influenciaram seus atributos iniciais.")
-    print(f"Agora, você tem {pontos_para_distribuir} pontos para distribuir livremente.")
-    print("Cada atributo começa com um valor base de 5 mais os bônus raciais.")
-    funcoes_gerais.pausar()
+def criar_personagem_base(nome: str) -> 'Personagem':
+    """Cria a instância inicial de um personagem apenas com o nome."""
+    if not nome:
+        raise ValueError("O nome não pode estar em branco.")
+    return Personagem(nome=nome)
 
-    while pontos_para_distribuir > 0:
-        funcoes_gerais.limpar_tela()
-        funcoes_gerais.imprimir_cabecalho(f"Pontos Restantes: {pontos_para_distribuir}", nivel=3)
+def get_dados_racas() -> Dict[str, Any]:
+    """Retorna o dicionário completo de raças para a UI exibir."""
+    return RACAS
 
-        print("--- Atributos Atuais ---")
-        for i, (key, nome) in enumerate(atributos.items(), 1):
-            # Exibe o atributo base durante a distribuição
-            print(f"{i}. {nome:<13}: {getattr(personagem, 'base_' + key)}")
-        print("------------------------")
+def get_dados_classes() -> Dict[str, Any]:
+    """Retorna o dicionário completo de classes para a UI exibir."""
+    return CLASSES_INICIAIS
 
-        escolha_attr = input("Digite o número do atributo para aumentar (ou 'ajuda'): ").lower().strip()
+def aplicar_raca(personagem: 'Personagem', id_raca: str):
+    """Aplica os modificadores e habilidades de uma raça ao personagem."""
+    if id_raca not in RACAS:
+        raise ValueError(f"Raça inválida: {id_raca}")
 
-        if escolha_attr == 'ajuda':
-            # ... (código de ajuda omitido para brevidade)
-            continue
+    personagem.raca = id_raca
+    raca_data = RACAS[id_raca]
 
-        if escolha_attr not in mapa_escolha:
-            print("Escolha inválida. Por favor, digite um número de 1 a 6.")
-            funcoes_gerais.pausar()
-            continue
-
-        attr_nome = mapa_escolha[escolha_attr]
-        attr_display = atributos[attr_nome]
-
-        try:
-            pontos_add = int(input(f"Quantos pontos você quer adicionar a {attr_display}? "))
-            if pontos_add <= 0:
-                print("Você deve adicionar pelo menos 1 ponto.")
-            elif pontos_add > pontos_para_distribuir:
-                print(f"Você não tem pontos suficientes. Você só tem {pontos_para_distribuir} pontos restantes.")
-            else:
-                base_attr_nome = 'base_' + attr_nome
-                setattr(personagem, base_attr_nome, getattr(personagem, base_attr_nome) + pontos_add)
-                pontos_para_distribuir -= pontos_add
-                print(f"{attr_display} aumentado para {getattr(personagem, base_attr_nome)}!")
-        except ValueError:
-            print("Entrada inválida. Por favor, digite um número.")
-        funcoes_gerais.pausar()
-
-    print("\nTodos os pontos foram distribuídos!")
-    personagem.recalcular_stats_completos()
-    funcoes_gerais.pausar()
-
-
-def escolher_raca(personagem: 'Personagem'):
-    """
-    Permite ao jogador escolher uma raça para seu personagem.
-    """
-    funcoes_gerais.limpar_tela()
-    funcoes_gerais.imprimir_cabecalho("Escolha de Raça", nivel=2)
-
-    racas_list = list(RACAS.items())
-
-    while True:
-        print("Escolha sua raça:")
-        for i, (id_raca, raca_data) in enumerate(racas_list, 1):
-            print(f"{i}. {raca_data['nome']}")
-
-        print("\nDigite o número da raça para ver mais detalhes (ex: '1') ou 'fim' para confirmar sua escolha.")
-        escolha = input("Sua escolha: ").lower().strip()
-
-        if escolha == 'fim':
-            if personagem.raca:
-                break
-            else:
-                print("Você deve primeiro selecionar uma raça vendo seus detalhes.")
-                funcoes_gerais.pausar()
-                continue
-
-        try:
-            index = int(escolha) - 1
-            if 0 <= index < len(racas_list):
-                id_raca_escolhida, raca_data = racas_list[index]
-
-                funcoes_gerais.limpar_tela()
-                funcoes_gerais.imprimir_cabecalho(raca_data['nome'], nivel=3)
-                print(f"Descrição: {raca_data['descricao']}")
-                print("\n--- Modificadores de Atributos ---")
-                for stat, mod in raca_data['modificadores_stats'].items():
-                    sinal = "+" if mod >= 0 else ""
-                    print(f"{stat.capitalize()}: {sinal}{mod}")
-                print("\n--- Habilidades Raciais ---")
-                for hab in raca_data['habilidades_raciais']:
-                    print(f"- {hab.replace('_', ' ').capitalize()}")
-
-                confirmar = input(f"\nDeseja escolher a raça {raca_data['nome']}? (s/n): ").lower().strip()
-                if confirmar == 's':
-                    personagem.raca = id_raca_escolhida
-                    print(f"Você escolheu ser um(a) {raca_data['nome']}!")
-                    funcoes_gerais.pausar()
-                    break
-
-            else:
-                print("Número inválido.")
-                funcoes_gerais.pausar()
-        except ValueError:
-            print("Entrada inválida. Digite um número.")
-            funcoes_gerais.pausar()
-
-    raca_escolhida_data = RACAS[personagem.raca]
-    for stat, mod in raca_escolhida_data['modificadores_stats'].items():
+    for stat, mod in raca_data.get('modificadores_stats', {}).items():
         base_stat_nome = 'base_' + stat
-        setattr(personagem, base_stat_nome, getattr(personagem, base_stat_nome) + mod)
+        if hasattr(personagem, base_stat_nome):
+            setattr(personagem, base_stat_nome, getattr(personagem, base_stat_nome) + mod)
 
-    for habilidade in raca_escolhida_data['habilidades_raciais']:
+    for habilidade in raca_data.get('habilidades_raciais', []):
         personagem.habilidades.append(habilidade)
 
+    # Recalcula os stats para refletir as mudanças da raça
     personagem.recalcular_stats_completos()
-    print(f"\nSeus atributos foram atualizados com base na sua raça.")
-    funcoes_gerais.pausar()
 
+def aplicar_classe(personagem: 'Personagem', id_classe: str):
+    """Aplica as habilidades e equipamentos iniciais de uma classe ao personagem."""
+    if id_classe not in CLASSES_INICIAIS:
+        raise ValueError(f"Classe inválida: {id_classe}")
 
-def escolher_classe(personagem: 'Personagem'):
-    """
-    Permite ao jogador escolher uma classe para seu personagem.
-    """
-    funcoes_gerais.limpar_tela()
-    funcoes_gerais.imprimir_cabecalho("Escolha de Classe", nivel=2)
+    personagem.classe = id_classe
+    classe_data = CLASSES_INICIAIS[id_classe]
 
-    classes_list = list(CLASSES_INICIAIS.items())
-
-    while True:
-        print("Escolha sua classe inicial:")
-        for i, (id_classe, classe_data) in enumerate(classes_list, 1):
-            print(f"{i}. {classe_data['nome']}")
-
-        print("\nDigite o número da classe para ver mais detalhes (ex: '1') ou 'fim' para confirmar sua escolha.")
-        escolha = input("Sua escolha: ").lower().strip()
-
-        if escolha == 'fim':
-            if personagem.classe:
-                break
-            else:
-                print("Você deve primeiro selecionar uma classe vendo seus detalhes.")
-                funcoes_gerais.pausar()
-                continue
-
-        try:
-            index = int(escolha) - 1
-            if 0 <= index < len(classes_list):
-                id_classe_escolhida, classe_data = classes_list[index]
-
-                funcoes_gerais.limpar_tela()
-                funcoes_gerais.imprimir_cabecalho(classe_data['nome'], nivel=3)
-                print(f"Descrição: {classe_data['descricao']}")
-                print(f"\nAtributos Primários: {', '.join(classe_data['stats_primarios']).capitalize()}")
-                print("\n--- Habilidades Iniciais ---")
-                for hab in classe_data['habilidades_iniciais']:
-                    print(f"- {hab.replace('_', ' ').capitalize()}")
-
-                confirmar = input(f"\nDeseja escolher a classe {classe_data['nome']}? (s/n): ").lower().strip()
-                if confirmar == 's':
-                    personagem.classe = id_classe_escolhida
-                    print(f"Você escolheu ser um(a) {classe_data['nome']}!")
-                    funcoes_gerais.pausar()
-                    break
-
-            else:
-                print("Número inválido.")
-                funcoes_gerais.pausar()
-        except ValueError:
-            print("Entrada inválida. Digite um número.")
-            funcoes_gerais.pausar()
-
-    classe_escolhida_data = CLASSES_INICIAIS[personagem.classe]
-    for habilidade in classe_escolhida_data['habilidades_iniciais']:
+    for habilidade in classe_data.get('habilidades_iniciais', []):
         personagem.habilidades.append(habilidade)
 
-    # Equipa o equipamento inicial da classe
-    equipamento_inicial = classe_escolhida_data.get('equipamento_inicial', {})
-    if equipamento_inicial:
-        print("\nEquipando itens iniciais...")
-        # Mock do print dentro de adicionar_item e equipar_item para não poluir a tela
-        with patch('builtins.print'):
-            for slot, id_item in equipamento_inicial.items():
-                personagem.adicionar_item(id_item, 1)
-                personagem.equipar_item(id_item)
+    equipamento_inicial = classe_data.get('equipamento_inicial', {})
+    for slot, id_item in equipamento_inicial.items():
+        # Adiciona o item e o equipa. O método equipar já lida com a remoção do inventário.
+        personagem.adicionar_item(id_item, 1)
+        personagem.equipar_item(id_item) # equipar_item já chama recalcular_stats_completos
+
+def aplicar_atributos(personagem: 'Personagem', pontos: Dict[str, int]):
+    """
+    Distribui os pontos de atributo no personagem.
+    `pontos` é um dicionário como {'forca': 5, 'destreza': 5, ...}
+    """
+    pontos_gastos = sum(pontos.values())
+    if pontos_gastos > 20: # A regra de negócio de 20 pontos
+        raise ValueError(f"Tentativa de gastar {pontos_gastos} pontos, mas o limite é 20.")
+
+    for stat, valor in pontos.items():
+        base_stat_nome = 'base_' + stat
+        if hasattr(personagem, base_stat_nome):
+            setattr(personagem, base_stat_nome, getattr(personagem, base_stat_nome) + valor)
 
     personagem.recalcular_stats_completos()
-    print(f"\nSuas habilidades e equipamentos foram atualizados com base na sua classe.")
-    funcoes_gerais.pausar()
 
-
-def iniciar_criacao_personagem() -> 'Personagem':
+def finalizar_criacao(personagem: 'Personagem') -> 'Personagem':
     """
-    Guia o jogador através do processo de criação de personagem.
-    Retorna um objeto Personagem totalmente inicializado.
+    Realiza os cálculos finais e garante que o personagem está pronto para o jogo.
     """
-    funcoes_gerais.limpar_tela()
-    funcoes_gerais.imprimir_cabecalho("Criação de Personagem", nivel=1)
-
-    nome = ""
-    while not nome:
-        nome = input("Digite o nome do seu herói: ").strip()
-        if not nome:
-            print("O nome não pode estar em branco.")
-
-    jogador = Personagem(nome=nome)
-
-    print(f"\nBem-vindo, {nome}!")
-
-    # Nova ordem de criação
-    escolher_raca(jogador)
-    escolher_classe(jogador)
-    distribuir_atributos(jogador)
-
-    funcoes_gerais.limpar_tela()
-    funcoes_gerais.imprimir_cabecalho("Personagem Criado", nivel=2)
-    raca_nome = RACAS[jogador.raca]['nome']
-    classe_nome = CLASSES_INICIAIS[jogador.classe]['nome']
-
-    # Garante que o jogador comece com HP e MP cheios após todos os cálculos
-    jogador.hp_atual = jogador.hp_max
-    jogador.mp_atual = jogador.mp_max
-
-    print(f"Raça: {raca_nome} | Classe: {classe_nome}")
-    print(jogador)
-    print(f"Habilidades: {', '.join(hab.replace('_', ' ').capitalize() for hab in jogador.habilidades)}")
-    funcoes_gerais.pausar()
-
-    return jogador
+    # Garante que o personagem comece com os recursos no máximo após todos os cálculos.
+    # Esta chamada já existe no __init__ do Personagem, mas uma chamada extra aqui
+    # garante o estado final correto após todas as modificações.
+    personagem.recalcular_stats_completos()
+    personagem.hp_atual = personagem.hp_max
+    personagem.mp_atual = personagem.mp_max
+    personagem.stamina_atual = personagem.stamina_max
+    return personagem

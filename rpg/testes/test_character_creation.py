@@ -1,5 +1,4 @@
 import unittest
-from unittest.mock import patch, MagicMock
 import os
 import sys
 
@@ -7,49 +6,60 @@ import sys
 if os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')) not in sys.path:
     sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
-from rpg.io import criacao_personagem
+from rpg.io import criacao_personagem as cc_api
 from rpg.entidades.personagem import Personagem
 
-class TestCharacterCreation(unittest.TestCase):
+class TestCharacterCreationAPI(unittest.TestCase):
     """
-    Testes focados exclusivamente no processo de criação de personagem.
+    Testa a API de lógica de criação de personagem.
     """
 
-    def test_full_character_creation_flow(self):
+    def test_character_creation_api_flow(self):
         """
-        Testa o fluxo completo de criação de personagem, verificando se o
-        personagem final tem os atributos, raça e classe esperados.
+        Testa o fluxo de criação de personagem através das novas funções da API,
+        verificando se o personagem final tem os atributos corretos.
         """
-        # Sequência de inputs para criar um Anão Guerreiro chamado "Durin"
-        creation_inputs = [
-            "Durin",  # Nome
-            '3', 's', # Raça: Anão
-            '1', 's', # Classe: Guerreiro
-            '1', '10', # 10 pontos em Força
-            '3', '10', # 10 pontos em Constituição
-        ]
+        # 1. Cria o personagem base
+        jogador = cc_api.criar_personagem_base("Durin")
+        self.assertEqual(jogador.nome, "Durin")
 
-        with patch('builtins.input', side_effect=creation_inputs), \
-             patch('rpg.utilitarios.narrador.narrar', MagicMock()), \
-             patch('rpg.utilitarios.funcoes_gerais.pausar', MagicMock()):
+        # 2. Aplica a raça
+        cc_api.aplicar_raca(jogador, "anao")
+        self.assertEqual(jogador.raca, "anao")
+        # Verifica bônus racial: Força base 5 + 3 = 8
+        self.assertEqual(jogador.base_forca, 8)
+        self.assertIn("resistencia_a_veneno", jogador.habilidades)
 
-            # Inicia o processo de criação
-            jogador = criacao_personagem.iniciar_criacao_personagem()
+        # 3. Aplica a classe
+        cc_api.aplicar_classe(jogador, "guerreiro")
+        self.assertEqual(jogador.classe, "guerreiro")
+        self.assertIn("ataque_poderoso", jogador.habilidades)
+        # Verifica se o equipamento inicial foi equipado
+        self.assertIsNotNone(jogador.equipamentos.get("arma_principal"))
+        self.assertEqual(jogador.equipamentos["arma_principal"].id_item, "espada_curta_ferro")
 
-            # Asserções para verificar o resultado
-            self.assertIsInstance(jogador, Personagem)
-            self.assertEqual(jogador.nome, "Durin")
-            self.assertEqual(jogador.raca, "anao")
-            self.assertEqual(jogador.classe, "guerreiro")
+        # 4. Aplica os atributos
+        pontos = {"forca": 10, "constituicao": 10}
+        cc_api.aplicar_atributos(jogador, pontos)
+        # Força: 8 (base racial) + 10 (distribuído) = 18
+        self.assertEqual(jogador.base_forca, 18)
+        # Constituição: 5 (padrão) + 4 (racial) + 10 (distribuído) = 19
+        self.assertEqual(jogador.base_constituicao, 19)
 
-            # Verifica os atributos base + bônus racial + pontos distribuídos
-            # Base(5) + Anão(3) + Pontos(10) = 18
-            self.assertEqual(jogador.forca, 18)
-            # Base(5) + Anão(4) + Pontos(10) = 19
-            self.assertEqual(jogador.constituicao, 19)
-            # Verifica se as habilidades foram adicionadas
-            self.assertIn("resistencia_a_veneno", jogador.habilidades) # Habilidade de Anão
-            self.assertIn("ataque_poderoso", jogador.habilidades) # Habilidade de Guerreiro
+        # 5. Finaliza a criação
+        jogador = cc_api.finalizar_criacao(jogador)
+
+        # Verifica os stats finais (calculados)
+        # Força total deve ser igual à base, pois não há itens com bônus de força
+        self.assertEqual(jogador.forca, 18)
+        # Defesa deve ser calculada a partir da constituição total
+        # Defesa = constituição // 2 = 19 // 2 = 9
+        # Mais bônus de armadura e escudo
+        defesa_esperada = (19 // 2) + 8 + 5 # 9 (base) + 8 (peitoral) + 5 (escudo)
+        self.assertEqual(jogador.defesa_fisica, defesa_esperada)
+        # HP deve estar cheio
+        self.assertEqual(jogador.hp_atual, jogador.hp_max)
+
 
 if __name__ == '__main__':
     unittest.main()
