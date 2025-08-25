@@ -29,6 +29,7 @@ class TestCharacterCreationAPI(unittest.TestCase):
         # Verifica bônus racial: Força base 5 + 3 = 8
         self.assertEqual(jogador.base_forca, 8)
         self.assertIn("resistencia_a_veneno", jogador.habilidades)
+        self.assertIn("artesao_de_pedra", jogador.habilidades)
 
         # 3. Aplica a classe
         cc_api.aplicar_classe(jogador, "guerreiro")
@@ -50,13 +51,13 @@ class TestCharacterCreationAPI(unittest.TestCase):
         jogador = cc_api.finalizar_criacao(jogador)
 
         # Verifica os stats finais (calculados)
-        # Força total deve ser igual à base, pois não há itens com bônus de força
         self.assertEqual(jogador.forca, 18)
-        # Defesa deve ser calculada a partir da constituição total
-        # Defesa = constituição // 2 = 19 // 2 = 9
-        # Mais bônus de armadura e escudo
-        defesa_esperada = (19 // 2) + 8 + 5 # 9 (base) + 8 (peitoral) + 5 (escudo)
+
+        # Defesa = (constituição // 2) + bônus_equip + bônus_passiva
+        # Defesa = (19 // 2) + 8 (peitoral) + 5 (escudo) + 2 (Artesão de Pedra)
+        defesa_esperada = (19 // 2) + 8 + 5 + 2
         self.assertEqual(jogador.defesa_fisica, defesa_esperada)
+
         # HP deve estar cheio
         self.assertEqual(jogador.hp_atual, jogador.hp_max)
 

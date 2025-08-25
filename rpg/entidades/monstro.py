@@ -39,20 +39,27 @@ class Monstro(Personagem):
 
         # --- Atributos e Habilidades Específicas ---
         self.aplicar_stats_base(stats_base)
-        # Converte os IDs de habilidades em objetos de habilidade completos
-        self.habilidades = [TODAS_HABILIDADES[id_h] for id_h in habilidades_ids if id_h in TODAS_HABILIDADES]
+
+        # self.habilidades (herdado de Personagem) deve ser uma lista de IDs de string.
+        self.habilidades = habilidades_ids
+
+        # Armazena os dados completos da habilidade para uso da IA.
+        self.habilidades_completas = [TODAS_HABILIDADES[id_h] for id_h in habilidades_ids if id_h in TODAS_HABILIDADES]
+
         # Converte os IDs de ataques básicos em objetos de ataque completos
         self.ataques_base = [ATAQUES_BASE[id_a] for id_a in ataques_base_ids if id_a in ATAQUES_BASE]
 
 
         # --- Inteligência Artificial ---
         self.comportamento_ia = comportamento_ia # "agressivo", "defensivo", "suporte", "oportunista"
-        self.cooldowns_habilidades: Dict[str, int] = {h['nome']: 0 for h in self.habilidades}
+        self.cooldowns_habilidades: Dict[str, int] = {h['nome']: 0 for h in self.habilidades_completas}
         self.memoria_combate: Dict[str, Any] = {} # Para IA adaptativa (ex: "ultima_habilidade_jogador": "bola_de_fogo")
         self.foco_atual: Optional['Personagem'] = None
 
         # Recalcula os stats DEPOIS de aplicar os stats base do monstro
+        # self.habilidades agora é uma lista de strings, então isso funcionará.
         self.recalcular_stats_completos()
+
         # Define o HP e MP atuais para o máximo recém-calculado
         self.hp_atual = self.hp_max
         self.mp_atual = self.mp_max
@@ -127,7 +134,24 @@ class Monstro(Personagem):
 
     def encontrar_habilidade_por_efeito(self, tipo_efeito: str, tipo_alvo: str) -> Optional[Dict]:
         """Encontra a primeira habilidade disponível que corresponde a um tipo de efeito e alvo."""
-        habilidades_disponiveis = [h for h in self.habilidades if self.mp_atual >= h.get('custo_valor', 0)]
+        habilidades_disponiveis = []
+        for h in self.habilidades_completas:
+            custo_valor = h.get('custo_valor', 0)
+            custo_tipo = h.get('custo_tipo')
+
+            pode_pagar = False
+            if custo_tipo == 'mp':
+                if self.mp_atual >= custo_valor:
+                    pode_pagar = True
+            elif custo_tipo == 'stamina':
+                if self.stamina_atual >= custo_valor:
+                    pode_pagar = True
+            else: # Sem custo
+                pode_pagar = True
+
+            if pode_pagar:
+                habilidades_disponiveis.append(h)
+
         for h in habilidades_disponiveis:
             if h.get("tipo_alvo") == tipo_alvo:
                 for efeito in h.get("efeitos", []):

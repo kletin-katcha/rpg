@@ -5,6 +5,9 @@ if TYPE_CHECKING:
     from ..entidades.personagem import Personagem
     from ..entidades.monstro import Monstro
 
+from ..entidades.efeito import Efeito
+from ..dados.efeitos import TODOS_OS_EFEITOS
+
 def aplicar_efeitos_habilidade(ator: 'Personagem', alvos: List['Personagem'], habilidade: Dict) -> list[str]:
     """
     Aplica todos os efeitos de uma habilidade em uma lista de alvos.
@@ -46,13 +49,68 @@ def aplicar_efeitos_habilidade(ator: 'Personagem', alvos: List['Personagem'], ha
                 alvo.curar(cura)
                 log_eventos.append(f"{alvo.nome} recuperou {cura} de HP.")
 
-            elif tipo_efeito == "aplicar_efeito":
-                log_eventos.append(f"{alvo.nome} é afetado por {efeito_data.get('id_efeito')}!")
+            elif tipo_efeito == "aplicar_efeito" or tipo_efeito == "aplicar_efeito_self":
+                target = ator if tipo_efeito == "aplicar_efeito_self" else alvo
+                id_efeito = efeito_data.get("id_efeito")
+                dados_base_efeito = TODOS_OS_EFEITOS.get(id_efeito)
 
-            elif tipo_efeito == "aplicar_efeito_self":
-                 log_eventos.append(f"{ator.nome} é afetado por {efeito_data.get('id_efeito')}!")
+                if not dados_base_efeito:
+                    log_eventos.append(f"[ERRO] Efeito desconhecido: {id_efeito}")
+                    continue
+
+                # Evita acumular o mesmo efeito
+                if any(e.id_efeito == id_efeito for e in target.efeitos_ativos):
+                    log_eventos.append(f"{target.nome} já está sob o efeito de {dados_base_efeito['nome']}.")
+                    continue
+
+                novo_efeito = Efeito(
+                    id_efeito=id_efeito,
+                    nome=dados_base_efeito["nome"],
+                    descricao=dados_base_efeito["descricao"],
+                    tipo=dados_base_efeito["tipo"],
+                    duracao_turnos=efeito_data.get("duracao", 3), # Pega a duração da habilidade
+                    modificadores=dados_base_efeito.get("modificadores"),
+                    efeito_por_turno=dados_base_efeito.get("efeito_por_turno"),
+                    aplicado_por=ator
+                )
+
+                target.efeitos_ativos.append(novo_efeito)
+                target.recalcular_stats_completos() # Aplica o efeito imediatamente
+                log_eventos.append(f"{target.nome} está sob o efeito de {novo_efeito.nome}!")
 
     return log_eventos
+
+def processar_efeitos_de_turno(personagem: 'Personagem') -> list[str]:
+    """
+    Processa todos os efeitos de status de um personagem no final do seu turno.
+    Diminui a duração, aplica efeitos por turno (DoT/HoT) e remove os expirados.
+    Retorna um log de eventos para a UI.
+    """
+    log_eventos = []
+    efeitos_a_remover = []
+
+    for efeito in personagem.efeitos_ativos:
+        efeito_por_turno = efeito.tick()
+
+        if efeito_por_turno:
+            tipo = efeito_por_turno.get("tipo")
+            if tipo == "dano":
+                dano = efeito_por_turno.get("quantidade", 0)
+                tipo_dano = efeito_por_turno.get("dano_tipo", "neutro")
+                personagem.tomar_dano(dano, tipo_dano)
+                log_eventos.append(f"{personagem.nome} sofre {dano} de dano de {efeito.nome}!")
+            # TODO: Adicionar lógica para HoT (cura por turno)
+
+        if efeito.expirou():
+            log_eventos.append(f"O efeito '{efeito.nome}' acabou para {personagem.nome}.")
+            efeitos_a_remover.append(efeito)
+
+    if efeitos_a_remover:
+        personagem.efeitos_ativos = [e for e in personagem.efeitos_ativos if e not in efeitos_a_remover]
+        personagem.recalcular_stats_completos() # Recalcula stats após remover efeitos
+
+    return log_eventos
+
 
 def executar_acao(ator: 'Personagem', acao: Dict, todos_aliados: List['Personagem'], todos_inimigos: List['Personagem']) -> list[str]:
     """
@@ -129,10 +187,17 @@ def executar_acao(ator: 'Personagem', acao: Dict, todos_aliados: List['Personage
 
     return log_eventos
 
-def _regenerar_recursos(personagem: 'Personagem'):
-    """Restaura silenciosamente uma parte do Vigor e da Mana de um personagem no final do seu turno."""
+def _regenerar_recursos(personagem: 'Personagem') -> list[str]:
+    """
+    Restaura Vigor/Mana e processa efeitos de turno para um personagem.
+    Retorna um log de eventos para a UI.
+    """
     vigor_regen = int(personagem.stamina_max * 0.10 + personagem.constituicao / 2)
     personagem.stamina_atual = min(personagem.stamina_max, personagem.stamina_atual + vigor_regen)
 
     mana_regen = int(personagem.mp_max * 0.03 + personagem.sabedoria / 2)
     personagem.mp_atual = min(personagem.mp_max, personagem.mp_atual + mana_regen)
+
+    # Processa buffs, debuffs, DoTs, HoTs, etc.
+    log_efeitos = processar_efeitos_de_turno(personagem)
+    return log_efeitos

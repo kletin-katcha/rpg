@@ -1,5 +1,6 @@
 from typing import Optional, TYPE_CHECKING
 import random
+from typing import List, Dict
 from .entidades.personagem import Personagem
 from .sistemas import combate, quests
 from .io import menu_inventario, menu_equipamento, salvar_carregar
@@ -7,6 +8,7 @@ from .io import criacao_personagem as cc_api
 # O narrador será substituído por um sistema de log de eventos
 # from .utilitarios import funcoes_gerais, narrador
 from .fabricas.fabrica_monstros import criar_monstro_por_id
+from .dados.habilidades import TODAS_HABILIDADES
 
 if TYPE_CHECKING:
     from .entidades.personagem import Personagem
@@ -148,11 +150,7 @@ class GameManager:
 
             if self.jogador.hp_atual < self.jogador.hp_max or self.jogador.mp_atual < self.jogador.mp_max:
                 self._add_log("\n'Você parece cansado. Deixe-me restaurar suas energias.'")
-                # A UI precisará apresentar a opção de cura (s/n) e chamar outra função.
-                # Por agora, vamos assumir que a cura é uma ação separada ou automática.
-                # self.jogador.hp_atual = self.jogador.hp_max
-                # self.jogador.mp_atual = self.jogador.mp_max
-                # self._add_log("Você se sente revigorado! HP e MP totalmente restaurados.")
+                return {"tipo": "pergunta", "prompt": "Aceitar a cura? (s/n)", "acao": "curar_jogador", "log": self.game_log}
 
             return {"tipo": "feedback", "log": self.game_log}
 
@@ -198,6 +196,17 @@ class GameManager:
             self._add_log("Opção desconhecida.")
             return {"tipo": "feedback", "log": self.game_log}
 
+    def executar_acao_contextual(self, acao: str):
+        """Executa uma ação contextual, como aceitar uma cura."""
+        self.clear_log()
+        if acao == "curar_jogador":
+            self.jogador.hp_atual = self.jogador.hp_max
+            self.jogador.mp_atual = self.jogador.mp_max
+            self._add_log("Você se sente revigorado! HP e MP totalmente restaurados.")
+            return {"tipo": "feedback", "log": self.game_log}
+        return {"tipo": "feedback", "log": ["Ação contextual desconhecida."]}
+
+
     # --- Métodos da API de Combate ---
 
     def iniciar_combate(self, ids_monstros: list[str]):
@@ -214,9 +223,40 @@ class GameManager:
 
     def get_opcoes_combate(self) -> list[str]:
         """Retorna as ações de combate disponíveis para o jogador."""
-        # Esta é uma versão simplificada. Uma versão completa poderia checar
-        # se o jogador tem habilidades ou itens para usar.
-        return ["Atacar", "Habilidade", "Defender", "Item", "Fugir"]
+        opcoes = ["Atacar", "Defender"]
+        # Adiciona a opção de habilidade apenas se o jogador tiver habilidades ativas
+        if self.get_habilidades_ativas_jogador():
+            opcoes.append("Habilidade")
+        # TODO: Adicionar checagem de itens consumíveis
+        opcoes.append("Item")
+        opcoes.append("Fugir")
+        return opcoes
+
+    def get_habilidades_ativas_jogador(self) -> List[Dict]:
+        """
+        Retorna uma lista de dicionários das habilidades ativas que o jogador possui
+        e pode pagar o custo.
+        """
+        if not self.jogador:
+            return []
+
+        habilidades_ativas = []
+        for hab_id in self.jogador.habilidades:
+            hab_data = TODAS_HABILIDADES.get(hab_id)
+            if hab_data and hab_data.get("tipo") == "ativa":
+                custo = hab_data.get("custo_valor", 0)
+                recurso_atual = 0
+                if hab_data.get("custo_tipo") == "mp":
+                    recurso_atual = self.jogador.mp_atual
+                elif hab_data.get("custo_tipo") == "stamina":
+                    recurso_atual = self.jogador.stamina_atual
+                else: # Habilidades sem custo
+                    recurso_atual = custo
+
+                if recurso_atual >= custo:
+                    habilidades_ativas.append(hab_data)
+
+        return habilidades_ativas
 
     def get_estado_combate(self) -> dict:
         """Retorna o estado atual do combate para a UI renderizar."""
@@ -231,12 +271,15 @@ class GameManager:
 
         log_turno = []
 
-        # 1. Turno do Jogador
+        # 1. Processar início do turno do jogador (efeitos, etc.)
         if self.jogador.esta_vivo():
-            log_turno.extend(combate.executar_acao(self.jogador, acao_jogador, [self.jogador], self.combat_state["inimigos"]))
-            combate._regenerar_recursos(self.jogador)
+            log_turno.extend(combate._regenerar_recursos(self.jogador))
 
-        # 2. Checar se o combate acabou (vitória)
+        # 2. Executar ação do jogador
+        if self.jogador.esta_vivo(): # Checa de novo, pois DoTs podem matar
+            log_turno.extend(combate.executar_acao(self.jogador, acao_jogador, [self.jogador], self.combat_state["inimigos"]))
+
+        # 3. Checar se o combate acabou (vitória)
         inimigos_vivos = [m for m in self.combat_state["inimigos"] if m.esta_vivo()]
         if not inimigos_vivos:
             self.game_state = "in_game"
@@ -261,14 +304,16 @@ class GameManager:
             self.combat_state = None # Limpa o estado de combate
             return {"resultado": "vitoria", "log": log_turno}
 
-        # 3. Turno dos Inimigos
+        # 4. Turno dos Inimigos
         for inimigo in inimigos_vivos:
+            if inimigo.esta_vivo():
+                log_turno.extend(combate._regenerar_recursos(inimigo))
+
             if inimigo.esta_vivo() and self.jogador.esta_vivo():
                 acao_inimigo = inimigo.decidir_acao(aliados=inimigos_vivos, inimigos=[self.jogador])
                 log_turno.extend(combate.executar_acao(inimigo, acao_inimigo, inimigos_vivos, [self.jogador]))
-                combate._regenerar_recursos(inimigo)
 
-        # 4. Checar se o combate acabou de novo (derrota)
+        # 5. Checar se o combate acabou de novo (derrota)
         if not self.jogador.esta_vivo():
             self.game_state = "main_menu" # Ou tela de game over
             log_turno.append("Você foi derrotado.")

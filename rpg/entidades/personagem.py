@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     # from ..dados.classes import Classe
 from rpg.dados.ataques_base import ATAQUES_BASE
 from ..dados.itens import TODOS_OS_ITENS
+from ..dados.habilidades_passivas_efeitos import HABILIDADES_PASSIVAS_EFEITOS
 from .item import Item
 
 
@@ -120,22 +121,50 @@ class Personagem:
         return 30 + (self.inteligencia * 7) + (self.sabedoria * 3) + (self.nivel * 10)
 
     def recalcular_stats_completos(self):
-        # Etapa 1: Acumular todos os bônus de equipamentos em uma única passagem.
+        # Etapa 1: Acumular todos os bônus de equipamentos e habilidades passivas.
         bonus = {
             'forca': 0, 'destreza': 0, 'constituicao': 0, 'inteligencia': 0,
             'sabedoria': 0, 'carisma': 0, 'hp_max': 0, 'mp_max': 0,
             'ataque_fisico': 0, 'poder_magico': 0, 'defesa_fisica': 0,
             'defesa_magica': 0, 'precisao': 0, 'esquiva': 0,
-            'dano_arma_bonus': 0, 'chance_critico': 0
+            'dano_arma_bonus': 0, 'chance_critico': 0,
+            'resistencias': {}
         }
 
+        # Acumula bônus de itens
         for item in self.equipamentos.values():
             if item and item.modificadores:
                 for mod, valor in item.modificadores.items():
-                    # Renomeia 'dano_arma' para 'dano_arma_bonus' para consistência
                     mod_real = 'dano_arma_bonus' if mod == 'dano_arma' else mod
                     if mod_real in bonus:
                         bonus[mod_real] += valor
+
+        # Acumula bônus de habilidades passivas
+        for hab_id in self.habilidades:
+            if hab_id in HABILIDADES_PASSIVAS_EFEITOS:
+                efeito = HABILIDADES_PASSIVAS_EFEITOS[hab_id]
+                attr = efeito["atributo"]
+                if attr in bonus:
+                    if "chave" in efeito: # Para atributos que são dicionários, como resistências
+                        sub_chave = efeito["chave"]
+                        if attr not in bonus: bonus[attr] = {}
+                        bonus[attr][sub_chave] = bonus[attr].get(sub_chave, 0) + efeito["valor"]
+                    else:
+                        bonus[attr] += efeito["valor"]
+
+        # Acumula bônus de efeitos temporários (buffs/debuffs)
+        for efeito_ativo in self.efeitos_ativos:
+            if efeito_ativo.modificadores:
+                for mod, valor in efeito_ativo.modificadores.items():
+                    if mod in bonus:
+                        bonus[mod] += valor
+                    # Caso especial para resistências
+                    elif mod.startswith("resistencia_"):
+                         res_chave = mod.replace("resistencia_", "")
+                         if res_chave in self.resistencias:
+                            if 'resistencias' not in bonus: bonus['resistencias'] = {}
+                            bonus['resistencias'][res_chave] = bonus['resistencias'].get(res_chave, 0) + valor
+
 
         # Etapa 2: Aplicar bônus aos atributos primários.
         self.forca = self.base_forca + bonus['forca']
@@ -160,7 +189,11 @@ class Personagem:
         self.precisao = self.destreza * 3
         self.esquiva = self.destreza * 2
 
-        # Agora, adicione os bônus diretos (flat bonuses) de equipamentos.
+        # Reseta as resistências para o valor base (0) antes de aplicar bônus
+        for r in self.resistencias:
+            self.resistencias[r] = 0.0
+
+        # Agora, adicione os bônus diretos (flat bonuses) de equipamentos e passivas.
         self.hp_max += bonus['hp_max']
         self.mp_max += bonus['mp_max']
         self.ataque_fisico += bonus['ataque_fisico']
@@ -170,6 +203,10 @@ class Personagem:
         self.precisao += bonus['precisao']
         self.esquiva += bonus['esquiva']
         self.dano_arma_bonus = bonus['dano_arma_bonus'] # É um valor direto, não somado.
+
+        for res, val in bonus['resistencias'].items():
+            if res in self.resistencias:
+                self.resistencias[res] += val
 
         # Etapa 5: Ajustar HP e MP atuais após mudança no máximo.
         if self.hp_max > hp_antigo and hp_antigo != 0:

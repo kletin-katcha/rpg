@@ -12,6 +12,9 @@ from rpg.entidades.personagem import Personagem
 from rpg.entidades.monstro import Monstro
 from rpg.sistemas import combate
 from rpg.fabricas.fabrica_monstros import criar_monstro_por_id
+from rpg.io import criacao_personagem as cc_api
+from rpg.dados.habilidades import TODAS_HABILIDADES
+
 
 class TestCombatAPI(unittest.TestCase):
     """
@@ -60,6 +63,55 @@ class TestCombatAPI(unittest.TestCase):
         self.assertFalse(monstro_em_combate.esta_vivo())
         self.assertTrue(self.jogador.esta_vivo())
         self.assertEqual(self.gm.game_state, "in_game")
+
+    def test_habilidade_esforco_heroico(self):
+        """
+        Testa a aplicação e duração do buff da habilidade Esforço Heroico.
+        A lógica correta é: um buff de 3 turnos é ativo no turno 1, 2 e 3.
+        No início do turno 4, ele expira.
+        """
+        # Cria um Humano para garantir que ele tenha a habilidade
+        jogador_humano = cc_api.criar_personagem_base("Aragorn")
+        cc_api.aplicar_raca(jogador_humano, "humano")
+        cc_api.finalizar_criacao(jogador_humano)
+
+        self.gm.jogador = jogador_humano
+        forca_original = jogador_humano.forca
+
+        self.gm.iniciar_combate(["lobo_cinzento"])
+
+        # Ação: Usar Esforço Heroico
+        habilidade = TODAS_HABILIDADES["esforco_heroico"]
+        acao_habilidade = {"tipo": "usar_habilidade", "habilidade": habilidade, "alvo": jogador_humano}
+        acao_passar = {"tipo": "defender"}
+
+        # --- TURNO 1: Jogador usa o buff ---
+        # Efeitos são processados no início do turno, mas não há nenhum ainda.
+        # Jogador usa a skill. Buff é aplicado.
+        self.gm.executar_turno_combate(acao_habilidade)
+
+        self.assertEqual(len(jogador_humano.efeitos_ativos), 1, "Buff deveria ter sido aplicado.")
+        self.assertEqual(jogador_humano.forca, forca_original + 2, "Força deveria estar buffada após turno 1.")
+        self.assertEqual(jogador_humano.efeitos_ativos[0].turnos_restantes, 3, "Duração deveria ser 3 após aplicação.")
+
+        # --- TURNO 2: O buff continua ativo ---
+        # No início deste turno, tick() é chamado. Duração vai para 2.
+        self.gm.executar_turno_combate(acao_passar)
+        self.assertEqual(jogador_humano.forca, forca_original + 2, "Força deveria continuar buffada no turno 2.")
+        self.assertEqual(jogador_humano.efeitos_ativos[0].turnos_restantes, 2, "Duração deveria ser 2 após turno 2.")
+
+        # --- TURNO 3: O buff continua ativo ---
+        # No início deste turno, tick() é chamado. Duração vai para 1.
+        self.gm.executar_turno_combate(acao_passar)
+        self.assertEqual(jogador_humano.forca, forca_original + 2, "Força deveria continuar buffada no turno 3.")
+        self.assertEqual(jogador_humano.efeitos_ativos[0].turnos_restantes, 1, "Duração deveria ser 1 após turno 3.")
+
+        # --- TURNO 4: O buff deve expirar no início deste turno ---
+        # No início deste turno, tick() é chamado. Duração vai para 0. Efeito é removido. Stats são recalculados.
+        # A ação do jogador (defender) acontece com os stats normais.
+        self.gm.executar_turno_combate(acao_passar)
+        self.assertEqual(len(jogador_humano.efeitos_ativos), 0, "Buff deveria ter sido removido no início do turno 4.")
+        self.assertEqual(jogador_humano.forca, forca_original, "Força deveria voltar ao normal no turno 4.")
 
 
 if __name__ == '__main__':
