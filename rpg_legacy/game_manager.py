@@ -21,7 +21,7 @@ class GameManager:
     def __init__(self):
         self.jogador: Optional['Personagem'] = None
         self.is_running: bool = True
-        # O estado do jogo pode ser: 'main_menu', 'character_creation', 'in_game', 'combat'
+        # O estado do jogo pode ser: 'main_menu', 'in_game', 'combat'
         self.game_state: str = "main_menu"
         self.combat_state: Optional[dict] = None
         self.game_log: list[str] = [] # Log de eventos para a UI
@@ -36,11 +36,14 @@ class GameManager:
 
     def novo_jogo(self):
         """
-        Prepara o jogo para um novo estado, iniciando a criação de personagem.
+        Prepara o jogo para um novo estado. A criação de personagem
+        agora é gerenciada pela UI, que então define o jogador.
         """
-        self.game_state = "character_creation"
-        self.jogador = None # Garante que não há um jogador antigo
-        self.creation_step = "nome" # Define o primeiro passo da criação
+        # A UI chamará a criação de personagem e então definirá self.jogador
+        # e mudará o estado para 'in_game'.
+        self.jogador = None
+        self.game_state = "in_game" # A UI irá popular o jogador antes de entrar no loop in_game.
+        print("DEBUG: Novo jogo iniciado. Aguardando criação de personagem pela UI.")
 
     def carregar_jogo(self, save_slot: str):
         """
@@ -73,36 +76,9 @@ class GameManager:
         elif opcao == "Sair":
             self.encerrar_jogo()
 
-    # --- Métodos da API de Criação de Personagem ---
-
-    def get_dados_criacao_personagem(self) -> dict:
-        """Retorna os dados necessários para a tela de criação atual."""
-        if self.creation_step == "nome":
-            return {"step": "nome", "prompt": "Digite o nome do seu herói:"}
-        elif self.creation_step == "raca":
-            return {"step": "raca", "opcoes": cc_api.get_dados_racas()}
-        elif self.creation_step == "classe":
-            return {"step": "classe", "opcoes": cc_api.get_dados_classes()}
-        elif self.creation_step == "atributos":
-            return {"step": "atributos", "pontos": 20, "personagem": self.jogador}
-        return {}
-
-    def processar_acao_criacao(self, dados: dict):
-        """Processa uma etapa da criação de personagem."""
-        if self.creation_step == "nome" and "nome" in dados:
-            self.jogador = cc_api.criar_personagem_base(dados["nome"])
-            self.creation_step = "raca"
-        elif self.creation_step == "raca" and "id_raca" in dados:
-            cc_api.aplicar_raca(self.jogador, dados["id_raca"])
-            self.creation_step = "classe"
-        elif self.creation_step == "classe" and "id_classe" in dados:
-            cc_api.aplicar_classe(self.jogador, dados["id_classe"])
-            self.creation_step = "atributos"
-        elif self.creation_step == "atributos" and "pontos" in dados:
-            cc_api.aplicar_atributos(self.jogador, dados["pontos"])
-            cc_api.finalizar_criacao(self.jogador)
-            self.game_state = "in_game"
-            self.creation_step = None # Limpa o passo de criação
+    # --- Métodos da API de Criação de Personagem (REMOVIDOS) ---
+    # A lógica de criação de personagem foi movida para o cliente de UI
+    # para melhor separação de responsabilidades.
 
     def get_opcoes_cidade(self) -> list[str]:
         """Retorna as opções de ação disponíveis na cidade atual."""

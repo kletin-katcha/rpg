@@ -11,10 +11,17 @@ if TYPE_CHECKING:
 # chamará essas funções para construir o personagem passo a passo.
 
 def criar_personagem_base(nome: str) -> 'Personagem':
-    """Cria a instância inicial de um personagem apenas com o nome."""
+    """
+    Cria a instância inicial de um personagem com o nome e concede os pontos
+    iniciais para distribuição de atributos.
+    """
     if not nome:
         raise ValueError("O nome não pode estar em branco.")
-    return Personagem(nome=nome)
+
+    personagem = Personagem(nome=nome, nivel=1)
+    # Regra de negócio: Todo personagem novo começa com 20 pontos para distribuir.
+    personagem.pontos_de_atributo_para_distribuir = 20
+    return personagem
 
 def get_dados_racas() -> Dict[str, Any]:
     """Retorna o dicionário completo de raças para a UI exibir."""
@@ -60,21 +67,21 @@ def aplicar_classe(personagem: 'Personagem', id_classe: str):
         personagem.adicionar_item(id_item, 1)
         personagem.equipar_item(id_item) # equipar_item já chama recalcular_stats_completos
 
-def aplicar_atributos(personagem: 'Personagem', pontos: Dict[str, int]):
+def aplicar_atributos(personagem: 'Personagem', pontos: Dict[str, int]) -> bool:
     """
-    Distribui os pontos de atributo no personagem.
-    `pontos` é um dicionário como {'forca': 5, 'destreza': 5, ...}
+    Chama o método de distribuição de pontos do personagem.
+    A validação da quantidade de pontos é feita dentro da classe Personagem.
+
+    Args:
+        personagem (Personagem): O personagem cujos pontos serão distribuídos.
+        pontos (Dict[str, int]): Dicionário com a distribuição desejada.
+
+    Returns:
+        bool: True se a distribuição foi bem-sucedida, False caso contrário.
     """
-    pontos_gastos = sum(pontos.values())
-    if pontos_gastos > 20: # A regra de negócio de 20 pontos
-        raise ValueError(f"Tentativa de gastar {pontos_gastos} pontos, mas o limite é 20.")
-
-    for stat, valor in pontos.items():
-        base_stat_nome = 'base_' + stat
-        if hasattr(personagem, base_stat_nome):
-            setattr(personagem, base_stat_nome, getattr(personagem, base_stat_nome) + valor)
-
-    personagem.recalcular_stats_completos()
+    # A lógica de validação de pontos foi movida para o método do próprio personagem,
+    # tornando esta API mais limpa e o modelo de Personagem mais robusto.
+    return personagem.distribuir_pontos_de_atributo(pontos)
 
 def finalizar_criacao(personagem: 'Personagem') -> 'Personagem':
     """
