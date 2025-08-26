@@ -3,15 +3,18 @@ import random
 from typing import List, Dict
 
 from .entidades.personagem import Personagem
-from .sistemas import combate, quests
+from .sistemas import combate, quests, tempo, dungeons
 from .io import salvar_carregar
 from .fabricas.fabrica_monstros import criar_monstro_por_id
+from .sistemas.dungeons import gerar_dungeon_aleatoria
 from .dados.habilidades import TODAS_HABILIDADES
 from .dados.monstros_area1 import MONSTROS_AREA1
 from .dados.monstros_area2 import MONSTROS_AREA2
+from .dados.dungeons_data import DUNGEONS_FIXAS
 
 if TYPE_CHECKING:
     from .entidades.personagem import Personagem
+    from .sistemas.dungeons import Dungeon
 
 class GameManager:
     def __init__(self):
@@ -19,6 +22,8 @@ class GameManager:
         self.is_running: bool = True
         self.game_state: str = "main_menu"
         self.localizacao_atual: str = "vila"
+        self.time_manager = tempo.TimeManager()
+        self.dungeon_atual: Optional['Dungeon'] = None
         self.combat_state: Optional[dict] = None
         self.game_log: list[str] = []
 
@@ -39,6 +44,7 @@ class GameManager:
         if estado_carregado:
             self.jogador = estado_carregado["jogador"]
             self.localizacao_atual = estado_carregado["localizacao_atual"]
+            self.time_manager = tempo.TimeManager.from_dict(estado_carregado["time_manager"])
             self.game_state = "in_game"
             self._add_log(f"Jogo '{save_slot}' carregado com sucesso!")
         else:
@@ -51,7 +57,9 @@ class GameManager:
 
         estado_jogo = {
             "jogador": self.jogador,
-            "localizacao_atual": self.localizacao_atual
+            "localizacao_atual": self.localizacao_atual,
+            "time_manager": self.time_manager.to_dict(),
+            "dungeon_atual": self.dungeon_atual.id_dungeon if self.dungeon_atual else None
         }
         salvar_carregar.salvar_jogo(estado_jogo, save_slot)
         self._add_log(f"Jogo salvo com sucesso em '{save_slot}.json'!")
@@ -114,38 +122,54 @@ class GameManager:
                     self._add_log("'É bom ver você bem. Cuidado lá fora.'")
 
             elif opcao == "Ir para a Floresta dos Sussurros":
+                self.time_manager.avancar_tempo(60)
                 self.localizacao_atual = "floresta"
                 self._add_log("Você deixa a segurança da vila e adentra a Floresta dos Sussurros.")
             elif opcao == "Ir para o Pântano Sombrio":
+                self.time_manager.avancar_tempo(90)
                 self.localizacao_atual = "pantano_sombrio"
                 self._add_log("Você segue um caminho úmido e malcheiroso em direção ao Pântano Sombrio.")
             elif opcao == "Viajar para Aethelgard":
+                self.time_manager.avancar_tempo(240)
                 self.localizacao_atual = "aethelgard"
                 self._add_log("Após uma longa jornada, você chega aos portões da grande cidade de Aethelgard.")
                 quests.atualizar_progresso_quests(self.jogador, "viajar_para", "cidade_aethelgard")
 
         elif self.localizacao_atual == "floresta":
             if opcao == "Explorar mais fundo":
-                if random.random() < 0.75:
+                self.time_manager.avancar_tempo(30)
+                if random.random() < 0.15: # 15% de chance de achar uma dungeon
+                    self.dungeon_atual = gerar_dungeon_aleatoria(self.jogador.nivel)
+                    self.game_state = "in_dungeon"
+                    self._add_log(f"Você encontra a entrada para uma {self.dungeon_atual.nome}!")
+                elif random.random() < 0.75:
                     id_monstro = random.choice(list(MONSTROS_AREA1.keys()))
                     self.iniciar_combate([id_monstro])
                 else:
                     self._add_log("Você explora a floresta, mas não encontra nada de interessante.")
             elif opcao == "Voltar para a Vila":
+                self.time_manager.avancar_tempo(60)
                 self.localizacao_atual = "vila"
                 self._add_log("Você retorna para a segurança de Valesereno.")
             elif opcao == "Montar Acampamento (Descansar)":
+                self.time_manager.avancar_tempo(480)
                 self.jogador.hp_atual = self.jogador.hp_max
                 self.jogador.mp_atual = self.jogador.mp_max
-                self._add_log("Você encontra um local seguro para descansar e recupera suas forças.")
+                self._add_log("Você dorme por 8 horas e recupera suas forças.")
         elif self.localizacao_atual == "pantano_sombrio":
             if opcao == "Explorar o pântano":
-                if random.random() < 0.8: # Pântano é mais perigoso
+                self.time_manager.avancar_tempo(45)
+                if random.random() < 0.20: # Chance maior no pântano
+                    self.dungeon_atual = gerar_dungeon_aleatoria(self.jogador.nivel)
+                    self.game_state = "in_dungeon"
+                    self._add_log(f"Você encontra a entrada para uma {self.dungeon_atual.nome}!")
+                elif random.random() < 0.8: # Pântano é mais perigoso
                     id_monstro = random.choice(list(MONSTROS_AREA2.keys()))
                     self.iniciar_combate([id_monstro])
                 else:
                     self._add_log("O ar pesado e os sons estranhos o deixam em alerta, mas nada acontece.")
             elif opcao == "Voltar para a Vila":
+                self.time_manager.avancar_tempo(90)
                 self.localizacao_atual = "vila"
                 self._add_log("Você retorna para a segurança de Valesereno.")
             elif opcao == "Montar Acampamento (Descansar)":
@@ -161,9 +185,73 @@ class GameManager:
                 else:
                     self._add_log("Você encontra um homem idoso e sábio, cercado por pilhas de livros. 'Sim? Posso ajudá-lo?'")
 
+            elif opcao == "Ir para os Ermos Rochosos":
+                self.localizacao_atual = "ermos_rochosos"
+                self._add_log("Você viaja para os ermos rochosos nos arredores de Aethelgard.")
+
             elif opcao == "Voltar para a Vila":
                 self.localizacao_atual = "vila"
                 self._add_log("Você decide voltar para a tranquilidade de Valesereno.")
+
+    def executar_opcao_dungeon(self, opcao: str):
+        """Executa uma ação dentro de uma dungeon."""
+        self.clear_log()
+        if not self.dungeon_atual: return
+
+        sala_atual = self.dungeon_atual.sala_atual
+        if opcao == "Avançar para a próxima sala":
+            if sala_atual.concluida:
+                if not self.dungeon_atual.avancar_sala():
+                    self._add_log("Você chegou ao fim da dungeon!")
+                    # Lógica para sair da dungeon
+                    self.game_state = "in_game"
+                    self.localizacao_atual = "ermos_rochosos"
+                    self.dungeon_atual = None
+            else:
+                self._add_log("Você precisa derrotar todos os monstros antes de avançar.")
+
+        elif opcao == "Pegar tesouro":
+            if sala_atual.tesouros:
+                tesouro = sala_atual.tesouros.pop(0) # Pega o primeiro tesouro
+                if random.random() < tesouro.get("chance", 1.0):
+                    self.jogador.adicionar_item(tesouro["id_item"], 1)
+                    quests.atualizar_progresso_quests(self.jogador, "encontrar_item", tesouro["id_item"])
+                else:
+                    self._add_log("Você não encontrou nada de valor.")
+            else:
+                self._add_log("Não há tesouros nesta sala.")
+
+        elif opcao == "Sair da dungeon":
+            self.game_state = "in_game"
+            self.localizacao_atual = "ermos_rochosos" # Retorna para a entrada
+            self.dungeon_atual = None
+            self._add_log("Você saiu da dungeon.")
+
+        elif self.localizacao_atual == "ermos_rochosos":
+            if opcao == "Entrar nas Ruínas de Al'Khem":
+                self.entrar_dungeon("ruinas_alkhem")
+            elif opcao == "Voltar para Aethelgard":
+                self.localizacao_atual = "aethelgard"
+                self._add_log("Você retorna para a cidade.")
+
+    def entrar_dungeon(self, id_dungeon: str):
+        """Coloca o jogador dentro de uma dungeon."""
+        dungeon_data = DUNGEONS_FIXAS.get(id_dungeon)
+        if not dungeon_data:
+            self._add_log("Dungeon não encontrada.")
+            return
+
+        salas = [dungeons.Room(**sala_data) for sala_data in dungeon_data["salas"]]
+        self.dungeon_atual = dungeons.Dungeon(
+            id_dungeon=id_dungeon,
+            nome=dungeon_data["nome"],
+            descricao=dungeon_data["descricao"],
+            nivel_minimo=dungeon_data["nivel_minimo"],
+            salas=salas
+        )
+        self.game_state = "in_dungeon"
+        quests.atualizar_progresso_quests(self.jogador, "entrar_em", id_dungeon)
+        self._add_log(f"Você entrou em {self.dungeon_atual.nome}.")
 
     def iniciar_combate(self, ids_monstros: list[str]):
         monstros = [criar_monstro_por_id(id_monstro) for id_monstro in ids_monstros]

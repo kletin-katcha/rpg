@@ -639,5 +639,17 @@ ITENS_COMUNS = {
         "nome": "Camisa Rasgada", "descricao": "Os restos de uma camisa. Oferece pouca proteção, mas mostra que você é durão.",
         "tipo": TipoItem.ARMADURA, "raridade": RaridadeItem.COMUM, "valor": 1,
         "slot_equipamento": "peitoral", "modificadores": {"defesa_fisica": 1}
+    },
+
+    # --- MATERIAIS DE DUNGEON (RUÍNAS DE AL'KHEM) ---
+    "nucleo_de_construto_danificado": {
+        "nome": "Núcleo de Construto Danificado", "descricao": "O núcleo de energia de um construto, rachado e vazando energia arcana.",
+        "tipo": TipoItem.MATERIAL_CRAFTING, "raridade": RaridadeItem.COMUM, "valor": 40,
+        "empilhavel": True, "max_pilha": 10
+    },
+    "placa_de_bronze_antiga": {
+        "nome": "Placa de Bronze Antiga", "descricao": "Uma placa de bronze com gravuras de uma era esquecida.",
+        "tipo": TipoItem.MATERIAL_CRAFTING, "raridade": RaridadeItem.COMUM, "valor": 25,
+        "empilhavel": True, "max_pilha": 10
     }
 }

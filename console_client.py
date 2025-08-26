@@ -37,7 +37,8 @@ def main_loop():
             gm.game_state = "in_game" # Transição para o jogo principal
 
         elif gm.game_state == "in_game":
-            funcoes_gerais.imprimir_cabecalho(f"Local: {gm.localizacao_atual.capitalize()}")
+            cabecalho = f"Local: {gm.localizacao_atual.capitalize()} | {gm.time_manager}"
+            funcoes_gerais.imprimir_cabecalho(cabecalho)
             opcoes = gm.get_opcoes_localizacao()
             exibir_menu_numerado(opcoes)
 
@@ -91,6 +92,37 @@ def main_loop():
             else: # Turno do monstro
                 funcoes_gerais.pausar() # Pausa para o jogador ver o que o monstro vai fazer
                 gm.executar_turno_combate(None) # O GM vai chamar decidir_acao do monstro
+
+        elif gm.game_state == "in_dungeon":
+            dungeon = gm.dungeon_atual
+            sala = dungeon.sala_atual
+
+            # Se a sala ainda não foi visitada e tem monstros, inicia o combate
+            if not sala.visitada and sala.monstros:
+                sala.visitada = True
+                gm.iniciar_combate(sala.monstros)
+                continue # Pula para o próximo loop, que estará em estado de combate
+
+            # Se a sala já foi visitada ou não tem monstros, exibe o menu
+            cabecalho = f"{dungeon.nome} - {sala.nome} | {gm.time_manager}"
+            funcoes_gerais.imprimir_cabecalho(cabecalho)
+            print(sala.descricao)
+
+            # Marca a sala como concluída se não houver mais monstros
+            if not sala.monstros:
+                sala.concluida = True
+
+            opcoes = gm.get_opcoes_localizacao() # get_opcoes_localizacao agora lida com o estado 'in_dungeon'
+            exibir_menu_numerado(opcoes)
+
+            escolha = input("\nSua escolha: ")
+            if escolha.isdigit() and 1 <= int(escolha) <= len(opcoes):
+                opcao_escolhida = opcoes[int(escolha) - 1]
+                gm.executar_opcao_dungeon(opcao_escolhida)
+            else:
+                print("Opção inválida.")
+                funcoes_gerais.pausar()
+
 
 def loop_acao_jogador_console(gm: GameManager) -> dict:
     """Função auxiliar para obter a ação do jogador no console durante o combate."""
