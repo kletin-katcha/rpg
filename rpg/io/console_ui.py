@@ -15,7 +15,7 @@ def criar_novo_personagem_ui() -> Personagem:
         nome = input("Qual é o seu nome? ").strip()
 
     personagem = cc_api.criar_personagem_base(nome)
-    print(f"\nUm herói chamado {nome}, o Valente se prepara para a jornada!")
+    print(f"\nUm herói chamado {nome} se prepara para a jornada!")
     funcoes_gerais.pausar()
 
     # Seleção de Raça

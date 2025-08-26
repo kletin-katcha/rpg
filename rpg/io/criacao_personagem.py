@@ -17,12 +17,15 @@ def criar_personagem_base(nome: str) -> 'Personagem':
         raise ValueError("O nome não pode estar em branco.")
     return Personagem(nome=nome)
 
-def get_dados_racas() -> Dict[str, Any]:
+def get_racas_disponiveis() -> Dict[str, Any]:
     """Retorna o dicionário completo de raças para a UI exibir."""
     return RACAS
 
-def get_dados_classes() -> Dict[str, Any]:
-    """Retorna o dicionário completo de classes para a UI exibir."""
+def get_classes_disponiveis_para_raca(id_raca: str) -> Dict[str, Any]:
+    """
+    Retorna as classes disponíveis para uma determinada raça.
+    TODO: Implementar lógica de restrição de classe por raça se necessário.
+    """
     return CLASSES_INICIAIS
 
 def aplicar_raca(personagem: 'Personagem', id_raca: str):
