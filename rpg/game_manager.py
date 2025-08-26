@@ -83,7 +83,11 @@ class GameManager:
         opcoes_comuns.extend(["Salvar Jogo", "Sair para o Menu Principal"])
 
         if self.localizacao_atual == "vila":
-            return ["Falar com Elara (Curandeira da Vila)", "Ir para a Floresta dos Sussurros", "Ir para o Pântano Sombrio"] + opcoes_comuns
+            opcoes_vila = ["Falar com Elara (Curandeira da Vila)", "Ir para a Floresta dos Sussurros", "Ir para o Pântano Sombrio"]
+            # Adiciona a opção de viajar se o jogador tiver a quest
+            if self.jogador and any(q.id_quest == "mq04_chamado_antigo" for q in self.jogador.quests_ativas):
+                opcoes_vila.append("Viajar para Aethelgard")
+            return opcoes_vila + opcoes_comuns
         elif self.localizacao_atual == "floresta":
             return ["Explorar mais fundo", "Montar Acampamento (Descansar)", "Voltar para a Vila"] + opcoes_comuns
         elif self.localizacao_atual == "pantano_sombrio":
@@ -115,6 +119,11 @@ class GameManager:
             elif opcao == "Ir para o Pântano Sombrio":
                 self.localizacao_atual = "pantano_sombrio"
                 self._add_log("Você segue um caminho úmido e malcheiroso em direção ao Pântano Sombrio.")
+            elif opcao == "Viajar para Aethelgard":
+                self.localizacao_atual = "aethelgard"
+                self._add_log("Após uma longa jornada, você chega aos portões da grande cidade de Aethelgard.")
+                quests.atualizar_progresso_quests(self.jogador, "viajar_para", "cidade_aethelgard")
+
         elif self.localizacao_atual == "floresta":
             if opcao == "Explorar mais fundo":
                 if random.random() < 0.75:
@@ -141,6 +150,20 @@ class GameManager:
                 self._add_log("Você retorna para a segurança de Valesereno.")
             elif opcao == "Montar Acampamento (Descansar)":
                 self._add_log("Você não consegue encontrar um local seco e seguro para descansar no pântano.")
+        elif self.localizacao_atual == "aethelgard":
+            if opcao == "Falar com Mestre Valerius":
+                quests.atualizar_progresso_quests(self.jogador, "falar_com", "mestre_valerius")
+                chamado_antigo_quest = next((q for q in self.jogador.quests_ativas if q.id_quest == "mq04_chamado_antigo"), None)
+
+                if chamado_antigo_quest and chamado_antigo_quest.esta_completa():
+                    quests.concluir_quest(self.jogador, chamado_antigo_quest)
+                    quests.iniciar_quest(self.jogador, "mq05_a_primeira_dungeon")
+                else:
+                    self._add_log("Você encontra um homem idoso e sábio, cercado por pilhas de livros. 'Sim? Posso ajudá-lo?'")
+
+            elif opcao == "Voltar para a Vila":
+                self.localizacao_atual = "vila"
+                self._add_log("Você decide voltar para a tranquilidade de Valesereno.")
 
     def iniciar_combate(self, ids_monstros: list[str]):
         monstros = [criar_monstro_por_id(id_monstro) for id_monstro in ids_monstros]

@@ -87,5 +87,20 @@ QUESTS_ATO1 = {
         "recompensas": {
             "xp": 1000
         }
+    },
+    "mq05_a_primeira_dungeon": {
+        "titulo": "As Ruínas Esquecidas",
+        "descricao_inicio": "Valerius examina o amuleto. 'Incrível... ele ressoa com as Ruínas de Al'Khem, uma antiga fortaleza dos Guardiões a leste daqui. Se há respostas sobre o Rei Corrompido, elas estarão lá. As ruínas são perigosas, mas você deve investigar. Procure por qualquer inscrição ou artefato que possa nos guiar.'",
+        "ato_narrativo": 1,
+        "tipo": TipoQuest.PRINCIPAL,
+        "npc_inicio": "mestre_valerius",
+        "pre_requisitos": ["mq04_chamado_antigo"],
+        "objetivos": [
+            {"tipo": "entrar_em", "id_alvo": "dungeon_ruinas_alkhem", "progresso": 0, "total": 1, "descricao": "Encontre a entrada para as Ruínas de Al'Khem."},
+            {"tipo": "encontrar_item", "id_alvo": "mapa_das_sombras", "progresso": 0, "total": 1, "descricao": "Procure por um artefato que possa revelar os planos do inimigo."}
+        ],
+        "recompensas": {
+            "xp": 1500
+        }
     }
 }
