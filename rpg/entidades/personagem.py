@@ -217,6 +217,9 @@ class Personagem:
         print(f"{self.nome} recuperou {quantidade} de HP. HP atual: {self.hp_atual}/{self.hp_max}")
 
     def adicionar_item(self, id_item: str, quantidade: int = 1):
+        # Evita importação circular
+        from rpg.sistemas import quests
+
         dados_item = TODOS_OS_ITENS.get(id_item)
         if not dados_item: return
         if id_item in self.inventario:
@@ -225,6 +228,9 @@ class Personagem:
             novo_item = Item(id_item=id_item, **dados_item)
             self.inventario[id_item] = {"item": novo_item, "quantidade": quantidade}
         print(f"{quantidade}x {dados_item['nome']} adicionado(s) ao inventário.")
+
+        # Atualiza o progresso das quests de coleta
+        quests.atualizar_progresso_quests(self, "coletar", id_item, quantidade)
 
     def remover_item(self, id_item: str, quantidade: int = 1) -> bool:
         if id_item not in self.inventario or self.inventario[id_item]["quantidade"] < quantidade:

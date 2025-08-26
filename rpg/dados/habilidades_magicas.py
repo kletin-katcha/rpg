@@ -287,5 +287,66 @@ HABILIDADES_MAGICAS = {
         "efeitos": [
             {"tipo": "invocar_criatura", "id_criatura": "familiar_imp", "duracao": -1}
         ]
+    },
+
+    # --- HABILIDADES DE PIROMANTE ---
+    "imolar": {
+        "nome": "Imolar", "tipo": "ativa", "custo_tipo": "mp", "custo_valor": 15,
+        "descricao": "Incendeia um inimigo, causando dano de fogo contínuo.",
+        "lore": "Uma magia que ensina que o fogo pode ser um presente que continua a ser dado.",
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [
+            {"tipo": "dano_magico", "escala_com": "inteligencia", "elemento": "fogo", "multiplicador_dano": 0.5},
+            {"tipo": "aplicar_efeito", "id_efeito": "queimadura_media", "duracao": 3}
+        ]
+    },
+
+    # --- HABILIDADES DE CRIOMANTE ---
+    "nevasca": {
+        "nome": "Nevasca", "tipo": "ativa", "custo_tipo": "mp", "custo_valor": 40,
+        "descricao": "Cria uma nevasca localizada que causa dano de gelo e congela múltiplos inimigos.",
+        "lore": "O criomante comanda o próprio inverno, trazendo o frio cortante das montanhas para o campo de batalha.",
+        "tipo_alvo": "inimigos_area",
+        "efeitos": [
+            {"tipo": "dano_magico", "escala_com": "inteligencia", "elemento": "gelo", "multiplicador_dano": 1.2},
+            {"tipo": "aplicar_efeito", "id_efeito": "congelamento", "chance": 0.3, "duracao": 2}
+        ]
+    },
+
+    # --- HABILIDADES DE GEOMANTE ---
+    "prisao_de_terra": {
+        "nome": "Prisão de Terra", "tipo": "ativa", "custo_tipo": "mp", "custo_valor": 25,
+        "descricao": "Mãos de pedra surgem do chão para prender um inimigo.",
+        "lore": "A terra é a maior prisão de todas. O geomante apenas pede a ela para segurar seus inimigos por um tempo.",
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "status_enraizado", "duracao": 4}]
+    },
+
+    # --- HABILIDADES DE AEROMANTE ---
+    "ventania_cortante": {
+        "nome": "Ventania Cortante", "tipo": "ativa", "custo_tipo": "mp", "custo_valor": 20,
+        "descricao": "Cria uma lâmina de vento que atinge todos os inimigos em uma linha.",
+        "lore": "O ar pode ser gentil como uma brisa, ou afiado como uma navalha.",
+        "tipo_alvo": "inimigos_linha",
+        "efeitos": [{"tipo": "dano_magico", "escala_com": "sabedoria", "elemento": "vento", "multiplicador_dano": 1.3}]
+    },
+
+    # --- HABILIDADES DE NECROMANTE ---
+    "animar_mortos": {
+        "nome": "Animar Mortos", "tipo": "ativa", "custo_tipo": "mp", "custo_valor": 50,
+        "descricao": "Reanima um cadáver próximo para lutar ao seu lado como um esqueleto ou zumbi.",
+        "lore": "Para o necromante, a morte não é o fim, mas um recurso.",
+        "tipo_alvo": "cadaver",
+        "efeitos": [{"tipo": "invocar_criatura", "id_criatura_base": "esqueleto", "duracao": -1}]
+    },
+    "toque_vampirico": {
+        "nome": "Toque Vampírico", "tipo": "ativa", "custo_tipo": "mp", "custo_valor": 25,
+        "descricao": "Drena a força vital de um inimigo, causando dano necrótico e curando o conjurador.",
+        "lore": "Uma magia proibida que brinca com a transferência da essência da vida.",
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [
+            {"tipo": "dano_magico", "escala_com": "inteligencia", "elemento": "necrotico", "multiplicador_dano": 1.5},
+            {"tipo": "roubo_de_vida", "porcentagem": 0.5}
+        ]
     }
 }

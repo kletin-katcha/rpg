@@ -8,6 +8,7 @@ from .io import salvar_carregar
 from .fabricas.fabrica_monstros import criar_monstro_por_id
 from .dados.habilidades import TODAS_HABILIDADES
 from .dados.monstros_area1 import MONSTROS_AREA1
+from .dados.monstros_area2 import MONSTROS_AREA2
 
 if TYPE_CHECKING:
     from .entidades.personagem import Personagem
@@ -76,9 +77,11 @@ class GameManager:
             "Ver status do personagem", "Salvar Jogo", "Sair para o Menu Principal"
         ]
         if self.localizacao_atual == "vila":
-            return ["Falar com Elara (Curandeira da Vila)", "Ir para a Floresta dos Sussurros"] + opcoes_comuns
+            return ["Falar com Elara (Curandeira da Vila)", "Ir para a Floresta dos Sussurros", "Ir para o Pântano Sombrio"] + opcoes_comuns
         elif self.localizacao_atual == "floresta":
             return ["Explorar mais fundo", "Montar Acampamento (Descansar)", "Voltar para a Vila"] + opcoes_comuns
+        elif self.localizacao_atual == "pantano_sombrio":
+            return ["Explorar o pântano", "Montar Acampamento (Descansar)", "Voltar para a Vila"] + opcoes_comuns
         return opcoes_comuns
 
     def executar_opcao_localizacao(self, opcao: str):
@@ -88,9 +91,24 @@ class GameManager:
         elif opcao == "Sair para o Menu Principal":
             self.game_state = "main_menu"
         elif self.localizacao_atual == "vila":
-            if opcao == "Ir para a Floresta dos Sussurros":
+            if opcao == "Falar com Elara (Curandeira da Vila)":
+                # Lógica de quests com Elara...
+                pantano_quest = next((q for q in self.jogador.quests_ativas if q.id_quest == "sq01_coracao_pantano"), None)
+
+                if pantano_quest and pantano_quest.esta_completa():
+                    quests.concluir_quest(self.jogador, pantano_quest)
+                    quests.iniciar_quest(self.jogador, "mq04_chamado_antigo")
+                elif "mq02_ameaca_local" in self.jogador.quests_concluidas and not pantano_quest and "sq01_coracao_pantano" not in self.jogador.quests_concluidas:
+                    quests.iniciar_quest(self.jogador, "sq01_coracao_pantano")
+                else:
+                    self._add_log("'É bom ver você bem. Cuidado lá fora.'")
+
+            elif opcao == "Ir para a Floresta dos Sussurros":
                 self.localizacao_atual = "floresta"
                 self._add_log("Você deixa a segurança da vila e adentra a Floresta dos Sussurros.")
+            elif opcao == "Ir para o Pântano Sombrio":
+                self.localizacao_atual = "pantano_sombrio"
+                self._add_log("Você segue um caminho úmido e malcheiroso em direção ao Pântano Sombrio.")
         elif self.localizacao_atual == "floresta":
             if opcao == "Explorar mais fundo":
                 if random.random() < 0.75:
@@ -105,6 +123,18 @@ class GameManager:
                 self.jogador.hp_atual = self.jogador.hp_max
                 self.jogador.mp_atual = self.jogador.mp_max
                 self._add_log("Você encontra um local seguro para descansar e recupera suas forças.")
+        elif self.localizacao_atual == "pantano_sombrio":
+            if opcao == "Explorar o pântano":
+                if random.random() < 0.8: # Pântano é mais perigoso
+                    id_monstro = random.choice(list(MONSTROS_AREA2.keys()))
+                    self.iniciar_combate([id_monstro])
+                else:
+                    self._add_log("O ar pesado e os sons estranhos o deixam em alerta, mas nada acontece.")
+            elif opcao == "Voltar para a Vila":
+                self.localizacao_atual = "vila"
+                self._add_log("Você retorna para a segurança de Valesereno.")
+            elif opcao == "Montar Acampamento (Descansar)":
+                self._add_log("Você não consegue encontrar um local seco e seguro para descansar no pântano.")
 
     def iniciar_combate(self, ids_monstros: list[str]):
         monstros = [criar_monstro_por_id(id_monstro) for id_monstro in ids_monstros]

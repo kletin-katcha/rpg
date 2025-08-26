@@ -58,12 +58,12 @@ def concluir_quest(jogador: 'Personagem', quest: 'Quest'):
         narrador.narrar("Você ainda não completou todos os objetivos desta missão.")
 
 
-def atualizar_progresso_quests(jogador: 'Personagem', tipo_evento: str, id_alvo: str):
+def atualizar_progresso_quests(jogador: 'Personagem', tipo_evento: str, id_alvo: str, quantidade: int = 1):
     """
     Chamado sempre que um evento relevante para quests acontece (ex: matar monstro).
     """
     for quest in jogador.quests_ativas:
-        quest.atualizar_progresso(tipo_evento, id_alvo)
+        quest.atualizar_progresso(tipo_evento, id_alvo, quantidade)
         # Verificar se a quest pode ser concluída
         if quest.esta_completa():
             narrador.narrar(f"Você completou todos os objetivos da missão: '{quest.titulo}'!")

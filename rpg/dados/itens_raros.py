@@ -66,5 +66,12 @@ ITENS_RAROS = {
         "tipo": TipoItem.POCAO, "raridade": RaridadeItem.RARO, "valor": 200,
         "empilhavel": True, "max_pilha": 10,
         "efeito_consumo": {"tipo": "cura_hp", "quantidade": 250}
+    },
+    "amuleto_purificado": {
+        "nome": "Amuleto Purificado",
+        "descricao": "Um amuleto de prata que emana uma leve quentura. A pedra escura em seu centro agora pulsa com uma luz branca suave.",
+        "lore": "Este amuleto parece ter absorvido a energia maligna do pântano e a purificado. Ele parece antigo e ressoa com um poder desconhecido.",
+        "tipo": TipoItem.QUEST, "raridade": RaridadeItem.UNICO, "valor": 0,
+        "empilhavel": False
     }
 }

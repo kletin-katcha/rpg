@@ -124,5 +124,58 @@ ITENS_COMUNS = {
         "tipo": TipoItem.ARMA, "raridade": RaridadeItem.COMUM, "valor": 35,
         "slot_equipamento": "arma_principal",
         "modificadores": {"dano_arma": 12, "dano_critico": 0.1}
+    },
+
+    # --- MATERIAIS DO PÂNTANO (ÁREA 2) ---
+    "glandula_de_sanguessuga": {
+        "nome": "Glândula de Sanguessuga", "descricao": "Uma glândula pulsante de uma sanguessuga. Usada em poções de cura mais potentes.",
+        "tipo": TipoItem.INGREDIENTE, "raridade": RaridadeItem.COMUM, "valor": 30,
+        "empilhavel": True, "max_pilha": 10
+    },
+    "escama_de_homem_lagarto": {
+        "nome": "Escama de Homem-Lagarto", "descricao": "Uma escama verde e resistente, ideal para fazer armaduras leves.",
+        "tipo": TipoItem.MATERIAL_CRAFTING, "raridade": RaridadeItem.COMUM, "valor": 15,
+        "empilhavel": True, "max_pilha": 20
+    },
+    "lanca_primitiva": {
+        "nome": "Lança Primitiva", "descricao": "Uma lança rústica feita de madeira do pântano e uma ponta de osso afiado.",
+        "tipo": TipoItem.ARMA, "raridade": RaridadeItem.COMUM, "valor": 40,
+        "slot_equipamento": "arma_principal",
+        "modificadores": {"dano_arma": 14}
+    },
+    "essencia_espectral": {
+        "nome": "Essência Espectral", "descricao": "Os restos translúcidos e frios de um espectro. Brilha com uma luz fraca.",
+        "tipo": TipoItem.INGREDIENTE, "raridade": RaridadeItem.COMUM, "valor": 50,
+        "empilhavel": True, "max_pilha": 5
+    },
+    "po_ectoplasmico": {
+        "nome": "Pó Ectoplásmico", "descricao": "Um pó fino e pegajoso deixado para trás por uma manifestação espiritual.",
+        "tipo": TipoItem.MATERIAL_CRAFTING, "raridade": RaridadeItem.COMUM, "valor": 25,
+        "empilhavel": True, "max_pilha": 15
+    },
+    "couro_de_crocodilo_gigante": {
+        "nome": "Couro de Crocodilo Gigante", "descricao": "Um pedaço de couro extremamente grosso e durável.",
+        "tipo": TipoItem.MATERIAL_CRAFTING, "raridade": RaridadeItem.COMUM, "valor": 80,
+        "empilhavel": True, "max_pilha": 5
+    },
+    "dente_de_crocodilo_gigante": {
+        "nome": "Dente de Crocodilo Gigante", "descricao": "Um dente do tamanho de uma adaga. Pode ser usado para criar armas poderosas.",
+        "tipo": TipoItem.MATERIAL_CRAFTING, "raridade": RaridadeItem.COMUM, "valor": 45,
+        "empilhavel": True, "max_pilha": 10
+    },
+    "escama_de_hydra": {
+        "nome": "Escama de Hydra", "descricao": "Uma escama com um brilho estranho, resistente a quase tudo.",
+        "tipo": TipoItem.MATERIAL_CRAFTING, "raridade": RaridadeItem.INCOMUM, "valor": 150,
+        "empilhavel": True, "max_pilha": 10
+    },
+    "sangue_de_hydra": {
+        "nome": "Sangue de Hydra", "descricao": "Um sangue verde e borbulhante com potentes propriedades regenerativas e cáusticas.",
+        "tipo": TipoItem.INGREDIENTE, "raridade": RaridadeItem.RARO, "valor": 300,
+        "empilhavel": True, "max_pilha": 5
+    },
+    "coracao_de_hydra": {
+        "nome": "Coração de Hydra", "descricao": "Um coração que ainda pulsa fracamente. Um ingrediente de poder lendário.",
+        "tipo": TipoItem.INGREDIENTE, "raridade": RaridadeItem.LENDARIO, "valor": 1000,
+        "empilhavel": False
     }
 }

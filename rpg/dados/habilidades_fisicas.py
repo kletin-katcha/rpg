@@ -240,5 +240,59 @@ HABILIDADES_FISICAS = {
         "custo_valor": 10,
         "tipo_alvo": "inimigo_unico",
         "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "medo", "duracao": 2, "escala_com": "forca"}]
+    },
+
+    # --- HABILIDADES DE MONGE ---
+    "rajada_de_golpes": {
+        "nome": "Rajada de Golpes", "tipo": "ativa", "custo_tipo": "stamina", "custo_valor": 20,
+        "descricao": "Desfere uma sequência rápida de dois ataques desarmados.",
+        "lore": "O corpo do monge é sua arma. Cada soco é treinado à exaustão para ser rápido e preciso.",
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [
+            {"tipo": "dano_fisico", "escala_com": "destreza", "multiplicador_dano": 0.7},
+            {"tipo": "dano_fisico", "escala_com": "destreza", "multiplicador_dano": 0.7}
+        ]
+    },
+    "paciencia_defensiva": {
+        "nome": "Paciência Defensiva", "tipo": "ativa", "custo_tipo": "stamina", "custo_valor": 10,
+        "descricao": "Assume uma postura que aumenta a esquiva e prepara para um contra-ataque.",
+        "lore": "O monge flui como a água, desviando dos ataques em vez de bloqueá-los.",
+        "tipo_alvo": "self",
+        "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "buff_esquiva_grande", "duracao": 1}]
+    },
+
+    # --- HABILIDADES DE CAVALEIRO (KNIGHT) ---
+    "provocar": {
+        "nome": "Provocar", "tipo": "ativa", "custo_tipo": "stamina", "custo_valor": 10,
+        "descricao": "Chama a atenção de um inimigo, forçando-o a atacar você.",
+        "lore": "Um grito de desafio que atrai a ira do inimigo, protegendo os aliados mais frágeis.",
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "status_provocado", "duracao": 2}]
+    },
+    "golpe_de_escudo": {
+        "nome": "Golpe de Escudo", "tipo": "ativa", "custo_tipo": "stamina", "custo_valor": 15,
+        "descricao": "Ataca com o escudo, causando dano baixo mas com chance de atordoar.",
+        "lore": "Para o cavaleiro, o escudo é tanto uma arma quanto uma defesa.",
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [
+            {"tipo": "dano_fisico", "escala_com": "forca", "multiplicador_dano": 0.5},
+            {"tipo": "aplicar_efeito", "id_efeito": "atordoamento", "chance": 0.2, "duracao": 1}
+        ]
+    },
+
+    # --- HABILIDADES DE PISTOLEIRO (GUNSLINGER) ---
+    "tiro_rapido": {
+        "nome": "Tiro Rápido", "tipo": "ativa", "custo_tipo": "recurso_especial", "custo_valor": 1,
+        "descricao": "Um disparo rápido da anca, menos preciso mas veloz.",
+        "lore": "No velho oeste, a velocidade do saque pode ser a diferença entre a vida e a morte.",
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [{"tipo": "dano_fisico", "escala_com": "destreza", "multiplicador_dano": 1.1, "penalidade_precisao": 0.15}]
+    },
+    "ricochete": {
+        "nome": "Ricochete", "tipo": "ativa", "custo_tipo": "recurso_especial", "custo_valor": 2,
+        "descricao": "Atira em uma superfície para que a bala ricocheteie e atinja um segundo inimigo.",
+        "lore": "Um tiro de truque que requer um olho incrível e um conhecimento de ângulos que beira a matemática.",
+        "tipo_alvo": "inimigos_area",
+        "efeitos": [{"tipo": "dano_fisico_em_cadeia", "escala_com": "destreza", "multiplicador_dano": 1.0, "max_saltos": 1}]
     }
 }
