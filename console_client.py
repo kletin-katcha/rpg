@@ -58,6 +58,8 @@ def main_loop():
                 elif opcao_escolhida == "Ver status do personagem":
                     print(gm.jogador)
                     funcoes_gerais.pausar()
+                elif "Distribuir Pontos de Atributo" in opcao_escolhida:
+                    console_ui.distribuir_pontos_levelup_ui(gm.jogador)
                 else:
                     gm.executar_opcao_localizacao(opcao_escolhida)
                     # Não pausa aqui para o log do GM ser exibido no topo do próximo loop

@@ -74,8 +74,14 @@ class GameManager:
     def get_opcoes_localizacao(self) -> list[str]:
         opcoes_comuns = [
             "Ver Diário de Missões", "Abrir Inventário", "Ver Equipamento",
-            "Ver status do personagem", "Salvar Jogo", "Sair para o Menu Principal"
+            "Ver status do personagem"
         ]
+        # Adiciona a opção de distribuir pontos se o jogador tiver algum
+        if self.jogador and self.jogador.pontos_de_atributo_para_distribuir > 0:
+            opcoes_comuns.insert(0, f"Distribuir Pontos de Atributo ({self.jogador.pontos_de_atributo_para_distribuir})")
+
+        opcoes_comuns.extend(["Salvar Jogo", "Sair para o Menu Principal"])
+
         if self.localizacao_atual == "vila":
             return ["Falar com Elara (Curandeira da Vila)", "Ir para a Floresta dos Sussurros", "Ir para o Pântano Sombrio"] + opcoes_comuns
         elif self.localizacao_atual == "floresta":
@@ -200,7 +206,13 @@ class GameManager:
         if not inimigos_vivos:
             self.game_state = "in_game"
             self._add_log("Você venceu a batalha!")
-            xp_total = sum(i.xp_recompensa for i in self.combat_state["inimigos"])
+
+            # Processar recompensas e progresso de quests
+            xp_total = 0
+            for inimigo_morto in self.combat_state["inimigos"]:
+                xp_total += inimigo_morto.xp_recompensa
+                quests.atualizar_progresso_quests(self.jogador, "matar", inimigo_morto.id_monstro)
+
             self.jogador.ganhar_xp(xp_total)
             self.combat_state = None
             return {"resultado": "vitoria", "log": self.game_log}

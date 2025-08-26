@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Dict, Any, List
 from ..entidades.personagem import Personagem
 from ..dados.racas_base import RACAS
 from ..dados.classes_iniciais import CLASSES_INICIAIS
+from ..dados.ataques_base import ATAQUES_BASE
 
 if TYPE_CHECKING:
     from ..entidades.personagem import Personagem
@@ -53,6 +54,14 @@ def aplicar_classe(personagem: 'Personagem', id_classe: str):
 
     for habilidade in classe_data.get('habilidades_iniciais', []):
         personagem.habilidades.append(habilidade)
+
+    # Substitui os ataques base pelos da classe
+    ataques_base_disponiveis = classe_data.get('ataques_base_disponiveis', [])
+    if ataques_base_disponiveis:
+        personagem.ataques_base.clear()
+        for id_ataque in ataques_base_disponiveis:
+            if id_ataque in ATAQUES_BASE:
+                personagem.ataques_base.append(ATAQUES_BASE[id_ataque])
 
     equipamento_inicial = classe_data.get('equipamento_inicial', {})
     for slot, id_item in equipamento_inicial.items():

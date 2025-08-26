@@ -213,3 +213,72 @@ def distribuir_pontos_ui(personagem: Personagem):
     cc_api.aplicar_atributos(personagem, distribuicao)
     print("\nPontos de atributo distribuídos com sucesso!")
     funcoes_gerais.pausar()
+
+def distribuir_pontos_levelup_ui(personagem: Personagem):
+    """Interface para o jogador distribuir os pontos de atributo ganhos ao subir de nível."""
+    pontos = personagem.pontos_de_atributo_para_distribuir
+    if pontos <= 0:
+        print("Você não tem pontos de atributo para distribuir.")
+        funcoes_gerais.pausar()
+        return
+
+    distribuicao = {
+        "forca": 0, "destreza": 0, "constituicao": 0,
+        "inteligencia": 0, "sabedoria": 0, "carisma": 0, "sorte": 0
+    }
+
+    while True:
+        funcoes_gerais.imprimir_cabecalho("DISTRIBUIÇÃO DE PONTOS DE ATRIBUTO")
+        print(f"Você tem {pontos} pontos para distribuir.\n")
+
+        # Exibe os atributos
+        print(f"  - Força       : {personagem.forca + distribuicao['forca']} ({personagem.forca} +{distribuicao['forca']})")
+        print(f"  - Destreza    : {personagem.destreza + distribuicao['destreza']} ({personagem.destreza} +{distribuicao['destreza']})")
+        print(f"  - Constituição: {personagem.constituicao + distribuicao['constituicao']} ({personagem.constituicao} +{distribuicao['constituicao']})")
+        print(f"  - Inteligência: {personagem.inteligencia + distribuicao['inteligencia']} ({personagem.inteligencia} +{distribuicao['inteligencia']})")
+        print(f"  - Sabedoria   : {personagem.sabedoria + distribuicao['sabedoria']} ({personagem.sabedoria} +{distribuicao['sabedoria']})")
+        print(f"  - Carisma     : {personagem.carisma + distribuicao['carisma']} ({personagem.carisma} +{distribuicao['carisma']})")
+        print(f"  - Sorte       : {personagem.sorte + distribuicao['sorte']} ({personagem.sorte} +{distribuicao['sorte']})")
+
+        print("\n" + "-" * 41)
+        print("Comandos: 'atributo+' (ex: forca+), 'atributo-' (ex: forca-), 'pronto'")
+
+        cmd = input("> ").lower().strip()
+
+        if cmd == 'pronto':
+            break
+
+        if len(cmd) < 2:
+            print("Comando inválido.")
+            funcoes_gerais.pausar()
+            continue
+
+        operacao = cmd[-1]
+        atributo = cmd[:-1]
+
+        if atributo not in distribuicao:
+            print(f"Atributo '{atributo}' desconhecido.")
+            funcoes_gerais.pausar()
+            continue
+
+        if operacao == '+':
+            if pontos > 0:
+                distribuicao[atributo] += 1
+                pontos -= 1
+            else:
+                print("Você não tem mais pontos para distribuir.")
+                funcoes_gerais.pausar()
+        elif operacao == '-':
+            if distribuicao[atributo] > 0:
+                distribuicao[atributo] -= 1
+                pontos += 1
+            else:
+                print(f"Você não pode remover mais pontos de {atributo}.")
+                funcoes_gerais.pausar()
+        else:
+            print("Operação inválida. Use '+' ou '-'.")
+            funcoes_gerais.pausar()
+
+    personagem.distribuir_pontos_de_atributo(distribuicao)
+    print("\nNovos atributos definidos!")
+    funcoes_gerais.pausar()
