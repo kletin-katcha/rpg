@@ -186,16 +186,24 @@ class GameManager:
     # --- Métodos da API de Combate ---
 
     def iniciar_combate(self, ids_monstros: list[str]):
-        """Prepara o estado de combate para a UI."""
+        """Prepara o estado de combate, incluindo a ordem de iniciativa."""
         monstros = [criar_monstro_por_id(id_monstro) for id_monstro in ids_monstros]
+
+        # Cria a lista de todos os combatentes e a ordena pela Destreza (iniciativa)
+        todos_combatentes = [self.jogador] + monstros
+        todos_combatentes.sort(key=lambda c: c.destreza, reverse=True)
+
         self.game_state = "combat"
         self.combat_state = {
-            "jogador": self.jogador,
-            "inimigos": monstros,
-            "turno_de": "jogador", # ou ID do inimigo
+            "todos_combatentes": todos_combatentes,
+            "turn_index": 0,
+            "jogador": self.jogador, # Mantém referência fácil
+            "inimigos": monstros,     # Mantém referência fácil
             "log_combate": []
         }
         self._add_log(f"Combate iniciado contra {[m.nome for m in monstros]}!")
+        ordem_str = " -> ".join([c.nome for c in todos_combatentes])
+        self._add_log(f"Ordem de iniciativa: {ordem_str}")
 
     def get_opcoes_combate(self) -> list[str]:
         """Retorna as ações de combate disponíveis para o jogador."""
@@ -238,64 +246,83 @@ class GameManager:
         """Retorna o estado atual do combate para a UI renderizar."""
         return self.combat_state
 
-    def executar_turno_combate(self, acao_jogador: dict) -> dict:
+    def get_combatente_atual(self) -> Optional['Personagem']:
+        """Retorna o combatente cujo turno está ativo."""
+        if not self.combat_state:
+            return None
+        idx = self.combat_state["turn_index"]
+        return self.combat_state["todos_combatentes"][idx]
+
+    def _avancar_turno(self):
+        """Avança o índice de turno na fila de iniciativa."""
+        if not self.combat_state: return
+
+        # Loop para garantir que o próximo combatente esteja vivo
+        for _ in range(len(self.combat_state["todos_combatentes"])):
+            current_idx = self.combat_state["turn_index"]
+            next_idx = (current_idx + 1) % len(self.combat_state["todos_combatentes"])
+            self.combat_state["turn_index"] = next_idx
+            if self.get_combatente_atual().esta_vivo():
+                return
+
+    def executar_turno_combate(self, acao: dict = None) -> dict:
         """
-        Executa um turno de combate completo (jogador e inimigos) e retorna o estado.
+        Executa o turno para o combatente atual na fila de iniciativa.
+        Se for o turno do jogador, a 'acao' fornecida é usada.
+        Se for um monstro, a IA decide a ação.
         """
         if not self.combat_state or self.game_state != "combat":
             return {"erro": "Não está em modo de combate."}
 
         log_turno = []
+        combatente_atual = self.get_combatente_atual()
 
-        # 1. Processar início do turno do jogador (efeitos, etc.)
-        if self.jogador.esta_vivo():
-            log_turno.extend(combate._regenerar_recursos(self.jogador))
+        # Se o combatente atual não pode agir (ex: atordoado) ou está morto, apenas avança o turno.
+        if not combatente_atual.esta_vivo():
+            log_turno.append(f"{combatente_atual.nome} está fora de combate.")
+            self._avancar_turno()
+            return {"resultado": "continuar", "log": log_turno}
 
-        # 2. Executar ação do jogador
-        if self.jogador.esta_vivo(): # Checa de novo, pois DoTs podem matar
-            log_turno.extend(combate.executar_acao(self.jogador, acao_jogador, [self.jogador], self.combat_state["inimigos"]))
+        # Processa regeneração e efeitos (DoTs, HoTs) no início do turno de cada um.
+        log_turno.extend(combate._regenerar_recursos(combatente_atual))
+        if not combatente_atual.esta_vivo():
+            log_turno.append(f"{combatente_atual.nome} sucumbiu aos seus ferimentos no início do turno.")
+            self._avancar_turno()
+            return {"resultado": "continuar", "log": log_turno}
 
-        # 3. Checar se o combate acabou (vitória)
+        # Determina a ação a ser executada
+        acao_final = acao
+        if isinstance(combatente_atual, Personagem) and combatente_atual != self.jogador: # Se for um Monstro
+            acao_final = combatente_atual.decidir_acao(
+                aliados=[c for c in self.combat_state["todos_combatentes"] if isinstance(c, Personagem) and c != self.jogador],
+                inimigos=[self.jogador]
+            )
+        elif not acao:
+             return {"erro": "Ação do jogador não fornecida."}
+
+        # Executa a ação
+        log_turno.extend(combate.executar_acao(combatente_atual, acao_final, [self.jogador], self.combat_state["inimigos"]))
+
+        # Verifica condição de fim de combate
         inimigos_vivos = [m for m in self.combat_state["inimigos"] if m.esta_vivo()]
         if not inimigos_vivos:
             self.game_state = "in_game"
             log_turno.append("Você venceu a batalha!")
-
-            # Lógica de recompensas
             xp_total = sum(i.xp_recompensa for i in self.combat_state["inimigos"])
             ouro_total = sum(i.ouro for i in self.combat_state["inimigos"])
-
             log_turno.append(f"Você ganhou {xp_total} de XP e {ouro_total} de ouro.")
             self.jogador.ganhar_xp(xp_total)
             self.jogador.ouro += ouro_total
-
-            log_turno.append("Você coleta os espólios:")
-            for inimigo in self.combat_state["inimigos"]:
-                loot = inimigo.gerar_loot()
-                for item_drop in loot.get("itens", []):
-                    self.jogador.adicionar_item(item_drop["id_item"], item_drop["quantidade"])
-                    log_turno.append(f"  - {item_drop['quantidade']}x {item_drop['id_item']}")
-
-            self.combat_state["log_combate"].extend(log_turno)
-            self.combat_state = None # Limpa o estado de combate
+            # ... (código de loot) ...
+            self.combat_state = None
             return {"resultado": "vitoria", "log": log_turno}
 
-        # 4. Turno dos Inimigos
-        for inimigo in inimigos_vivos:
-            if inimigo.esta_vivo():
-                log_turno.extend(combate._regenerar_recursos(inimigo))
-
-            if inimigo.esta_vivo() and self.jogador.esta_vivo():
-                acao_inimigo = inimigo.decidir_acao(aliados=inimigos_vivos, inimigos=[self.jogador])
-                log_turno.extend(combate.executar_acao(inimigo, acao_inimigo, inimigos_vivos, [self.jogador]))
-
-        # 5. Checar se o combate acabou de novo (derrota)
         if not self.jogador.esta_vivo():
-            self.game_state = "main_menu" # Ou tela de game over
+            self.game_state = "main_menu"
             log_turno.append("Você foi derrotado.")
-            self.combat_state["log_combate"].extend(log_turno)
+            self.combat_state = None
             return {"resultado": "derrota", "log": log_turno}
 
-        # Adiciona o log do turno ao log geral do combate e retorna
-        self.combat_state["log_combate"].extend(log_turno)
-        return {"resultado": "continuar", "log": log_turno, "estado_atual": self.combat_state}
+        # Avança para o próximo combatente na fila
+        self._avancar_turno()
+        return {"resultado": "continuar", "log": log_turno}

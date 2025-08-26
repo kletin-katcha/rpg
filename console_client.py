@@ -12,6 +12,20 @@ def exibir_menu_numerado(opcoes: list[str]):
     for i, opcao in enumerate(opcoes, 1):
         print(f"{i}. {opcao}")
 
+def exibir_status_combate(gm: GameManager):
+    """Função auxiliar para exibir o status de todos os combatentes."""
+    estado_combate = gm.get_estado_combate()
+    if not estado_combate: return
+
+    jogador = estado_combate["jogador"]
+    inimigos = estado_combate["inimigos"]
+
+    print(f"{jogador.nome}: {jogador.hp_atual}/{jogador.hp_max} HP | {jogador.mp_atual}/{jogador.mp_max} MP | {jogador.stamina_atual}/{jogador.stamina_max} Vigor")
+    for inimigo in inimigos:
+        if inimigo.esta_vivo():
+            print(f"{inimigo.nome}: {inimigo.hp_atual}/{inimigo.hp_max} HP")
+    print("-" * 20)
+
 def main_loop():
     """O loop principal do cliente de console."""
     gm = GameManager()
@@ -85,39 +99,44 @@ def main_loop():
                 funcoes_gerais.pausar()
 
         elif gm.game_state == "combat":
-            # O loop de combate agora é gerenciado aqui no cliente
+            # O loop de combate foi refatorado para usar a ordem de iniciativa.
             while gm.game_state == "combat":
+                combatente_atual = gm.get_combatente_atual()
+
+                # Se for o turno de um monstro, o GameManager lida com isso automaticamente.
+                if combatente_atual != gm.jogador:
+                    resultado_turno = gm.executar_turno_combate()
+                    gm.game_log.extend(resultado_turno.get("log", []))
+                    # Pequena pausa para o jogador ler o que o monstro fez
+                    funcoes_gerais.limpar_tela()
+                    funcoes_gerais.imprimir_cabecalho("Combate! - Turno Inimigo", nivel=2)
+                    exibir_status_combate(gm)
+                    for log_entry in gm.game_log:
+                        print(log_entry)
+                    funcoes_gerais.pausar()
+                    gm.clear_log()
+                    continue
+
+                # Se for o turno do jogador, exibe a UI e pede uma ação.
                 funcoes_gerais.limpar_tela()
-                funcoes_gerais.imprimir_cabecalho("Combate!", nivel=2)
-
-                estado_combate = gm.get_estado_combate()
-                jogador = estado_combate["jogador"]
-                inimigos = estado_combate["inimigos"]
-
-                # Exibir status
-                print(f"{jogador.nome}: {jogador.hp_atual}/{jogador.hp_max} HP | {jogador.mp_atual}/{jogador.mp_max} MP | {jogador.stamina_atual}/{jogador.stamina_max} Vigor")
-                for inimigo in inimigos:
-                    if inimigo.esta_vivo():
-                        print(f"{inimigo.nome}: {inimigo.hp_atual}/{inimigo.hp_max} HP")
-                print("-" * 20)
-
-                # Exibir log de combate do turno anterior
+                funcoes_gerais.imprimir_cabecalho("Combate! - SEU TURNO", nivel=2)
+                exibir_status_combate(gm)
                 for log_entry in gm.game_log:
                     print(log_entry)
-                gm.clear_log() # Limpa o log para o próximo turno
+                gm.clear_log()
 
-                # Obter e executar ação do jogador
                 acao_jogador = loop_acao_jogador_console(gm)
                 if acao_jogador:
                     resultado_turno = gm.executar_turno_combate(acao_jogador)
-                    # Adiciona o novo log ao log principal do GameManager
                     gm.game_log.extend(resultado_turno.get("log", []))
-                else:
-                    # O jogador cancelou ou a ação foi inválida, continue o loop para obter nova ação
-                    continue
 
-            # Pausa para o jogador ver o resultado final do combate (vitória/derrota)
+            # O combate terminou (vitória ou derrota), exibe o log final.
+            funcoes_gerais.limpar_tela()
+            funcoes_gerais.imprimir_cabecalho("Fim do Combate", nivel=2)
+            for log_entry in gm.game_log:
+                print(log_entry)
             funcoes_gerais.pausar()
+            gm.clear_log()
 
 def loop_acao_jogador_console(gm: GameManager) -> dict:
     """
