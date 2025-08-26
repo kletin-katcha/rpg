@@ -215,6 +215,291 @@ HABILIDADES_MAGICAS = {
         ]
     },
 
+    # --- HABILIDADES DE MAGO (Adicionais) ---
+    "barreira_de_gelo": {
+        "nome": "Barreira de Gelo",
+        "tipo": "ativa",
+        "descricao": "Cria uma barreira de gelo protetora que absorve uma quantidade de dano antes de quebrar.",
+        "lore": "Uma aplicação defensiva da criomancia, transformando a umidade do ar em um escudo sólido e gelado.",
+        "custo_tipo": "mp",
+        "custo_valor": 15,
+        "tipo_alvo": "self",
+        "efeitos": [{"tipo": "absorver_dano", "escala_com": "inteligencia", "multiplicador": 4}]
+    },
+
+    # --- HABILIDADES DE CLÉRIGO (Adicionais) ---
+    "cura_leve": {
+        "nome": "Cura Leve",
+        "tipo": "ativa",
+        "descricao": "Uma prece simples que cura uma pequena quantidade de ferimentos.",
+        "lore": "O primeiro dom concedido a muitos que seguem um caminho divino. É um toque de compaixão, um alívio para os feridos.",
+        "custo_tipo": "mp",
+        "custo_valor": 10,
+        "tipo_alvo": "aliado_unico",
+        "efeitos": [{"tipo": "cura", "escala_com": "sabedoria", "multiplicador_cura": 2.5}]
+    },
+
+    # --- HABILIDADES DE SACERDOTE DAS SOMBRAS ---
+    "toque_vampirico": {
+        "nome": "Toque Vampírico",
+        "tipo": "ativa",
+        "descricao": "Toca um inimigo, causando dano necrótico e curando o conjurador por uma parte do dano causado.",
+        "lore": "Uma magia proibida que brinca com a transferência da força vital. A vida do inimigo alimenta a sua.",
+        "custo_tipo": "mp",
+        "custo_valor": 20,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [{"tipo": "drenar_vida", "escala_com": "sabedoria", "multiplicador_dano": 1.2, "percentual_cura": 0.5}]
+    },
+    "palavra_de_dor": {
+        "nome": "Palavra de Dor",
+        "tipo": "ativa",
+        "descricao": "Sussurra uma palavra de poder sombrio que causa dor excruciante e dano contínuo ao alvo.",
+        "lore": "Existem palavras na língua das sombras que não foram feitas para serem ouvidas por mortais. Esta é uma delas.",
+        "custo_tipo": "mp",
+        "custo_valor": 18,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [
+            {"tipo": "dano_magico", "escala_com": "sabedoria", "elemento": "sombra", "multiplicador_dano": 0.8},
+            {"tipo": "aplicar_efeito", "id_efeito": "debuff_palavra_de_dor", "duracao": 3}
+        ]
+    },
+
+    # =================================== HABILIDADES DE INQUISIDOR (Mágicas) ===================================
+    "fogo_purificador": {
+        "nome": "Fogo Purificador",
+        "tipo": "ativa",
+        "descricao": "Chamas sagradas que queimam impurezas e causam dano contínuo a alvos malignos.",
+        "lore": "O fogo que não apenas destrói, mas purifica. Uma ferramenta para expurgar a corrupção do mundo.",
+        "custo_tipo": "mp",
+        "custo_valor": 20,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "debuff_fogo_purificador", "duracao": 3}]
+    },
+
+    # =================================== HABILIDADES DE MAGO DE BATALHA (Mágicas) ===================================
+    "armadura_de_mago": {
+        "nome": "Armadura de Mago",
+        "tipo": "ativa",
+        "descricao": "Cria um campo de força arcano que aumenta a defesa do conjurador.",
+        "lore": "Uma versão aprimorada da pele de pedra, que usa pura força mágica para desviar de golpes.",
+        "custo_tipo": "mp",
+        "custo_valor": 15,
+        "tipo_alvo": "self",
+        "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "buff_armadura_arcana", "duracao": 5}]
+    },
+
+    # =================================== HABILIDADES DE ILUSIONISTA ===================================
+    "imagem_espelhada": {
+        "nome": "Imagem Espelhada",
+        "tipo": "ativa",
+        "descricao": "Cria cópias ilusórias de si mesmo para confundir os inimigos.",
+        "lore": "Por que lutar contra um inimigo quando você pode fazê-lo lutar contra sombras?",
+        "custo_tipo": "mp",
+        "custo_valor": 25,
+        "tipo_alvo": "self",
+        "efeitos": [{"tipo": "invocar_ilusao", "id_ilusao": "imagem_espelhada", "quantidade": 3}]
+    },
+    "medo_fantasmagorico": {
+        "nome": "Medo Fantasmagórico",
+        "tipo": "ativa",
+        "descricao": "Cria uma ilusão do pior medo do alvo, potencialmente o aterrorizando.",
+        "lore": "A mente é o verdadeiro campo de batalha. O ilusionista ataca as fundações da coragem de seu inimigo.",
+        "custo_tipo": "mp",
+        "custo_valor": 20,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "medo_severo", "duracao": 2, "chance": 0.5}]
+    },
+
+    # =================================== HABILIDADES DE PIROMANTE ===================================
+    "seta_de_fogo": {
+        "nome": "Seta de Fogo",
+        "tipo": "ativa",
+        "descricao": "Uma seta de fogo teleguiada que causa dano de fogo.",
+        "lore": "Mais rápido que uma bola de fogo, mas com menos impacto. Uma ferramenta versátil no arsenal do piromante.",
+        "custo_tipo": "mp",
+        "custo_valor": 10,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [{"tipo": "dano_magico", "escala_com": "inteligencia", "elemento": "fogo", "multiplicador_dano": 1.2}]
+    },
+    "aura_flamejante": {
+        "nome": "Aura Flamejante",
+        "tipo": "ativa",
+        "descricao": "Envolve o conjurador em uma aura de fogo que queima inimigos próximos a cada turno.",
+        "lore": "O piromante se torna o próprio sol, uma presença que queima tudo ao seu redor.",
+        "custo_tipo": "mp",
+        "custo_valor": 30,
+        "tipo_alvo": "self",
+        "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "aura_dano_fogo", "duracao": 4}]
+    },
+
+    # =================================== HABILIDADES DE CRIOMANTE ===================================
+    "armadura_de_geada": {
+        "nome": "Armadura de Geada",
+        "tipo": "ativa",
+        "descricao": "Cobre o conjurador com uma camada de gelo mágico que aumenta a defesa e pode congelar atacantes.",
+        "lore": "Uma defesa que pune. O frio não apenas protege, ele retalia.",
+        "custo_tipo": "mp",
+        "custo_valor": 20,
+        "tipo_alvo": "self",
+        "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "buff_armadura_de_geada", "duracao": 5}]
+    },
+
+    # =================================== HABILIDADES DE GEOMANTE ===================================
+    "arremessar_rocha": {
+        "nome": "Arremessar Rocha",
+        "tipo": "ativa",
+        "descricao": "Arranca uma rocha do chão e a arremessa no inimigo.",
+        "lore": "Simples, direto e doloroso. O geomante usa o próprio mundo como sua arma.",
+        "custo_tipo": "mp",
+        "custo_valor": 15,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [{"tipo": "dano_fisico", "escala_com": "inteligencia", "multiplicador_dano": 1.8}]
+    },
+
+    # =================================== HABILIDADES DE AEROMANTE ===================================
+    "rajada_de_vento": {
+        "nome": "Rajada de Vento",
+        "tipo": "ativa",
+        "descricao": "Cria uma forte rajada de vento que empurra um inimigo para trás.",
+        "lore": "O controle do ar é o controle do campo de batalha.",
+        "custo_tipo": "mp",
+        "custo_valor": 10,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [{"tipo": "empurrar", "distancia": 4}]
+    },
+    "salto_do_vento": {
+        "nome": "Salto do Vento",
+        "tipo": "ativa",
+        "descricao": "Usa uma corrente de ar para se impulsionar, aumentando drasticamente a esquiva por um turno.",
+        "lore": "Por que desviar quando você pode simplesmente não estar lá?",
+        "custo_tipo": "mp",
+        "custo_valor": 15,
+        "tipo_alvo": "self",
+        "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "buff_esquiva_grande", "duracao": 1}]
+    },
+
+    # =================================== HABILIDADES DE ELETROMANTE ===================================
+    "choque": {
+        "nome": "Choque",
+        "tipo": "ativa",
+        "descricao": "Um pequeno choque elétrico que causa dano e tem uma chance de interromper a ação do inimigo.",
+        "lore": "Uma picada de relâmpago para lembrar ao inimigo com quem ele está lidando.",
+        "custo_tipo": "mp",
+        "custo_valor": 8,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [{"tipo": "dano_magico", "escala_com": "inteligencia", "elemento": "raio", "multiplicador_dano": 0.9}, {"tipo": "interromper", "chance": 0.15}]
+    },
+
+    # =================================== HABILIDADES DE ALQUIMISTA ===================================
+    "arremessar_bomba_de_fogo": {
+        "nome": "Arremessar Bomba de Fogo",
+        "tipo": "ativa",
+        "descricao": "Arremessa um frasco com uma mistura volátil que explode em chamas.",
+        "lore": "Ciência ou magia? Para o alquimista, não há diferença.",
+        "custo_tipo": "stamina",
+        "custo_valor": 20,
+        "tipo_alvo": "inimigos_area",
+        "efeitos": [{"tipo": "dano_magico", "escala_com": "inteligencia", "elemento": "fogo", "multiplicador_dano_principal": 1.2, "multiplicador_dano_area": 0.6}]
+    },
+    "criar_pocao_de_cura_rapida": {
+        "nome": "Criar Poção de Cura Rápida",
+        "tipo": "ativa",
+        "descricao": "Mistura rapidamente alguns reagentes para criar uma poção de cura fraca no meio do combate.",
+        "lore": "Um bom alquimista está sempre preparado.",
+        "custo_tipo": "mp",
+        "custo_valor": 25,
+        "tipo_alvo": "self",
+        "efeitos": [{"tipo": "adicionar_item_inventario", "id_item": "pocao_cura_fraca", "quantidade": 1}]
+    },
+
+    # =================================== HABILIDADES DE MESTRE CERVEJEIRO ===================================
+    "estilo_do_bebado": {
+        "nome": "Estilo do Bêbado",
+        "tipo": "ativa",
+        "descricao": "Adota uma postura de luta imprevisível, aumentando a esquiva e a chance de crítico.",
+        "lore": "O oponente nunca sabe se o balanço é um erro ou um ataque. E, para ser honesto, às vezes nem o mestre cervejeiro sabe.",
+        "custo_tipo": "recurso_especial",
+        "custo_valor": 1,
+        "tipo_alvo": "self",
+        "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "buff_estilo_do_bebado", "duracao": 4}]
+    },
+    "baforada_de_fogo_alcoolico": {
+        "nome": "Baforada de Fogo Alcoólico",
+        "tipo": "ativa",
+        "descricao": "Toma um gole de uma bebida forte e a cospe em uma chama.",
+        "lore": "Uma técnica perigosa e impressionante, aprendida nas tavernas mais duvidosas.",
+        "custo_tipo": "recurso_especial",
+        "custo_valor": 2,
+        "tipo_alvo": "inimigos_cone",
+        "efeitos": [{"tipo": "dano_magico", "escala_com": "constituicao", "elemento": "fogo", "multiplicador_dano": 1.5}]
+    },
+
+    # =================================== HABILIDADES DE VIDENTE ===================================
+    "premonicao": {
+        "nome": "Premonição",
+        "tipo": "ativa",
+        "descricao": "O vidente vislumbra o futuro imediato, garantindo que o próximo ataque contra ele erre.",
+        "lore": "O futuro é um rio com muitas correntes. O vidente aprende a navegar por elas.",
+        "custo_tipo": "mp",
+        "custo_valor": 20,
+        "tipo_alvo": "self",
+        "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "buff_esquiva_garantida", "duracao": 1}]
+    },
+    "maldição_do_azar": {
+        "nome": "Maldição do Azar",
+        "tipo": "ativa",
+        "descricao": "Amaldiçoa um inimigo, diminuindo sua sorte e, consequentemente, sua chance de acerto crítico.",
+        "lore": "O vidente torce os fios do destino, transformando a sorte de um campeão em pó.",
+        "custo_tipo": "mp",
+        "custo_valor": 15,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "debuff_azar", "duracao": 4}]
+    },
+
+    # =================================== HABILIDADES DE MAGO DO SANGUE ===================================
+    "sacrificio_de_sangue": {
+        "nome": "Sacrifício de Sangue",
+        "tipo": "ativa",
+        "descricao": "Sacrifica uma porção da própria vida para restaurar mana.",
+        "lore": "A vida é poder. O mago do sangue entende esta verdade fundamental melhor do que ninguém.",
+        "custo_tipo": "hp",
+        "custo_valor": 50,
+        "tipo_alvo": "self",
+        "efeitos": [{"tipo": "restaurar_recurso", "recurso": "mp", "quantidade": 75}]
+    },
+    "lanca_de_sangue": {
+        "nome": "Lança de Sangue",
+        "tipo": "ativa",
+        "descricao": "Cria uma lança de sangue solidificado e a arremessa no inimigo. Causa mais dano quanto menos vida o conjurador tiver.",
+        "lore": "O poder do mago do sangue vem da beira da morte.",
+        "custo_tipo": "hp",
+        "custo_valor": 30,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [{"tipo": "dano_magico_dinamico", "escala_com": "percentual_vida_perdida", "elemento": "fisico", "multiplicador_dano_max": 3.0}]
+    },
+
+    # =================================== HABILIDADES DE ARCANISTA ===================================
+    "analise_magica": {
+        "nome": "Análise Mágica",
+        "tipo": "ativa",
+        "descricao": "Analisa as defesas mágicas de um alvo, identificando uma fraqueza elemental.",
+        "lore": "Conhecimento é poder. O arcanista disseca a magia do inimigo para encontrar a rachadura em sua armadura.",
+        "custo_tipo": "mp",
+        "custo_valor": 10,
+        "tipo_alvo": "inimigo_unico",
+        "efeitos": [{"tipo": "revelar_fraqueza_elemental"}]
+    },
+    "runa_de_poder": {
+        "nome": "Runa de Poder",
+        "tipo": "ativa",
+        "descricao": "Inscreve uma runa no chão que aumenta o poder de todas as magias conjuradas enquanto estiver sobre ela.",
+        "lore": "O arcanista não apenas usa a magia, ele a escreve na própria realidade.",
+        "custo_tipo": "mp",
+        "custo_valor": 35,
+        "tipo_alvo": "self",
+        "efeitos": [{"tipo": "criar_area_efeito", "id_area": "runa_de_poder", "duracao": 4}]
+    },
+
     # --- HABILIDADES MÁGICAS ADICIONAIS (NÍVEL 1-10) ---
 
     # --- Buffs / Debuffs ---

@@ -91,7 +91,7 @@ CLASSES_INICIAIS = {
         "lore": "O bardo sabe que as palavras podem ser mais afiadas que as espadas.",
         "stats_primarios": ["carisma", "destreza"],
         "ataques_base_disponiveis": ["ataque_leve"],
-        "habilidades_iniciais": ["cancao_da_coragem", "nota_ dissonante"],
+        "habilidades_iniciais": ["cancao_da_coragem", "nota_dissonante"],
         "equipamento_inicial": {"arma_principal": "rapiera", "arma_secundaria": "alaude", "peitoral": "roupas_de_viajante"}
     },
 
