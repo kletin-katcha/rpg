@@ -111,13 +111,29 @@ class GameManager:
         elif self.localizacao_atual == "vila":
             if opcao == "Falar com Elara (Curandeira da Vila)":
                 # Lógica de quests com Elara...
+                quests.atualizar_progresso_quests(self.jogador, "falar_com", "elara_curandeira")
+
+                # Checa o estado de cada quest em ordem
+                despertar_quest = next((q for q in self.jogador.quests_ativas if q.id_quest == "mq01_despertar"), None)
+                ameaca_quest = next((q for q in self.jogador.quests_ativas if q.id_quest == "mq02_ameaca_local"), None)
                 pantano_quest = next((q for q in self.jogador.quests_ativas if q.id_quest == "sq01_coracao_pantano"), None)
 
-                if pantano_quest and pantano_quest.esta_completa():
+                # Se a primeira quest não foi iniciada, inicie-a
+                if not despertar_quest and "mq01_despertar" not in self.jogador.quests_concluidas:
+                    quests.iniciar_quest(self.jogador, "mq01_despertar")
+                # Se a primeira quest está completa, conclua-a e inicie a segunda
+                elif despertar_quest and despertar_quest.esta_completa():
+                    quests.concluir_quest(self.jogador, despertar_quest)
+                    quests.iniciar_quest(self.jogador, "mq02_ameaca_local")
+                # Se a segunda quest está completa, conclua-a e ofereça a do pântano
+                elif ameaca_quest and ameaca_quest.esta_completa():
+                    quests.concluir_quest(self.jogador, ameaca_quest)
+                    quests.iniciar_quest(self.jogador, "sq01_coracao_pantano")
+                # Se a quest do pântano está completa, conclua-a e inicie a próxima principal
+                elif pantano_quest and pantano_quest.esta_completa():
                     quests.concluir_quest(self.jogador, pantano_quest)
                     quests.iniciar_quest(self.jogador, "mq04_chamado_antigo")
-                elif "mq02_ameaca_local" in self.jogador.quests_concluidas and not pantano_quest and "sq01_coracao_pantano" not in self.jogador.quests_concluidas:
-                    quests.iniciar_quest(self.jogador, "sq01_coracao_pantano")
+                # Fallback
                 else:
                     self._add_log("'É bom ver você bem. Cuidado lá fora.'")
 

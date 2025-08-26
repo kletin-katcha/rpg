@@ -18,8 +18,10 @@ def main_loop():
         # Exibe o log de eventos do turno/ação anterior
         for log_entry in gm.game_log:
             print(f">> {log_entry}")
-        if gm.game_log: print("-" * 20)
-        gm.clear_log()
+        if gm.game_log:
+            funcoes_gerais.pausar() # Pausa para o jogador ler o log
+            gm.clear_log()
+            funcoes_gerais.limpar_tela() # Limpa novamente após o log
 
         if gm.game_state == "main_menu":
             funcoes_gerais.imprimir_cabecalho("RPG TEXTUAL COLOSSAL")
@@ -138,6 +140,11 @@ def loop_acao_jogador_console(gm: GameManager) -> dict:
     escolha_acao = opcoes[int(escolha_str) - 1]
 
     if escolha_acao == 'Atacar':
+        if not gm.jogador.ataques_base:
+            print("Você não tem ataques disponíveis!")
+            funcoes_gerais.pausar()
+            return None
+
         inimigos = [i for i in gm.combat_state["inimigos"] if i.esta_vivo()]
         print("\nEscolha o alvo:")
         for i, inimigo in enumerate(inimigos, 1):
