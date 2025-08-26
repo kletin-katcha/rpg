@@ -51,7 +51,7 @@ def selecionar_raca_ui(personagem: Personagem):
         racas_pagina = list(racas.items())[inicio:fim]
 
         for i, (id_raca, raca_data) in enumerate(racas_pagina, 1):
-            print(f"{i}. {raca_data['nome']} - {raca_data['short_desc']}")
+            print(f"{i}. {raca_data['nome']}")
 
         print("\n" + "-" * 41)
         print("Comandos:")
