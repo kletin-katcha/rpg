@@ -187,7 +187,8 @@ def executar_acao(ator: 'Personagem', acao: Dict, todos_aliados: List['Personage
             return {"log": log_eventos, "status": status_combate}
         ator.stamina_atual -= custo
 
-        chance_acerto_base = ator.precisao / (ator.precisao + alvo_entidade.esquiva) if (ator.precisao + alvo_entidade.esquiva) > 0 else 0.5
+        # Nova fórmula de acerto: 75% de base + 1% por ponto de precisão acima da esquiva do alvo.
+        chance_acerto_base = 0.75 + (ator.precisao - alvo_entidade.esquiva) * 0.01
         chance_acerto_final = min(0.95, max(0.10, chance_acerto_base * ataque.get("mod_precisao", 1.0)))
 
         # Modificadores de mira
