@@ -348,5 +348,24 @@ HABILIDADES_MAGICAS = {
             {"tipo": "dano_magico", "escala_com": "inteligencia", "elemento": "necrotico", "multiplicador_dano": 1.5},
             {"tipo": "roubo_de_vida", "porcentagem": 0.5}
         ]
+    },
+
+    "baforada_de_fogo_alcoolico": {
+        "nome": "Baforada de Fogo Alcoólico",
+        "tipo": "ativa",
+        "descricao": "Cospe uma nuvem de álcool e a incendeia, causando dano de fogo em uma área.",
+        "lore": "Uma técnica perigosa e surpreendentemente eficaz, aperfeiçoada em inúmeras brigas de taverna.",
+        "custo_tipo": "stamina",
+        "custo_valor": 20,
+        "tipo_alvo": "inimigos_area",
+        "efeitos": [
+            {
+                "tipo": "dano_magico",
+                "escala_com": "constituicao",
+                "elemento": "fogo",
+                "multiplicador_dano_principal": 1.2,
+                "multiplicador_dano_area": 0.6
+            }
+        ]
     }
 }

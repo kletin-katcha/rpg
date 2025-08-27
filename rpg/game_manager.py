@@ -110,17 +110,21 @@ class GameManager:
             self.game_state = "main_menu"
         elif self.localizacao_atual == "vila":
             if opcao == "Falar com Elara (Curandeira da Vila)":
+                # Garante que a primeira quest seja iniciada antes de processar o progresso.
+                q_despertar_ativa = next((q for q in self.jogador.quests_ativas if q.id_quest == "mq01_despertar"), None)
+                if not q_despertar_ativa and "mq01_despertar" not in self.jogador.quests_concluidas:
+                    quests.iniciar_quest(self.jogador, "mq01_despertar")
+
+                # Agora, com a quest potencialmente ativa, atualize o progresso.
                 quests.atualizar_progresso_quests(self.jogador, "falar_com", "elara_curandeira")
 
-                # Definindo ponteiros para as quests para facilitar a leitura
+                # Re-fetch das quests pois o estado pode ter mudado.
                 q_despertar = next((q for q in self.jogador.quests_ativas if q.id_quest == "mq01_despertar"), None)
                 q_ameaca = next((q for q in self.jogador.quests_ativas if q.id_quest == "mq02_ameaca_local"), None)
                 q_pantano = next((q for q in self.jogador.quests_ativas if q.id_quest == "sq01_coracao_pantano"), None)
 
-                # Lógica de progressão sequencial
-                if not q_despertar and "mq01_despertar" not in self.jogador.quests_concluidas:
-                    quests.iniciar_quest(self.jogador, "mq01_despertar")
-                elif q_despertar and q_despertar.esta_completa():
+                # A lógica de progressão agora funciona corretamente em uma única interação.
+                if q_despertar and q_despertar.esta_completa():
                     quests.concluir_quest(self.jogador, q_despertar)
                     quests.iniciar_quest(self.jogador, "mq02_ameaca_local")
                 elif q_ameaca and q_ameaca.esta_completa():
@@ -130,7 +134,13 @@ class GameManager:
                     quests.concluir_quest(self.jogador, q_pantano)
                     quests.iniciar_quest(self.jogador, "mq04_chamado_antigo")
                 else:
-                    self._add_log("'É bom ver você bem. Cuidado lá fora.'")
+                    # Se nenhuma quest progrediu, exibe a mensagem padrão.
+                    # A mensagem de conclusão/início de quest é tratada pelo sistema de quests.
+                    if not self.game_log:
+                        self._add_log("'É bom ver você bem. Cuidado lá fora.'")
+
+                # Pausa para garantir que o jogador leia o resultado da interação.
+                funcoes_gerais.pausar()
 
             elif opcao == "Ir para a Floresta dos Sussurros":
                 self.time_manager.avancar_tempo(60)
