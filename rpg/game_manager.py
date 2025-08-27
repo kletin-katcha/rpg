@@ -321,8 +321,14 @@ class GameManager:
                 inimigos=[self.jogador]
             )
 
-        log_turno.extend(combate.executar_acao(combatente_atual, acao_final, [self.jogador], self.combat_state["inimigos"]))
+        resultado_acao = combate.executar_acao(combatente_atual, acao_final, [self.jogador], self.combat_state["inimigos"])
+        log_turno.extend(resultado_acao["log"])
         self._add_log("\n".join(log_turno))
+
+        if resultado_acao["status"] == "fuga":
+            self.game_state = "in_game"
+            self.combat_state = None
+            return {"resultado": "fuga", "log": self.game_log}
 
         inimigos_vivos = [m for m in self.combat_state["inimigos"] if m.esta_vivo()]
         if not inimigos_vivos:
@@ -349,7 +355,7 @@ class GameManager:
         return {"resultado": "continuar", "log": self.game_log}
 
     def get_opcoes_combate(self) -> list[str]:
-        return ["Atacar", "Habilidade", "Item", "Defender", "Fugir"]
+        return ["Atacar", "Habilidade", "Item", "Mudar Postura", "Defender", "Fugir"]
 
     def get_habilidades_ativas_jogador(self) -> List[Dict]:
         if not self.jogador: return []

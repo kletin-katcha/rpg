@@ -112,54 +112,130 @@ def processar_efeitos_de_turno(personagem: 'Personagem') -> list[str]:
     return log_eventos
 
 
-def executar_acao(ator: 'Personagem', acao: Dict, todos_aliados: List['Personagem'], todos_inimigos: List['Personagem']) -> list[str]:
+def executar_acao(ator: 'Personagem', acao: Dict, todos_aliados: List['Personagem'], todos_inimigos: List['Personagem']) -> Dict:
     """
     Processa uma ação decidida pelo jogador ou IA.
-    Retorna um log de eventos para a UI.
+    Retorna um dicionário com o log de eventos e o status do combate.
     """
     tipo_acao = acao.get("tipo")
     alvo_entidade = acao.get("alvo")
     log_eventos = []
+    status_combate = "continuar"
 
     if tipo_acao == "passar_turno":
         log_eventos.append(f"{ator.nome} não faz nada.")
-        return log_eventos
 
-    if tipo_acao == "defender":
-        log_eventos.append(f"{ator.nome} assume uma postura defensiva para recuperar o fôlego.")
-        return log_eventos
+    elif tipo_acao == "defender":
+        stamina_recuperada = 20
+        ator.stamina_atual = min(ator.stamina_max, ator.stamina_atual + stamina_recuperada)
+        log_eventos.append(f"{ator.nome} assume uma postura defensiva e recupera {stamina_recuperada} de vigor.")
+        dados_efeito = TODOS_OS_EFEITOS["buff_defendendo"]
+        novo_efeito = Efeito(
+            id_efeito="buff_defendendo",
+            nome=dados_efeito["nome"],
+            descricao=dados_efeito["descricao"],
+            tipo=dados_efeito["tipo"],
+            duracao_turnos=1,
+            modificadores=dados_efeito["modificadores"]
+        )
+        ator.efeitos_ativos.append(novo_efeito)
+        ator.recalcular_stats_completos()
+        log_eventos.append(f"Sua defesa aumentou drasticamente por um turno!")
 
-    if tipo_acao == "ataque_basico":
+    elif tipo_acao == "fugir":
+        # Lógica de fuga simples: 50% de chance base
+        chance_fuga = 0.5 + (ator.destreza - 10) * 0.02 # Bônus de destreza
+        if random.random() < chance_fuga:
+            log_eventos.append(f"{ator.nome} conseguiu fugir do combate!")
+            status_combate = "fuga"
+        else:
+            log_eventos.append(f"{ator.nome} tentou fugir, mas falhou!")
+
+    elif tipo_acao == "usar_item":
+        id_item_usar = None
+        # Procura por uma poção de cura no inventário
+        for id_item, data_item in ator.inventario.items():
+            if "cura" in id_item: # Simplificação
+                id_item_usar = id_item
+                break
+
+        if id_item_usar:
+            # A lógica de consumo e log já está em Personagem.usar_item
+            ator.usar_item(id_item_usar)
+        else:
+            log_eventos.append(f"{ator.nome} procurou em sua bolsa, mas não encontrou um item de cura para usar.")
+
+    elif tipo_acao == "mudar_postura":
+        custo_stamina = 5
+        if ator.stamina_atual < custo_stamina:
+            log_eventos.append(f"{ator.nome} não tem vigor suficiente para mudar de postura.")
+        else:
+            ator.stamina_atual -= custo_stamina
+            nova_postura = acao.get("nova_postura")
+            if nova_postura in ["ofensiva", "defensiva", "equilibrada"]:
+                ator.postura_combate = nova_postura
+                log_eventos.append(f"{ator.nome} mudou para a postura {nova_postura.capitalize()}!")
+            else:
+                log_eventos.append(f"Postura inválida.")
+
+    elif tipo_acao == "ataque_basico":
         ataque = acao.get("ataque")
         if not ataque or not alvo_entidade:
             log_eventos.append(f"{ator.nome} tenta atacar, mas algo deu errado.")
-            return log_eventos
+            return {"log": log_eventos, "status": status_combate}
 
         log_eventos.append(f"{ator.nome} usa {ataque['nome']} em {alvo_entidade.nome}!")
 
         custo = ataque.get("custo_stamina", 0)
         if ator.stamina_atual < custo:
             log_eventos.append(f"{ator.nome} não tem vigor suficiente para {ataque['nome']}!")
-            return log_eventos
+            return {"log": log_eventos, "status": status_combate}
         ator.stamina_atual -= custo
 
         chance_acerto_base = ator.precisao / (ator.precisao + alvo_entidade.esquiva) if (ator.precisao + alvo_entidade.esquiva) > 0 else 0.5
         chance_acerto_final = min(0.95, max(0.10, chance_acerto_base * ataque.get("mod_precisao", 1.0)))
 
+        # Modificadores de mira
+        parte_alvo = acao.get("parte_alvo", "corpo")
+        bonus_crit_chance = 0.0
+        if parte_alvo == "cabeça":
+            chance_acerto_final *= 0.7 # Mais difícil de acertar
+            bonus_crit_chance = 0.25 # Recompensa maior
+            log_eventos.append(f"{ator.nome} mira na cabeça de {alvo_entidade.nome}!")
+        elif parte_alvo == "braços":
+            chance_acerto_final *= 0.9
+            log_eventos.append(f"{ator.nome} mira nos braços de {alvo_entidade.nome}!")
+        elif parte_alvo == "pernas":
+            chance_acerto_final *= 0.9
+            log_eventos.append(f"{ator.nome} mira nas pernas de {alvo_entidade.nome}!")
+
         if random.random() > chance_acerto_final:
             log_eventos.append(f"{alvo_entidade.nome} se esquiva do ataque de {ator.nome}!")
-            return log_eventos
+            return {"log": log_eventos, "status": status_combate}
 
         multiplicador_dano = ataque.get("multiplicador_dano", 1.0)
         tipo_dano = ataque.get("tipo_dano", "fisico")
 
+        # Modificadores de Postura
+        mod_dano_postura = 1.0
+        mod_defesa_postura = 1.0
+        if ator.postura_combate == "ofensiva":
+            mod_dano_postura = 1.2
+        elif ator.postura_combate == "defensiva":
+            mod_dano_postura = 0.8
+
+        if alvo_entidade.postura_combate == "ofensiva":
+            mod_defesa_postura = 1.2 # Toma mais dano
+        elif alvo_entidade.postura_combate == "defensiva":
+            mod_defesa_postura = 0.8 # Toma menos dano
+
         if tipo_dano == "fisico":
             dano_base_personagem = ator.ataque_fisico + ator.dano_arma_bonus
-            dano_base = dano_base_personagem * multiplicador_dano
-            defesa_alvo = alvo_entidade.defesa_fisica
+            dano_base = (dano_base_personagem * multiplicador_dano) * mod_dano_postura
+            defesa_alvo = alvo_entidade.defesa_fisica * mod_defesa_postura
         else:
-            dano_base = ator.poder_magico * multiplicador_dano
-            defesa_alvo = alvo_entidade.defesa_magica
+            dano_base = (ator.poder_magico * multiplicador_dano) * mod_dano_postura
+            defesa_alvo = alvo_entidade.defesa_magica * mod_defesa_postura
 
         dano_final = max(0, int(dano_base - defesa_alvo))
         alvo_entidade.tomar_dano(dano_final, tipo_dano)
@@ -170,10 +246,22 @@ def executar_acao(ator: 'Personagem', acao: Dict, todos_aliados: List['Personage
 
         custo = habilidade.get("custo_valor", 0)
         recurso_tipo = habilidade.get("custo_tipo")
+
+        recurso_suficiente = False
         if recurso_tipo == "mp":
-            ator.mp_atual -= custo
+            if ator.mp_atual >= custo:
+                ator.mp_atual -= custo
+                recurso_suficiente = True
         elif recurso_tipo == "stamina":
-            ator.stamina_atual -= custo
+            if ator.stamina_atual >= custo:
+                ator.stamina_atual -= custo
+                recurso_suficiente = True
+        else: # Sem custo
+            recurso_suficiente = True
+
+        if not recurso_suficiente:
+            log_eventos.append(f"{ator.nome} não tem recursos suficientes para usar {habilidade['nome']}.")
+            return {"log": log_eventos, "status": "continuar"} # Retorna um status padrão
 
         tipo_alvo_hab = habilidade.get("tipo_alvo")
         alvos = []
@@ -185,7 +273,7 @@ def executar_acao(ator: 'Personagem', acao: Dict, todos_aliados: List['Personage
 
         log_eventos.extend(aplicar_efeitos_habilidade(ator, alvos, habilidade))
 
-    return log_eventos
+    return {"log": log_eventos, "status": status_combate}
 
 def _regenerar_recursos(personagem: 'Personagem') -> list[str]:
     """

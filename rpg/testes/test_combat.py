@@ -85,7 +85,7 @@ class TestCombatAPI(unittest.TestCase):
 
         habilidade = TODAS_HABILIDADES["esforco_heroico"]
         acao_habilidade = {"tipo": "usar_habilidade", "habilidade": habilidade, "alvo": jogador_humano}
-        acao_passar = {"tipo": "defender"}
+        acao_passar = {"tipo": "passar_turno"}
 
         # Função auxiliar para garantir que a ação correta seja executada no turno do jogador
         def executar_turno_jogador(acao):

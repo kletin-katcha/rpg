@@ -71,6 +71,8 @@ class Personagem:
 
         self.habilidades: List[str] = []
         self.ataques_base: List[Dict] = [ATAQUES_BASE["soco"], ATAQUES_BASE["chute"]]
+        self.postura_combate: str = "equilibrada" # equilibrada, ofensiva, defensiva
+        print(f"DEBUG: Personagem '{self.nome}' __init__, ataques_base inicial: {[a['nome'] for a in self.ataques_base]}")
         self.efeitos_ativos: List['Efeito'] = []
         self.quests_ativas: List['Quest'] = []
         self.quests_concluidas: List[str] = []

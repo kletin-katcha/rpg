@@ -59,12 +59,14 @@ def aplicar_classe(personagem: 'Personagem', id_classe: str):
         personagem.habilidades.append(habilidade)
 
     # Substitui os ataques base pelos da classe
+    print(f"DEBUG: Antes de aplicar classe, ataques_base: {[a['nome'] for a in personagem.ataques_base]}")
     ataques_base_disponiveis = classe_data.get('ataques_base_disponiveis', [])
     if ataques_base_disponiveis:
         personagem.ataques_base.clear()
         for id_ataque in ataques_base_disponiveis:
             if id_ataque in ATAQUES_BASE:
                 personagem.ataques_base.append(ATAQUES_BASE[id_ataque])
+    print(f"DEBUG: Depois de aplicar classe, ataques_base: {[a['nome'] for a in personagem.ataques_base]}")
 
     equipamento_inicial = classe_data.get('equipamento_inicial', {})
     for slot, id_item in equipamento_inicial.items():

@@ -151,9 +151,20 @@ def loop_acao_jogador_console(gm: GameManager) -> dict:
         escolha_alvo_str = input("> ")
         if escolha_alvo_str.isdigit() and 1 <= int(escolha_alvo_str) <= len(inimigos):
             alvo = inimigos[int(escolha_alvo_str) - 1]
+
+            print("\nEscolha onde mirar:")
+            partes_corpo = ["Corpo", "Cabeça", "Braços", "Pernas"]
+            for i, parte in enumerate(partes_corpo, 1):
+                print(f"{i}. {parte}")
+
+            escolha_parte_str = input("> ")
+            parte_alvo = "corpo" # Padrão
+            if escolha_parte_str.isdigit() and 1 <= int(escolha_parte_str) <= len(partes_corpo):
+                parte_alvo = partes_corpo[int(escolha_parte_str) - 1].lower()
+
             # Usando o primeiro ataque base como padrão por simplicidade
             ataque_base = gm.jogador.ataques_base[0]
-            return {"tipo": "ataque_basico", "ataque": ataque_base, "alvo": alvo}
+            return {"tipo": "ataque_basico", "ataque": ataque_base, "alvo": alvo, "parte_alvo": parte_alvo}
 
     elif escolha_acao == 'Habilidade':
         habilidades = gm.get_habilidades_ativas_jogador()
@@ -183,7 +194,31 @@ def loop_acao_jogador_console(gm: GameManager) -> dict:
             if alvo:
                 return {"tipo": "usar_habilidade", "habilidade": habilidade, "alvo": alvo}
 
-    # Implementar outras ações como Item, Defender, Fugir
+    elif escolha_acao == 'Defender':
+        return {"tipo": "defender"}
+
+    elif escolha_acao == 'Fugir':
+        return {"tipo": "fugir"}
+
+    elif escolha_acao == 'Mudar Postura':
+        print("\nEscolha a postura:")
+        posturas = ["Ofensiva", "Defensiva", "Equilibrada"]
+        for i, p in enumerate(posturas, 1):
+            print(f"{i}. {p}")
+
+        escolha_postura_str = input("> ")
+        if escolha_postura_str.isdigit() and 1 <= int(escolha_postura_str) <= len(posturas):
+            nova_postura = posturas[int(escolha_postura_str) - 1].lower()
+            return {"tipo": "mudar_postura", "nova_postura": nova_postura}
+
+    elif escolha_acao == 'Item':
+        # Esta é uma simplificação. Idealmente, teríamos uma UI de inventário aqui.
+        # Por enquanto, vamos assumir que o jogador quer usar a primeira poção que tiver.
+        # A lógica real de encontrar e usar a poção será no GameManager/sistema de combate.
+        # TODO: Chamar uma função de UI de inventário de combate.
+        # Retornamos um id genérico, a lógica no backend vai encontrar uma poção usável.
+        return {"tipo": "usar_item", "id_item": "qualquer_pocao_de_cura"}
+
     return None
 
 if __name__ == "__main__":

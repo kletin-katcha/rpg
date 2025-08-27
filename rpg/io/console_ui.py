@@ -29,6 +29,7 @@ def criar_novo_personagem_ui() -> Personagem:
 
     # Finalização
     personagem_final = cc_api.finalizar_criacao(personagem)
+    print(f"DEBUG: Fim de criar_novo_personagem_ui, ataques_base final: {[a['nome'] for a in personagem_final.ataques_base]}")
     funcoes_gerais.imprimir_cabecalho("PERSONAGEM CONCLUÍDO")
     print("Seu herói está pronto para a aventura!")
     print(personagem_final)

@@ -93,5 +93,31 @@ ATAQUES_BASE = {
         "mod_precisao": 0.9, # -10% precisão
         "custo_stamina": 15,
         "tipo_dano": "fisico"
+    },
+
+    # --- Estilos de Ataque de Armas Humanoides ---
+    "ataque_leve": {
+        "nome": "Ataque Leve",
+        "descricao": "Um ataque rápido que consome pouco vigor, mas causa menos dano. Mais preciso.",
+        "multiplicador_dano": 0.8,
+        "mod_precisao": 1.15, # +15% precisão
+        "custo_stamina": 8,
+        "tipo_dano": "fisico"
+    },
+    "ataque_normal": {
+        "nome": "Ataque Normal",
+        "descricao": "Um ataque balanceado em dano, precisão e custo.",
+        "multiplicador_dano": 1.0,
+        "mod_precisao": 1.0,
+        "custo_stamina": 12,
+        "tipo_dano": "fisico"
+    },
+    "ataque_pesado": {
+        "nome": "Ataque Pesado",
+        "descricao": "Um ataque lento e poderoso que causa muito dano, mas é menos preciso e consome mais vigor.",
+        "multiplicador_dano": 1.4,
+        "mod_precisao": 0.85, # -15% precisão
+        "custo_stamina": 20,
+        "tipo_dano": "fisico"
     }
 }

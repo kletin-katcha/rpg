@@ -52,6 +52,15 @@ TODOS_OS_EFEITOS = {
             "ataque_fisico": 10
         }
     },
+    "buff_defendendo": {
+        "nome": "Defendendo",
+        "descricao": "O personagem está em uma postura defensiva, aumentando muito sua defesa por um curto período.",
+        "tipo": TipoEfeito.BUFF,
+        "modificadores": {
+            "defesa_fisica": 50,
+            "defesa_magica": 50
+        }
+    },
 
     # --- DEBUFFS ---
     "debuff_defesa_pequeno": {
@@ -95,6 +104,22 @@ TODOS_OS_EFEITOS = {
         "tipo": TipoEfeito.DEBUFF,
         "modificadores": {
             "chance_falha_acao": 0.5 # Necessita de lógica no loop de combate
+        }
+    },
+    "debuff_desarmado": {
+        "nome": "Desarmado",
+        "descricao": "O ataque do personagem foi reduzido após um golpe em seus braços.",
+        "tipo": TipoEfeito.DEBUFF,
+        "modificadores": {
+            "ataque_fisico": -15
+        }
+    },
+    "debuff_lentidao_combate": {
+        "nome": "Lento",
+        "descricao": "A esquiva do personagem foi reduzida após um golpe em suas pernas.",
+        "tipo": TipoEfeito.DEBUFF,
+        "modificadores": {
+            "esquiva": -20
         }
     }
 }
