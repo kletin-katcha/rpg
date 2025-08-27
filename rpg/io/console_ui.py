@@ -25,8 +25,7 @@ def criar_novo_personagem_ui() -> Personagem:
     selecionar_classe_ui(personagem)
 
     # Distribuição de Atributos
-    personagem.pontos_de_atributo_para_distribuir = 20
-    distribuir_pontos_ui(personagem)
+    distribuir_pontos_ui(personagem, is_creation=True)
 
     # Finalização
     personagem_final = cc_api.finalizar_criacao(personagem)
@@ -152,9 +151,17 @@ def selecionar_classe_ui(personagem: Personagem):
             print("Comando inválido.")
             funcoes_gerais.pausar()
 
-def distribuir_pontos_ui(personagem: Personagem):
+def distribuir_pontos_ui(personagem: Personagem, is_creation: bool = False):
     """Interface para o jogador distribuir os pontos de atributo."""
+    if is_creation:
+        personagem.pontos_de_atributo_para_distribuir = 20
+
     pontos = personagem.pontos_de_atributo_para_distribuir
+    if pontos <= 0:
+        print("Você não tem pontos de atributo para distribuir.")
+        funcoes_gerais.pausar()
+        return
+
     distribuicao = {
         "forca": 0, "destreza": 0, "constituicao": 0,
         "inteligencia": 0, "sabedoria": 0, "carisma": 0, "sorte": 0
@@ -220,7 +227,11 @@ def distribuir_pontos_ui(personagem: Personagem):
             print("Valor inválido. Por favor, insira um número.")
             funcoes_gerais.pausar()
 
-    cc_api.aplicar_atributos(personagem, distribuicao)
+    # A lógica de distribuição permanece a mesma...
+    # ...
+
+    # Ao final, chama o método do próprio personagem para gastar os pontos
+    personagem.distribuir_pontos_de_atributo(distribuicao)
     print("\nPontos de atributo distribuídos com sucesso!")
     funcoes_gerais.pausar()
 
