@@ -15,13 +15,12 @@ def main_loop():
     while gm.is_running:
         funcoes_gerais.limpar_tela()
 
-        # Exibe o log de eventos do turno/ação anterior
-        for log_entry in gm.game_log:
-            print(f">> {log_entry}")
+        # Exibe o log de eventos do turno/ação anterior, com pausas
         if gm.game_log:
-            funcoes_gerais.pausar() # Pausa para o jogador ler o log
+            for log_entry in gm.game_log:
+                print(f">> {log_entry}")
+                funcoes_gerais.pausar()
             gm.clear_log()
-            funcoes_gerais.limpar_tela() # Limpa novamente após o log
 
         if gm.game_state == "main_menu":
             funcoes_gerais.imprimir_cabecalho("RPG TEXTUAL COLOSSAL")

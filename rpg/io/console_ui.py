@@ -25,6 +25,7 @@ def criar_novo_personagem_ui() -> Personagem:
     selecionar_classe_ui(personagem)
 
     # Distribuição de Atributos
+    personagem.pontos_de_atributo_para_distribuir = 20
     distribuir_pontos_ui(personagem)
 
     # Finalização
@@ -50,7 +51,7 @@ def selecionar_raca_ui(personagem: Personagem):
         fim = inicio + racas_por_pagina
         racas_pagina = list(racas.items())[inicio:fim]
 
-        for i, (id_raca, raca_data) in enumerate(racas_pagina, 1):
+        for i, (id_raca, raca_data) in enumerate(racas_pagina, start=inicio + 1):
             print(f"{i}. {raca_data['nome']}")
 
         print("\n" + "-" * 41)
@@ -67,11 +68,13 @@ def selecionar_raca_ui(personagem: Personagem):
             pagina_atual -= 1
         elif escolha.isdigit():
             idx_escolha = int(escolha) - 1
-            if 0 <= idx_escolha < len(racas_pagina):
-                id_raca_selecionada, raca_data = racas_pagina[idx_escolha]
+            # Ajusta o índice para a lista da página atual
+            idx_real = int(escolha) - inicio - 1
+            if 0 <= idx_real < len(racas_pagina):
+                id_raca_selecionada, raca_data = racas_pagina[idx_real]
                 funcoes_gerais.limpar_tela()
                 print(f"---------- DETALHES: {raca_data['nome']} ----------\n")
-                print(raca_data['long_desc'])
+                print(raca_data.get('descricao', 'Nenhuma descrição disponível.'))
                 print("\nModificadores de Atributos:")
                 for stat, mod in raca_data.get('modificadores_stats', {}).items():
                     print(f"  - {stat.capitalize()}: {mod:+} ")
@@ -106,8 +109,8 @@ def selecionar_classe_ui(personagem: Personagem):
         fim = inicio + classes_por_pagina
         classes_pagina = list(classes.items())[inicio:fim]
 
-        for i, (id_classe, classe_data) in enumerate(classes_pagina, 1):
-            print(f"{i}. {classe_data['nome']} - {classe_data['short_desc']}")
+        for i, (id_classe, classe_data) in enumerate(classes_pagina, start=inicio + 1):
+            print(f"{i}. {classe_data['nome']}")
 
         print("\n" + "-" * 41)
         print("Comandos:")
@@ -123,11 +126,13 @@ def selecionar_classe_ui(personagem: Personagem):
             pagina_atual -= 1
         elif escolha.isdigit():
             idx_escolha = int(escolha) - 1
-            if 0 <= idx_escolha < len(classes_pagina):
-                id_classe_selecionada, classe_data = classes_pagina[idx_escolha]
+            # Ajusta o índice para a lista da página atual
+            idx_real = int(escolha) - inicio - 1
+            if 0 <= idx_real < len(classes_pagina):
+                id_classe_selecionada, classe_data = classes_pagina[idx_real]
                 funcoes_gerais.limpar_tela()
                 print(f"---------- DETALHES: {classe_data['nome']} ----------\n")
-                print(classe_data['long_desc'])
+                print(classe_data.get('descricao', 'Nenhuma descrição disponível.'))
                 print(f"\nAtributos Primários:")
                 print(f"  - {', '.join(classe_data.get('stats_primarios', []))}")
                 print("\nHabilidades Iniciais:")
@@ -165,10 +170,8 @@ def distribuir_pontos_ui(personagem: Personagem):
             print(f"  - {attr.capitalize():<12}: {base_attr + valor} ({base_attr} +{valor})")
 
         print("\n" + "-" * 41)
-        print("Comandos:")
-        print("  Use 'atributo+' para adicionar um ponto (ex: forca+)")
-        print("  Use 'atributo-' para remover um ponto (ex: forca-)")
-        print("  Digite 'pronto' quando terminar.")
+        print("\n" + "-" * 41)
+        print("Comandos: 'atributo <valor>' (ex: forca 5), 'resetar', 'pronto'")
 
         cmd = input("> ").lower().strip()
 
@@ -179,35 +182,42 @@ def distribuir_pontos_ui(personagem: Personagem):
                     continue
             break
 
-        if len(cmd) < 2:
-            print("Comando inválido.")
+        if cmd == 'resetar':
+            pontos += sum(distribuicao.values())
+            distribuicao = {k: 0 for k in distribuicao}
+            continue
+
+        partes = cmd.split()
+        if len(partes) != 2:
+            print("Comando inválido. Use o formato 'atributo valor' (ex: forca 5).")
             funcoes_gerais.pausar()
             continue
 
-        operacao = cmd[-1]
-        atributo = cmd[:-1]
-
+        atributo, valor_str = partes
         if atributo not in distribuicao:
             print(f"Atributo '{atributo}' desconhecido.")
             funcoes_gerais.pausar()
             continue
 
-        if operacao == '+':
-            if pontos > 0:
-                distribuicao[atributo] += 1
-                pontos -= 1
-            else:
-                print("Você não tem mais pontos para distribuir.")
+        try:
+            valor = int(valor_str)
+            if valor <= 0:
+                print("O valor deve ser um número positivo.")
                 funcoes_gerais.pausar()
-        elif operacao == '-':
-            if distribuicao[atributo] > 0:
-                distribuicao[atributo] -= 1
-                pontos += 1
-            else:
-                print(f"Você não pode remover mais pontos de {atributo}.")
+                continue
+
+            pontos_disponiveis = pontos + distribuicao[atributo]
+            if valor > pontos_disponiveis:
+                print(f"Você só pode alocar até {pontos_disponiveis} pontos em {atributo}.")
                 funcoes_gerais.pausar()
-        else:
-            print("Operação inválida. Use '+' ou '-'.")
+                continue
+
+            pontos_gastos_anteriormente = distribuicao[atributo]
+            distribuicao[atributo] = valor
+            pontos = pontos - (valor - pontos_gastos_anteriormente)
+
+        except ValueError:
+            print("Valor inválido. Por favor, insira um número.")
             funcoes_gerais.pausar()
 
     cc_api.aplicar_atributos(personagem, distribuicao)
