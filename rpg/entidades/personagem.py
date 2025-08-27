@@ -306,6 +306,7 @@ class Personagem:
             "ouro": self.ouro,
             "equipamentos": {s: i.id_item if i else None for s, i in self.equipamentos.items()},
             "habilidades": self.habilidades,
+            "ataques_base": [a["id_ataque"] for a in self.ataques_base],
             "efeitos_ativos": [e.to_dict() for e in self.efeitos_ativos],
             "quests_ativas": [q.to_dict() for q in self.quests_ativas],
             "quests_concluidas": self.quests_concluidas,
@@ -337,6 +338,14 @@ class Personagem:
                 personagem.equipar_item(id_item)
 
         personagem.habilidades = dados["habilidades"]
+
+        # Carrega os ataques base, com um fallback para os padrões
+        personagem.ataques_base.clear()
+        ataques_ids = dados.get("ataques_base", ["soco", "chute"])
+        for id_ataque in ataques_ids:
+            if id_ataque in ATAQUES_BASE:
+                personagem.ataques_base.append(ATAQUES_BASE[id_ataque])
+
         personagem.quests_concluidas = dados["quests_concluidas"]
         personagem.reputacao = dados["reputacao"]
 

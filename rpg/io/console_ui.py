@@ -68,10 +68,12 @@ def selecionar_raca_ui(personagem: Personagem):
             pagina_atual -= 1
         elif escolha.isdigit():
             idx_escolha = int(escolha) - 1
-            # Ajusta o índice para a lista da página atual
-            idx_real = int(escolha) - inicio - 1
-            if 0 <= idx_real < len(racas_pagina):
-                id_raca_selecionada, raca_data = racas_pagina[idx_real]
+            if 0 <= idx_escolha < len(racas):
+                id_raca_selecionada, raca_data = list(racas.items())[idx_escolha]
+
+                # Recalcula a página para exibir a seleção
+                pagina_atual = idx_escolha // racas_por_pagina
+
                 funcoes_gerais.limpar_tela()
                 print(f"---------- DETALHES: {raca_data['nome']} ----------\n")
                 print(raca_data.get('descricao', 'Nenhuma descrição disponível.'))
@@ -88,6 +90,9 @@ def selecionar_raca_ui(personagem: Personagem):
                     print(f"\nVocê agora é um {raca_data['nome']}!")
                     funcoes_gerais.pausar()
                     return
+                else:
+                    # Se não confirmar, a tela será redesenhada na página correta
+                    continue
             else:
                 print("Número inválido.")
                 funcoes_gerais.pausar()
@@ -126,10 +131,12 @@ def selecionar_classe_ui(personagem: Personagem):
             pagina_atual -= 1
         elif escolha.isdigit():
             idx_escolha = int(escolha) - 1
-            # Ajusta o índice para a lista da página atual
-            idx_real = int(escolha) - inicio - 1
-            if 0 <= idx_real < len(classes_pagina):
-                id_classe_selecionada, classe_data = classes_pagina[idx_real]
+            if 0 <= idx_escolha < len(classes):
+                id_classe_selecionada, classe_data = list(classes.items())[idx_escolha]
+
+                # Recalcula a página para exibir a seleção
+                pagina_atual = idx_escolha // classes_por_pagina
+
                 funcoes_gerais.limpar_tela()
                 print(f"---------- DETALHES: {classe_data['nome']} ----------\n")
                 print(classe_data.get('descricao', 'Nenhuma descrição disponível.'))
@@ -145,6 +152,9 @@ def selecionar_classe_ui(personagem: Personagem):
                     print(f"\nVocê agora é um {classe_data['nome']}!")
                     funcoes_gerais.pausar()
                     return
+                else:
+                    # Se não confirmar, a tela será redesenhada na página correta
+                    continue
             else:
                 print("Número inválido.")
                 funcoes_gerais.pausar()

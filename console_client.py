@@ -70,16 +70,23 @@ def main_loop():
                 funcoes_gerais.pausar()
 
         elif gm.game_state == "combat":
-            funcoes_gerais.imprimir_cabecalho("Combate!")
+            funcoes_gerais.imprimir_cabecalho("!!! COMBATE !!!")
 
-            # Exibir status
+            # Exibir status do Jogador
             jogador = gm.combat_state["jogador"]
+            print(f"--- {jogador.nome} (Nível {jogador.nivel}) ---")
+            print(f"HP: {jogador.hp_atual}/{jogador.hp_max} | MP: {jogador.mp_atual}/{jogador.mp_max} | ST: {int(jogador.stamina_atual)}/{int(jogador.stamina_max)}")
+            print("-" * 40)
+
+            # Exibir status dos Inimigos
             inimigos = gm.combat_state["inimigos"]
-            print(f"{jogador.nome}: {jogador.hp_atual}/{jogador.hp_max} HP")
+            print("--- Inimigos ---")
             for inimigo in inimigos:
                 if inimigo.esta_vivo():
-                    print(f"{inimigo.nome}: {inimigo.hp_atual}/{inimigo.hp_max} HP")
-            print("-" * 20)
+                    # Assumindo que monstros também têm nível
+                    nivel_monstro = getattr(inimigo, 'nivel', '??')
+                    print(f"{inimigo.nome} (Nível {nivel_monstro}) - HP: {inimigo.hp_atual}/{inimigo.hp_max}")
+            print("-" * 40)
 
             combatente_atual = gm.get_combatente_atual()
             print(f"É o turno de {combatente_atual.nome}.")
