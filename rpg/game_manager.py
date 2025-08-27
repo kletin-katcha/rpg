@@ -4,7 +4,7 @@ from typing import List, Dict
 
 from .entidades.personagem import Personagem
 from .sistemas import combate, quests, tempo, dungeons
-from .io import salvar_carregar
+from .io import salvar_carregar, menu_loja
 from .fabricas.fabrica_monstros import criar_monstro_por_id
 from .sistemas.dungeons import gerar_dungeon_aleatoria
 from .dados.habilidades import TODAS_HABILIDADES
@@ -91,7 +91,12 @@ class GameManager:
         opcoes_comuns.extend(["Salvar Jogo", "Sair para o Menu Principal"])
 
         if self.localizacao_atual == "vila":
-            opcoes_vila = ["Falar com Elara (Curandeira da Vila)", "Ir para a Floresta dos Sussurros", "Ir para o Pântano Sombrio"]
+            opcoes_vila = [
+                "Falar com Elara (Curandeira da Vila)",
+                "Visitar a forja 'O Aço Resoluto'",
+                "Ir para a Floresta dos Sussurros",
+                "Ir para o Pântano Sombrio"
+            ]
             # Adiciona a opção de viajar se o jogador tiver a quest
             if self.jogador and any(q.id_quest == "mq04_chamado_antigo" for q in self.jogador.quests_ativas):
                 opcoes_vila.append("Viajar para Aethelgard")
@@ -141,6 +146,9 @@ class GameManager:
 
                 # Pausa para garantir que o jogador leia o resultado da interação.
                 funcoes_gerais.pausar()
+
+            elif opcao == "Visitar a forja 'O Aço Resoluto'":
+                menu_loja.loja_ui(self.jogador, 'ferreiro_vila')
 
             elif opcao == "Ir para a Floresta dos Sussurros":
                 self.time_manager.avancar_tempo(60)

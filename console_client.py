@@ -1,6 +1,6 @@
 from rpg.game_manager import GameManager
 from rpg.utilitarios import funcoes_gerais
-from rpg.io import console_ui, menu_inventario, menu_equipamento
+from rpg.io import console_ui, menu_inventario, menu_equipamento, menu_combate
 from rpg.sistemas import quests
 
 def exibir_menu_numerado(opcoes: list[str]):
@@ -219,12 +219,12 @@ def loop_acao_jogador_console(gm: GameManager) -> dict:
             return {"tipo": "mudar_postura", "nova_postura": nova_postura}
 
     elif escolha_acao == 'Item':
-        # Esta é uma simplificação. Idealmente, teríamos uma UI de inventário aqui.
-        # Por enquanto, vamos assumir que o jogador quer usar a primeira poção que tiver.
-        # A lógica real de encontrar e usar a poção será no GameManager/sistema de combate.
-        # TODO: Chamar uma função de UI de inventário de combate.
-        # Retornamos um id genérico, a lógica no backend vai encontrar uma poção usável.
-        return {"tipo": "usar_item", "id_item": "qualquer_pocao_de_cura"}
+        id_item_selecionado = menu_combate.selecionar_item_combate_ui(gm.jogador)
+        if id_item_selecionado:
+            return {"tipo": "usar_item", "id_item": id_item_selecionado}
+        else:
+            # O jogador cancelou a seleção de item, então retorna None para permitir nova ação.
+            return None
 
     return None
 

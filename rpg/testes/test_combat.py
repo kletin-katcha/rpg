@@ -121,6 +121,33 @@ class TestCombatAPI(unittest.TestCase):
         self.assertEqual(len(jogador_humano.efeitos_ativos), 0, "Buff deveria ter sido removido no início do turno 4.")
         self.assertEqual(jogador_humano.forca, forca_original, "Força deveria voltar ao normal no turno 4.")
 
+    def test_usar_item_em_combate(self):
+        """Testa se o jogador pode usar um item consumível durante o combate."""
+        # Configuração inicial
+        self.jogador.hp_atual = 100
+        self.jogador.adicionar_item("pocao_cura_fraca", 1)
+        self.assertTrue("pocao_cura_fraca" in self.jogador.inventario)
+        hp_antes = self.jogador.hp_atual
+
+        # Inicia o combate
+        self.gm.iniciar_combate([self.monstro.id_monstro])
+        self.assertEqual(self.gm.game_state, "combat")
+
+        # Define a ação de usar o item
+        acao_usar_item = {"tipo": "usar_item", "id_item": "pocao_cura_fraca"}
+
+        # Garante que seja o turno do jogador antes de executar a ação
+        if self.gm.get_combatente_atual() != self.jogador:
+            self.gm.executar_turno_combate(None) # Passa o turno do monstro
+
+        # Executa o turno do jogador com a ação de usar item
+        self.gm.executar_turno_combate(acao_usar_item)
+
+        # Verificações
+        hp_depois = self.jogador.hp_atual
+        self.assertGreater(hp_depois, hp_antes, "O HP do jogador deveria ter aumentado após usar a poção.")
+        self.assertFalse("pocao_cura_fraca" in self.jogador.inventario, "A poção deveria ter sido removida do inventário.")
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -152,18 +152,13 @@ def executar_acao(ator: 'Personagem', acao: Dict, todos_aliados: List['Personage
             log_eventos.append(f"{ator.nome} tentou fugir, mas falhou!")
 
     elif tipo_acao == "usar_item":
-        id_item_usar = None
-        # Procura por uma poção de cura no inventário
-        for id_item, data_item in ator.inventario.items():
-            if "cura" in id_item: # Simplificação
-                id_item_usar = id_item
-                break
-
-        if id_item_usar:
-            # A lógica de consumo e log já está em Personagem.usar_item
+        id_item_usar = acao.get("id_item")
+        if id_item_usar and id_item_usar in ator.inventario:
+            # A lógica de consumo e os prints já estão em Personagem.usar_item
+            log_eventos.append(f"{ator.nome} usa um item do seu inventário.")
             ator.usar_item(id_item_usar)
         else:
-            log_eventos.append(f"{ator.nome} procurou em sua bolsa, mas não encontrou um item de cura para usar.")
+            log_eventos.append(f"{ator.nome} tentou usar um item, mas não conseguiu.")
 
     elif tipo_acao == "mudar_postura":
         custo_stamina = 5
