@@ -148,6 +148,53 @@ class TestCombatAPI(unittest.TestCase):
         self.assertGreater(hp_depois, hp_antes, "O HP do jogador deveria ter aumentado após usar a poção.")
         self.assertFalse("pocao_cura_fraca" in self.jogador.inventario, "A poção deveria ter sido removida do inventário.")
 
+    @patch('rpg.entidades.monstro.random.random')
+    def test_cooldown_habilidade_monstro(self, mock_random_func):
+        """Testa se a IA do monstro respeita os cooldowns das habilidades."""
+        mock_random_func.return_value = 0.0 # Garante que a IA sempre tente usar a habilidade
+
+        self.gm.iniciar_combate(["lobo_alfa"])
+        monstro = self.gm.combat_state["inimigos"][0]
+
+        # Garante uma ordem de turno previsível para o teste
+        self.gm.combat_state["todos_combatentes"] = [monstro, self.jogador]
+
+        # TURNO 1 (Monstro): Deve usar a habilidade
+        self.gm.clear_log()
+        self.gm.executar_turno_combate(None)
+        self.assertIn("Mordida Feroz", self.gm.game_log[0])
+        self.assertEqual(monstro.cooldowns_habilidades["Mordida Feroz"], 3)
+
+        # TURNO 2 (Jogador): Passa o turno
+        self.gm.executar_turno_combate({"tipo": "passar_turno"})
+        self.assertEqual(monstro.cooldowns_habilidades["Mordida Feroz"], 3, "Cooldown não deve mudar no turno do jogador.")
+
+        # TURNO 3 (Monstro): Cooldown deve diminuir para 2. Habilidade não deve ser usada.
+        self.gm.clear_log()
+        self.gm.executar_turno_combate(None)
+        self.assertEqual(monstro.cooldowns_habilidades["Mordida Feroz"], 2)
+        self.assertNotIn("Mordida Feroz", self.gm.game_log[0])
+
+        # TURNO 4 (Jogador): Passa o turno
+        self.gm.executar_turno_combate({"tipo": "passar_turno"})
+        self.assertEqual(monstro.cooldowns_habilidades["Mordida Feroz"], 2)
+
+        # TURNO 5 (Monstro): Cooldown deve diminuir para 1.
+        self.gm.clear_log()
+        self.gm.executar_turno_combate(None)
+        self.assertEqual(monstro.cooldowns_habilidades["Mordida Feroz"], 1)
+        self.assertNotIn("Mordida Feroz", self.gm.game_log[0])
+
+        # TURNO 6 (Jogador): Passa o turno
+        self.gm.executar_turno_combate({"tipo": "passar_turno"})
+        self.assertEqual(monstro.cooldowns_habilidades["Mordida Feroz"], 1)
+
+        # TURNO 7 (Monstro): Cooldown deve diminuir para 0 e ser usada de novo, resetando para 3.
+        self.gm.clear_log()
+        self.gm.executar_turno_combate(None)
+        self.assertIn("Mordida Feroz", self.gm.game_log[0])
+        self.assertEqual(monstro.cooldowns_habilidades["Mordida Feroz"], 3)
+
 
 if __name__ == '__main__':
     unittest.main()

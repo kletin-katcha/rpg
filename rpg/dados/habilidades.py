@@ -27,7 +27,7 @@ TODAS_HABILIDADES.update(HABILIDADES_PASSIVAS)
 # Por enquanto, são mantidas aqui para garantir a funcionalidade do jogo.
 HABILIDADES_MONSTROS_LEGACY = {
     "mordida_feroz": {
-        "nome": "Mordida Feroz", "custo_tipo": "stamina", "custo_valor": 10,
+        "nome": "Mordida Feroz", "custo_tipo": "stamina", "custo_valor": 10, "cooldown": 3,
         "descricao": "Uma mordida selvagem.", "tipo_alvo": "inimigo_unico",
         "efeitos": [{"tipo": "dano_fisico", "escala_com": "forca", "multiplicador_dano": 1.2}]
     },
