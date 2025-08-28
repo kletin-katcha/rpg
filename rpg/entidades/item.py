@@ -7,6 +7,7 @@ class TipoItem(Enum):
     POCAO = "Poção"
     INGREDIENTE = "Ingrediente"
     MATERIAL_CRAFTING = "Material de Crafting"
+    LIVRO = "Livro"
     ITEM_QUEST = "Item de Missão"
     GENERICO = "Genérico"
 

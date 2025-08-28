@@ -1,13 +1,21 @@
 from typing import TYPE_CHECKING
 from ..entidades.monstro import Monstro
 from ..dados.monstros_area1 import MONSTROS_AREA1
+from ..dados.monstros_area2 import MONSTROS_AREA2
+from ..dados.monstros_dungeon1 import MONSTROS_DUNGEON1
 
 if TYPE_CHECKING:
     from ..entidades.personagem import Personagem
 
+# Centraliza todos os dicionários de monstros
+TODOS_OS_MONSTROS = {}
+TODOS_OS_MONSTROS.update(MONSTROS_AREA1)
+TODOS_OS_MONSTROS.update(MONSTROS_AREA2)
+TODOS_OS_MONSTROS.update(MONSTROS_DUNGEON1)
+
 def criar_monstro_por_id(id_monstro: str) -> Monstro:
     """Cria uma instância de Monstro a partir dos dados do dicionário."""
-    dados_monstro = MONSTROS_AREA1.get(id_monstro)
+    dados_monstro = TODOS_OS_MONSTROS.get(id_monstro)
     if not dados_monstro:
         raise ValueError(f"Monstro com ID '{id_monstro}' não encontrado.")
 

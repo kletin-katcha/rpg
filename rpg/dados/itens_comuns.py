@@ -361,7 +361,7 @@ ITENS_COMUNS = {
         "slot_equipamento": "arma_secundaria", "modificadores": {"dano_arma": 6}
     },
     "sobretudo_de_couro": {
-        "nome": "Sobretudo de Couro", "descricao": "Um casaco longo que oferece boa proteção contra os elementos e alguns golpes.",
+        "nome": "Sobretudo de Couro", "descricao": "Um casaco longo e resistente, popular entre caçadores e atiradores.",
         "tipo": TipoItem.ARMADURA, "raridade": RaridadeItem.COMUM, "valor": 35,
         "slot_equipamento": "peitoral", "modificadores": {"defesa_fisica": 9}
     },
@@ -651,5 +651,33 @@ ITENS_COMUNS = {
         "nome": "Placa de Bronze Antiga", "descricao": "Uma placa de bronze com gravuras de uma era esquecida.",
         "tipo": TipoItem.MATERIAL_CRAFTING, "raridade": RaridadeItem.COMUM, "valor": 25,
         "empilhavel": True, "max_pilha": 10
+    },
+    "nucleo_de_construto_intacto": {
+        "nome": "Núcleo de Construto Intacto", "descricao": "Um núcleo de energia estável, recuperado de um construto arcano.",
+        "tipo": TipoItem.MATERIAL_CRAFTING, "raridade": RaridadeItem.INCOMUM, "valor": 120,
+        "empilhavel": True, "max_pilha": 5
+    },
+    "lente_de_cristal_focadora": {
+        "nome": "Lente de Cristal Focadora", "descricao": "Uma lente mágica usada por construtos para focar seus raios de energia.",
+        "tipo": TipoItem.MATERIAL_CRAFTING, "raridade": RaridadeItem.INCOMUM, "valor": 150,
+        "empilhavel": True, "max_pilha": 3
+    },
+    "nucleo_de_construto_grande": {
+        "nome": "Núcleo de Construto Grande", "descricao": "O coração pulsante de um construto massivo.",
+        "tipo": TipoItem.MATERIAL_CRAFTING, "raridade": RaridadeItem.RARO, "valor": 400,
+        "empilhavel": False
+    },
+    "fragmento_de_armadura_ancestral": {
+        "nome": "Fragmento de Armadura Ancestral", "descricao": "Um pedaço de armadura de uma era esquecida, imbuído com poder.",
+        "tipo": TipoItem.MATERIAL_CRAFTING, "raridade": RaridadeItem.RARO, "valor": 250,
+        "empilhavel": True, "max_pilha": 5
+    },
+    "grimorio_antigo_rasgado": {
+        "nome": "Grimório Antigo Rasgado", "descricao": "Páginas de um grimório que detalham rituais de proteção.",
+        "tipo": TipoItem.LIVRO, "raridade": RaridadeItem.COMUM, "valor": 10
+    },
+    "mapa_das_sombras": {
+        "nome": "Mapa das Sombras", "descricao": "Um mapa antigo que parece mostrar movimentações em um território desconhecido.",
+        "tipo": TipoItem.ITEM_QUEST, "raridade": RaridadeItem.UNICO, "valor": 0
     }
 }
