@@ -69,5 +69,23 @@ CLASSES_AVANCADAS = {
         "nivel_necessario": 15,
         "habilidades_concedidas": ["distracao", "roubar_item"],
         "bonus_stats": {"destreza": 2, "carisma": 2}
+    },
+
+    # --- Evoluções do Clérigo ---
+    "sacerdote": {
+        "nome": "Sacerdote",
+        "descricao": "Um farol de fé, cujas preces curam os feridos e purificam os amaldiçoados com poder divino avassalador.",
+        "classe_base": "clerigo",
+        "nivel_necessario": 15,
+        "habilidades_concedidas": ["cura_em_area", "palavra_sagrada_punicao"],
+        "bonus_stats": {"sabedoria": 3, "inteligencia": 1}
+    },
+    "inquisidor": {
+        "nome": "Inquisidor",
+        "descricao": "Um caçador implacável do profano, que combina zelo divino com proeza marcial para expurgar as trevas.",
+        "classe_base": "clerigo",
+        "nivel_necessario": 15,
+        "habilidades_concedidas": ["arma_da_fe", "julgamento_do_herege"],
+        "bonus_stats": {"sabedoria": 2, "forca": 2}
     }
 }

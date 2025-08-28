@@ -350,22 +350,40 @@ HABILIDADES_MAGICAS = {
         ]
     },
 
-    "baforada_de_fogo_alcoolico": {
-        "nome": "Baforada de Fogo Alcoólico",
-        "tipo": "ativa",
-        "descricao": "Cospe uma nuvem de álcool e a incendeia, causando dano de fogo em uma área.",
-        "lore": "Uma técnica perigosa e surpreendentemente eficaz, aperfeiçoada em inúmeras brigas de taverna.",
-        "custo_tipo": "stamina",
-        "custo_valor": 20,
-        "tipo_alvo": "inimigos_area",
-        "efeitos": [
-            {
-                "tipo": "dano_magico",
-                "escala_com": "constituicao",
-                "elemento": "fogo",
-                "multiplicador_dano_principal": 1.2,
-                "multiplicador_dano_area": 0.6
-            }
-        ]
+    # --- CLASSES AVANÇADAS ---
+    "chuva_de_meteoros": {
+        "nome": "Chuva de Meteoros", "tipo": "ativa", "custo_tipo": "mp", "custo_valor": 80, "cooldown": 8,
+        "descricao": "Invoca uma chuva de pequenos meteoros que bombardeiam uma área, causando dano massivo de fogo.",
+        "tipo_alvo": "inimigos_area", "efeitos": [{"tipo": "dano_magico", "escala_com": "inteligencia", "elemento": "fogo", "multiplicador_dano": 3.5}]
+    },
+    "teleporte_arcano": {
+        "nome": "Teleporte Arcano", "tipo": "ativa", "custo_tipo": "mp", "custo_valor": 30, "cooldown": 4,
+        "descricao": "Teleporta o mago para uma curta distância, evitando ataques e se reposicionando.",
+        "tipo_alvo": "self", "efeitos": [{"tipo": "teleporte", "distancia": 5}] # Distância é um conceito abstrato aqui
+    },
+    "armadura_runica": {
+        "nome": "Armadura Rúnica", "tipo": "ativa", "custo_tipo": "mp", "custo_valor": 40,
+        "descricao": "Cria uma armadura de energia mágica que aumenta drasticamente a defesa física e mágica.",
+        "tipo_alvo": "self", "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "buff_armadura_runica", "duracao": 5}]
+    },
+    "explosao_de_forca": {
+        "nome": "Explosão de Força", "tipo": "ativa", "custo_tipo": "mp", "custo_valor": 35, "cooldown": 3,
+        "descricao": "Libera uma onda de choque de pura força mágica, causando dano e empurrando todos os inimigos.",
+        "tipo_alvo": "inimigos_area", "efeitos": [{"tipo": "dano_magico", "escala_com": "inteligencia", "elemento": "forca", "multiplicador_dano": 1.5}, {"tipo": "empurrar", "distancia": 4}]
+    },
+    "palavra_sagrada_punicao": {
+        "nome": "Palavra Sagrada: Punição", "tipo": "ativa", "custo_tipo": "mp", "custo_valor": 50, "cooldown": 5,
+        "descricao": "Profere uma palavra de poder divino que causa dano sagrado massivo a um único alvo.",
+        "tipo_alvo": "inimigo_unico", "efeitos": [{"tipo": "dano_magico", "escala_com": "sabedoria", "elemento": "sagrado", "multiplicador_dano": 3.0}]
+    },
+    "arma_da_fe": {
+        "nome": "Arma da Fé", "tipo": "ativa", "custo_tipo": "mp", "custo_valor": 30,
+        "descricao": "Imbui a arma com energia sagrada por um longo período, adicionando dano sagrado a todos os ataques.",
+        "tipo_alvo": "self", "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "buff_arma_da_fe", "duracao": 10}]
+    },
+    "julgamento_do_herege": {
+        "nome": "Julgamento do Herege", "tipo": "ativa", "custo_tipo": "mp", "custo_valor": 40, "cooldown": 4,
+        "descricao": "Marca um inimigo como herege, diminuindo suas defesas e causando dano sagrado ao longo do tempo.",
+        "tipo_alvo": "inimigo_unico", "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "debuff_julgamento_herege", "duracao": 4}]
     }
 }

@@ -294,5 +294,32 @@ HABILIDADES_FISICAS = {
         "lore": "Um tiro de truque que requer um olho incrível e um conhecimento de ângulos que beira a matemática.",
         "tipo_alvo": "inimigos_area",
         "efeitos": [{"tipo": "dano_fisico_em_cadeia", "escala_com": "destreza", "multiplicador_dano": 1.0, "max_saltos": 1}]
+    },
+
+    # --- CLASSES AVANÇADAS ---
+    "postura_de_mestre": {
+        "nome": "Postura de Mestre", "tipo": "ativa", "custo_tipo": "stamina", "custo_valor": 20, "cooldown": 5,
+        "descricao": "Assume uma postura de combate perfeita, aumentando drasticamente a precisão e o dano crítico por um tempo.",
+        "tipo_alvo": "self", "efeitos": [{"tipo": "aplicar_efeito", "id_efeito": "buff_postura_mestre", "duracao": 3}]
+    },
+    "golpe_mortal": {
+        "nome": "Golpe Mortal", "tipo": "ativa", "custo_tipo": "stamina", "custo_valor": 40, "cooldown": 4,
+        "descricao": "Um único golpe devastador. Se o alvo estiver com menos de 25% de vida, o dano é massivamente aumentado.",
+        "tipo_alvo": "inimigo_unico", "efeitos": [{"tipo": "dano_fisico_condicional", "condicao": "alvo_hp_abaixo_25_porcento", "escala_com": "forca", "multiplicador_dano_bonus": 4.0, "multiplicador_dano_normal": 1.8}]
+    },
+    "golpe_imprudente": {
+        "nome": "Golpe Imprudente", "tipo": "ativa", "custo_tipo": "hp", "custo_valor": 15, # Custa vida
+        "descricao": "Um ataque selvagem que causa dano massivo tanto ao alvo quanto a si mesmo.",
+        "tipo_alvo": "inimigo_unico", "efeitos": [{"tipo": "dano_fisico_bruto", "dano": 100}] # Dano fixo, ignora defesa
+    },
+    "ataque_exposto": {
+        "nome": "Ataque Exposto", "tipo": "ativa", "custo_tipo": "stamina", "custo_valor": 25, "cooldown": 3,
+        "descricao": "Explora uma fraqueza na defesa do inimigo, aplicando um debuff de defesa e causando dano.",
+        "tipo_alvo": "inimigo_unico", "efeitos": [{"tipo": "dano_fisico", "escala_com": "destreza", "multiplicador_dano": 1.2}, {"tipo": "aplicar_efeito", "id_efeito": "debuff_defesa_media", "duracao": 3}]
+    },
+    "roubar_item": {
+        "nome": "Roubar Item", "tipo": "ativa", "custo_tipo": "stamina", "custo_valor": 30, "cooldown": 10,
+        "descricao": "Tenta roubar um item do inventário do alvo durante o combate.",
+        "tipo_alvo": "inimigo_unico", "efeitos": [{"tipo": "roubar", "chance_base": 0.3, "escala_com": "destreza"}]
     }
 }
