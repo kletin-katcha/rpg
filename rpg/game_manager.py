@@ -4,7 +4,7 @@ from typing import List, Dict
 
 from .entidades.personagem import Personagem
 from .sistemas import combate, quests, tempo, dungeons
-from .io import salvar_carregar, menu_loja, menu_crafting
+from .io import salvar_carregar, menu_loja, menu_crafting, menu_evolucao
 from .fabricas.fabrica_monstros import criar_monstro_por_id
 from .utilitarios import funcoes_gerais
 from .sistemas.dungeons import gerar_dungeon_aleatoria
@@ -108,6 +108,14 @@ class GameManager:
             return ["Explorar mais fundo", "Montar Acampamento (Descansar)", "Voltar para a Vila"] + opcoes_comuns
         elif self.localizacao_atual == "pantano_sombrio":
             return ["Explorar o pântano", "Montar Acampamento (Descansar)", "Voltar para a Vila"] + opcoes_comuns
+        elif self.localizacao_atual == "aethelgard":
+            opcoes_aethelgard = [
+                "Falar com Mestre Valerius (Grande Biblioteca)",
+                "Procurar o Mestre de Classe",
+                "Ir para os Ermos Rochosos",
+                "Voltar para a Vila"
+            ]
+            return opcoes_aethelgard + opcoes_comuns
         return opcoes_comuns
 
     def executar_opcao_localizacao(self, opcao: str):
@@ -219,7 +227,7 @@ class GameManager:
             elif opcao == "Montar Acampamento (Descansar)":
                 self._add_log("Você não consegue encontrar um local seco e seguro para descansar no pântano.")
         elif self.localizacao_atual == "aethelgard":
-            if opcao == "Falar com Mestre Valerius":
+            if opcao == "Falar com Mestre Valerius (Grande Biblioteca)":
                 self.game_log.extend(quests.atualizar_progresso_quests(self.jogador, "falar_com", "mestre_valerius"))
                 chamado_antigo_quest = next((q for q in self.jogador.quests_ativas if q.id_quest == "mq04_chamado_antigo"), None)
 
@@ -229,6 +237,9 @@ class GameManager:
                     self.game_log.extend(quests.iniciar_quest(self.jogador, "mq05_a_primeira_dungeon"))
                 else:
                     self._add_log("Você encontra um homem idoso e sábio, cercado por pilhas de livros. 'Sim? Posso ajudá-lo?'")
+
+            elif opcao == "Procurar o Mestre de Classe":
+                menu_evolucao.evolucao_ui(self.jogador)
 
             elif opcao == "Ir para os Ermos Rochosos":
                 self.localizacao_atual = "ermos_rochosos"
