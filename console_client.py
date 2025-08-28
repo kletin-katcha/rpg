@@ -169,8 +169,11 @@ def loop_acao_jogador_console(gm: GameManager) -> dict:
             if escolha_parte_str.isdigit() and 1 <= int(escolha_parte_str) <= len(partes_corpo):
                 parte_alvo = partes_corpo[int(escolha_parte_str) - 1].lower()
 
-            # Usando o primeiro ataque base como padrão por simplicidade
-            ataque_base = gm.jogador.ataques_base[0]
+            # Mostra o menu para selecionar o ataque específico
+            ataque_base = menu_combate.selecionar_ataque_ui(gm.jogador)
+            if not ataque_base:
+                return None # Jogador cancelou a seleção de ataque
+
             return {"tipo": "ataque_basico", "ataque": ataque_base, "alvo": alvo, "parte_alvo": parte_alvo}
 
     elif escolha_acao == 'Habilidade':

@@ -13,7 +13,9 @@ from rpg.entidades.monstro import Monstro
 from rpg.sistemas import combate
 from rpg.fabricas.fabrica_monstros import criar_monstro_por_id
 from rpg.io import criacao_personagem as cc_api
+from rpg.io import menu_combate
 from rpg.dados.habilidades import TODAS_HABILIDADES
+from rpg.dados.ataques_base import ATAQUES_BASE
 
 
 class TestCombatAPI(unittest.TestCase):
@@ -194,6 +196,34 @@ class TestCombatAPI(unittest.TestCase):
         self.gm.executar_turno_combate(None)
         self.assertIn("Mordida Feroz", self.gm.game_log[0])
         self.assertEqual(monstro.cooldowns_habilidades["Mordida Feroz"], 3)
+
+
+    @patch('console_client.menu_combate.selecionar_ataque_ui')
+    @patch('builtins.input')
+    def test_loop_acao_jogador_seleciona_ataque(self, mock_input, mock_selecionar_ataque):
+        """Testa o fluxo de seleção de ataque básico no loop de ação."""
+        # Configura um guerreiro com múltiplos ataques
+        guerreiro = Personagem("Guerreiro Teste")
+        cc_api.aplicar_classe(guerreiro, "guerreiro")
+        self.gm.jogador = guerreiro
+        self.gm.iniciar_combate([self.monstro.id_monstro])
+
+        ataque_pesado = guerreiro.ataques_base[2]
+        self.assertEqual(ataque_pesado['nome'], "Ataque Pesado")
+
+        # Simula as escolhas do jogador: 1 (Atacar), 1 (Alvo), 1 (Parte do Corpo)
+        # A seleção de ataque é mockada, então não precisa de input
+        mock_input.side_effect = ['1', '1', '1']
+        mock_selecionar_ataque.return_value = ataque_pesado
+
+        # Chama a função que estamos testando
+        from console_client import loop_acao_jogador_console
+        acao_final = loop_acao_jogador_console(self.gm)
+
+        # Verifica se a ação final contém o ataque correto
+        self.assertIsNotNone(acao_final)
+        self.assertEqual(acao_final['tipo'], 'ataque_basico')
+        self.assertEqual(acao_final['ataque']['nome'], 'Ataque Pesado')
 
 
 if __name__ == '__main__':
