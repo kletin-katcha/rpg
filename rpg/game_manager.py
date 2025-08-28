@@ -4,7 +4,7 @@ from typing import List, Dict
 
 from .entidades.personagem import Personagem
 from .sistemas import combate, quests, tempo, dungeons
-from .io import salvar_carregar, menu_loja
+from .io import salvar_carregar, menu_loja, menu_crafting
 from .fabricas.fabrica_monstros import criar_monstro_por_id
 from .utilitarios import funcoes_gerais
 from .sistemas.dungeons import gerar_dungeon_aleatoria
@@ -94,7 +94,9 @@ class GameManager:
         if self.localizacao_atual == "vila":
             opcoes_vila = [
                 "Falar com Elara (Curandeira da Vila)",
-                "Visitar a forja 'O Aço Resoluto'",
+                "Visitar a forja 'O Aço Resoluto' (Forja)",
+                "Usar Bancada de Alquimia (Cabana da Elara)",
+                "Usar Fogueira da Vila (Culinária)",
                 "Ir para a Floresta dos Sussurros",
                 "Ir para o Pântano Sombrio"
             ]
@@ -152,8 +154,16 @@ class GameManager:
                 # Pausa para garantir que o jogador leia o resultado da interação.
                 funcoes_gerais.pausar()
 
-            elif opcao == "Visitar a forja 'O Aço Resoluto'":
+            elif opcao == "Visitar a forja 'O Aço Resoluto' (Forja)":
+                # A forja funciona como loja e estação de crafting
                 menu_loja.loja_ui(self.jogador, 'ferreiro_vila')
+                # TODO: Adicionar opção de usar a forja para crafting no menu da loja ou aqui
+
+            elif opcao == "Usar Bancada de Alquimia (Cabana da Elara)":
+                menu_crafting.crafting_ui(self.jogador, "bancada_alquimia")
+
+            elif opcao == "Usar Fogueira da Vila (Culinária)":
+                menu_crafting.crafting_ui(self.jogador, "fogueira")
 
             elif opcao == "Ir para a Floresta dos Sussurros":
                 self.time_manager.avancar_tempo(60)
