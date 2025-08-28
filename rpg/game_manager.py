@@ -6,6 +6,7 @@ from .entidades.personagem import Personagem
 from .sistemas import combate, quests, tempo, dungeons
 from .io import salvar_carregar, menu_loja
 from .fabricas.fabrica_monstros import criar_monstro_por_id
+from .utilitarios import funcoes_gerais
 from .sistemas.dungeons import gerar_dungeon_aleatoria
 from .dados.habilidades import TODAS_HABILIDADES
 from .dados.monstros_area1 import MONSTROS_AREA1
@@ -118,10 +119,11 @@ class GameManager:
                 # Garante que a primeira quest seja iniciada antes de processar o progresso.
                 q_despertar_ativa = next((q for q in self.jogador.quests_ativas if q.id_quest == "mq01_despertar"), None)
                 if not q_despertar_ativa and "mq01_despertar" not in self.jogador.quests_concluidas:
-                    quests.iniciar_quest(self.jogador, "mq01_despertar")
+                    self.game_log.extend(quests.iniciar_quest(self.jogador, "mq01_despertar"))
+                    self.game_log.append(quests.TODAS_AS_QUESTS["mq01_despertar"]["descricao_inicio"])
 
                 # Agora, com a quest potencialmente ativa, atualize o progresso.
-                quests.atualizar_progresso_quests(self.jogador, "falar_com", "elara_curandeira")
+                self.game_log.extend(quests.atualizar_progresso_quests(self.jogador, "falar_com", "elara_curandeira"))
 
                 # Re-fetch das quests pois o estado pode ter mudado.
                 q_despertar = next((q for q in self.jogador.quests_ativas if q.id_quest == "mq01_despertar"), None)
@@ -130,14 +132,17 @@ class GameManager:
 
                 # A lógica de progressão agora funciona corretamente em uma única interação.
                 if q_despertar and q_despertar.esta_completa():
-                    quests.concluir_quest(self.jogador, q_despertar)
-                    quests.iniciar_quest(self.jogador, "mq02_ameaca_local")
+                    self.game_log.extend(quests.concluir_quest(self.jogador, q_despertar))
+                    self.game_log.append(quests.TODAS_AS_QUESTS["mq02_ameaca_local"]["descricao_inicio"])
+                    self.game_log.extend(quests.iniciar_quest(self.jogador, "mq02_ameaca_local"))
                 elif q_ameaca and q_ameaca.esta_completa():
-                    quests.concluir_quest(self.jogador, q_ameaca)
-                    quests.iniciar_quest(self.jogador, "sq01_coracao_pantano")
+                    self.game_log.extend(quests.concluir_quest(self.jogador, q_ameaca))
+                    self.game_log.append(quests.TODAS_AS_QUESTS["sq01_coracao_pantano"]["descricao_inicio"])
+                    self.game_log.extend(quests.iniciar_quest(self.jogador, "sq01_coracao_pantano"))
                 elif q_pantano and q_pantano.esta_completa():
-                    quests.concluir_quest(self.jogador, q_pantano)
-                    quests.iniciar_quest(self.jogador, "mq04_chamado_antigo")
+                    self.game_log.extend(quests.concluir_quest(self.jogador, q_pantano))
+                    self.game_log.append(quests.TODAS_AS_QUESTS["mq04_chamado_antigo"]["descricao_inicio"])
+                    self.game_log.extend(quests.iniciar_quest(self.jogador, "mq04_chamado_antigo"))
                 else:
                     # Se nenhuma quest progrediu, exibe a mensagem padrão.
                     # A mensagem de conclusão/início de quest é tratada pelo sistema de quests.
@@ -162,7 +167,7 @@ class GameManager:
                 self.time_manager.avancar_tempo(240)
                 self.localizacao_atual = "aethelgard"
                 self._add_log("Após uma longa jornada, você chega aos portões da grande cidade de Aethelgard.")
-                quests.atualizar_progresso_quests(self.jogador, "viajar_para", "cidade_aethelgard")
+                self.game_log.extend(quests.atualizar_progresso_quests(self.jogador, "viajar_para", "cidade_aethelgard"))
 
         elif self.localizacao_atual == "floresta":
             if opcao == "Explorar mais fundo":
@@ -205,12 +210,13 @@ class GameManager:
                 self._add_log("Você não consegue encontrar um local seco e seguro para descansar no pântano.")
         elif self.localizacao_atual == "aethelgard":
             if opcao == "Falar com Mestre Valerius":
-                quests.atualizar_progresso_quests(self.jogador, "falar_com", "mestre_valerius")
+                self.game_log.extend(quests.atualizar_progresso_quests(self.jogador, "falar_com", "mestre_valerius"))
                 chamado_antigo_quest = next((q for q in self.jogador.quests_ativas if q.id_quest == "mq04_chamado_antigo"), None)
 
                 if chamado_antigo_quest and chamado_antigo_quest.esta_completa():
-                    quests.concluir_quest(self.jogador, chamado_antigo_quest)
-                    quests.iniciar_quest(self.jogador, "mq05_a_primeira_dungeon")
+                    self.game_log.extend(quests.concluir_quest(self.jogador, chamado_antigo_quest))
+                    self.game_log.append(quests.TODAS_AS_QUESTS["mq05_a_primeira_dungeon"]["descricao_inicio"])
+                    self.game_log.extend(quests.iniciar_quest(self.jogador, "mq05_a_primeira_dungeon"))
                 else:
                     self._add_log("Você encontra um homem idoso e sábio, cercado por pilhas de livros. 'Sim? Posso ajudá-lo?'")
 
@@ -244,7 +250,7 @@ class GameManager:
                 tesouro = sala_atual.tesouros.pop(0) # Pega o primeiro tesouro
                 if random.random() < tesouro.get("chance", 1.0):
                     self.jogador.adicionar_item(tesouro["id_item"], 1)
-                    quests.atualizar_progresso_quests(self.jogador, "encontrar_item", tesouro["id_item"])
+                    self.game_log.extend(quests.atualizar_progresso_quests(self.jogador, "encontrar_item", tesouro["id_item"]))
                 else:
                     self._add_log("Você não encontrou nada de valor.")
             else:
@@ -279,7 +285,7 @@ class GameManager:
             salas=salas
         )
         self.game_state = "in_dungeon"
-        quests.atualizar_progresso_quests(self.jogador, "entrar_em", id_dungeon)
+        self.game_log.extend(quests.atualizar_progresso_quests(self.jogador, "entrar_em", id_dungeon))
         self._add_log(f"Você entrou em {self.dungeon_atual.nome}.")
 
     def iniciar_combate(self, ids_monstros: list[str]):
@@ -357,9 +363,9 @@ class GameManager:
             xp_total = 0
             for inimigo_morto in self.combat_state["inimigos"]:
                 xp_total += inimigo_morto.xp_recompensa
-                quests.atualizar_progresso_quests(self.jogador, "matar", inimigo_morto.id_monstro)
+                self.game_log.extend(quests.atualizar_progresso_quests(self.jogador, "matar", inimigo_morto.id_monstro))
 
-            self.jogador.ganhar_xp(xp_total)
+            self.game_log.extend(self.jogador.ganhar_xp(xp_total))
             self.combat_state = None
             return {"resultado": "vitoria", "log": self.game_log}
 

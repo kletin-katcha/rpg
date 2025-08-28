@@ -166,14 +166,19 @@ class Personagem:
     def esta_vivo(self) -> bool:
         return self.hp_atual > 0
 
-    def ganhar_xp(self, quantidade: int):
-        if not self.esta_vivo(): return
-        self.xp_atual += quantidade
-        print(f"{self.nome} ganhou {quantidade} de XP!")
-        while self.xp_atual >= self.xp_para_proximo_nivel:
-            self.subir_nivel()
+    def ganhar_xp(self, quantidade: int) -> list[str]:
+        if not self.esta_vivo(): return []
 
-    def subir_nivel(self):
+        logs = []
+        self.xp_atual += quantidade
+        logs.append(f"{self.nome} ganhou {quantidade} de XP!")
+
+        while self.xp_atual >= self.xp_para_proximo_nivel:
+            logs.extend(self.subir_nivel())
+
+        return logs
+
+    def subir_nivel(self) -> list[str]:
         self.xp_atual -= self.xp_para_proximo_nivel
         self.nivel += 1
         self.xp_para_proximo_nivel = self.calcular_xp_necessario(self.nivel)
@@ -185,8 +190,10 @@ class Personagem:
         self.hp_atual = self.hp_max
         self.mp_atual = self.mp_max
 
-        print(f"🎉 {self.nome} subiu para o nível {self.nivel}! 🎉")
-        print(f"Você ganhou {pontos_ganhos} pontos de atributo para distribuir!")
+        return [
+            f"🎉 {self.nome} subiu para o nível {self.nivel}! 🎉",
+            f"Você ganhou {pontos_ganhos} pontos de atributo para distribuir!"
+        ]
 
     def distribuir_pontos_de_atributo(self, distribuicao: Dict[str, int]) -> bool:
         pontos_a_gastar = sum(distribuicao.values())
