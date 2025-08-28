@@ -13,9 +13,7 @@ from rpg.entidades.monstro import Monstro
 from rpg.sistemas import combate
 from rpg.fabricas.fabrica_monstros import criar_monstro_por_id
 from rpg.io import criacao_personagem as cc_api
-from rpg.io import menu_combate
 from rpg.dados.habilidades import TODAS_HABILIDADES
-from rpg.dados.ataques_base import ATAQUES_BASE
 
 
 class TestCombatAPI(unittest.TestCase):
@@ -55,19 +53,13 @@ class TestCombatAPI(unittest.TestCase):
 
         # Executa turnos até o combate terminar
         resultado_final = {}
-        max_turnos = 20 # Safety break
-        turnos_executados = 0
-        while self.gm.game_state == "combat" and turnos_executados < max_turnos:
-            # A ação do jogador só é relevante no turno dele.
-            acao_turno = None
-            if self.gm.get_combatente_atual() == self.jogador:
-                acao_turno = acao_chute
-
-            resultado_final = self.gm.executar_turno_combate(acao_turno)
-            turnos_executados += 1
+        for _ in range(5): # 5 ataques devem ser suficientes
+            if self.gm.game_state != "combat":
+                break
+            resultado_final = self.gm.executar_turno_combate(acao_chute)
 
         # Verifica o resultado final
-        self.assertEqual(resultado_final.get("resultado"), "vitoria", f"Combate não terminou em vitória após {turnos_executados} turnos.")
+        self.assertEqual(resultado_final.get("resultado"), "vitoria")
         self.assertFalse(monstro_em_combate.esta_vivo())
         self.assertTrue(self.jogador.esta_vivo())
         self.assertEqual(self.gm.game_state, "in_game")
@@ -78,152 +70,48 @@ class TestCombatAPI(unittest.TestCase):
         A lógica correta é: um buff de 3 turnos é ativo no turno 1, 2 e 3.
         No início do turno 4, ele expira.
         """
+        # Cria um Humano para garantir que ele tenha a habilidade
         jogador_humano = cc_api.criar_personagem_base("Aragorn")
         cc_api.aplicar_raca(jogador_humano, "humano")
         cc_api.finalizar_criacao(jogador_humano)
+
         self.gm.jogador = jogador_humano
         forca_original = jogador_humano.forca
+
         self.gm.iniciar_combate(["lobo_cinzento"])
 
+        # Ação: Usar Esforço Heroico
         habilidade = TODAS_HABILIDADES["esforco_heroico"]
         acao_habilidade = {"tipo": "usar_habilidade", "habilidade": habilidade, "alvo": jogador_humano}
-        acao_passar = {"tipo": "passar_turno"}
-
-        # Função auxiliar para garantir que a ação correta seja executada no turno do jogador
-        def executar_turno_jogador(acao):
-            max_tentativas = 10
-            for _ in range(max_tentativas):
-                if self.gm.get_combatente_atual() == self.gm.jogador:
-                    self.gm.executar_turno_combate(acao)
-                    return
-                else:
-                    self.gm.executar_turno_combate(None) # Turno do monstro
-            self.fail("O turno do jogador não chegou no tempo esperado.")
+        acao_passar = {"tipo": "defender"}
 
         # --- TURNO 1: Jogador usa o buff ---
-        executar_turno_jogador(acao_habilidade)
+        # Efeitos são processados no início do turno, mas não há nenhum ainda.
+        # Jogador usa a skill. Buff é aplicado.
+        self.gm.executar_turno_combate(acao_habilidade)
+
         self.assertEqual(len(jogador_humano.efeitos_ativos), 1, "Buff deveria ter sido aplicado.")
         self.assertEqual(jogador_humano.forca, forca_original + 2, "Força deveria estar buffada após turno 1.")
-        self.assertEqual(jogador_humano.efeitos_ativos[0].duracao_original, 3, "Duração inicial deveria ser 3.")
+        self.assertEqual(jogador_humano.efeitos_ativos[0].turnos_restantes, 3, "Duração deveria ser 3 após aplicação.")
 
         # --- TURNO 2: O buff continua ativo ---
-        executar_turno_jogador(acao_passar)
-        self.assertEqual(len(jogador_humano.efeitos_ativos), 1, "Buff deveria continuar ativo no turno 2.")
+        # No início deste turno, tick() é chamado. Duração vai para 2.
+        self.gm.executar_turno_combate(acao_passar)
         self.assertEqual(jogador_humano.forca, forca_original + 2, "Força deveria continuar buffada no turno 2.")
         self.assertEqual(jogador_humano.efeitos_ativos[0].turnos_restantes, 2, "Duração deveria ser 2 após turno 2.")
 
         # --- TURNO 3: O buff continua ativo ---
-        executar_turno_jogador(acao_passar)
-        self.assertEqual(len(jogador_humano.efeitos_ativos), 1, "Buff deveria continuar ativo no turno 3.")
+        # No início deste turno, tick() é chamado. Duração vai para 1.
+        self.gm.executar_turno_combate(acao_passar)
         self.assertEqual(jogador_humano.forca, forca_original + 2, "Força deveria continuar buffada no turno 3.")
         self.assertEqual(jogador_humano.efeitos_ativos[0].turnos_restantes, 1, "Duração deveria ser 1 após turno 3.")
 
         # --- TURNO 4: O buff deve expirar no início deste turno ---
-        executar_turno_jogador(acao_passar)
+        # No início deste turno, tick() é chamado. Duração vai para 0. Efeito é removido. Stats são recalculados.
+        # A ação do jogador (defender) acontece com os stats normais.
+        self.gm.executar_turno_combate(acao_passar)
         self.assertEqual(len(jogador_humano.efeitos_ativos), 0, "Buff deveria ter sido removido no início do turno 4.")
         self.assertEqual(jogador_humano.forca, forca_original, "Força deveria voltar ao normal no turno 4.")
-
-    def test_usar_item_em_combate(self):
-        """Testa se o jogador pode usar um item consumível durante o combate."""
-        # Configuração inicial
-        self.jogador.hp_atual = 100
-        self.jogador.adicionar_item("pocao_cura_fraca", 1)
-        self.assertTrue("pocao_cura_fraca" in self.jogador.inventario)
-        hp_antes = self.jogador.hp_atual
-
-        # Inicia o combate
-        self.gm.iniciar_combate([self.monstro.id_monstro])
-        self.assertEqual(self.gm.game_state, "combat")
-
-        # Define a ação de usar o item
-        acao_usar_item = {"tipo": "usar_item", "id_item": "pocao_cura_fraca"}
-
-        # Garante que seja o turno do jogador antes de executar a ação
-        if self.gm.get_combatente_atual() != self.jogador:
-            self.gm.executar_turno_combate(None) # Passa o turno do monstro
-
-        # Executa o turno do jogador com a ação de usar item
-        self.gm.executar_turno_combate(acao_usar_item)
-
-        # Verificações
-        hp_depois = self.jogador.hp_atual
-        self.assertGreater(hp_depois, hp_antes, "O HP do jogador deveria ter aumentado após usar a poção.")
-        self.assertFalse("pocao_cura_fraca" in self.jogador.inventario, "A poção deveria ter sido removida do inventário.")
-
-    @patch('rpg.entidades.monstro.random.random')
-    def test_cooldown_habilidade_monstro(self, mock_random_func):
-        """Testa se a IA do monstro respeita os cooldowns das habilidades."""
-        mock_random_func.return_value = 0.0 # Garante que a IA sempre tente usar a habilidade
-
-        self.gm.iniciar_combate(["lobo_alfa"])
-        monstro = self.gm.combat_state["inimigos"][0]
-
-        # Garante uma ordem de turno previsível para o teste
-        self.gm.combat_state["todos_combatentes"] = [monstro, self.jogador]
-
-        # TURNO 1 (Monstro): Deve usar a habilidade
-        self.gm.clear_log()
-        self.gm.executar_turno_combate(None)
-        self.assertIn("Mordida Feroz", self.gm.game_log[0])
-        self.assertEqual(monstro.cooldowns_habilidades["Mordida Feroz"], 3)
-
-        # TURNO 2 (Jogador): Passa o turno
-        self.gm.executar_turno_combate({"tipo": "passar_turno"})
-        self.assertEqual(monstro.cooldowns_habilidades["Mordida Feroz"], 3, "Cooldown não deve mudar no turno do jogador.")
-
-        # TURNO 3 (Monstro): Cooldown deve diminuir para 2. Habilidade não deve ser usada.
-        self.gm.clear_log()
-        self.gm.executar_turno_combate(None)
-        self.assertEqual(monstro.cooldowns_habilidades["Mordida Feroz"], 2)
-        self.assertNotIn("Mordida Feroz", self.gm.game_log[0])
-
-        # TURNO 4 (Jogador): Passa o turno
-        self.gm.executar_turno_combate({"tipo": "passar_turno"})
-        self.assertEqual(monstro.cooldowns_habilidades["Mordida Feroz"], 2)
-
-        # TURNO 5 (Monstro): Cooldown deve diminuir para 1.
-        self.gm.clear_log()
-        self.gm.executar_turno_combate(None)
-        self.assertEqual(monstro.cooldowns_habilidades["Mordida Feroz"], 1)
-        self.assertNotIn("Mordida Feroz", self.gm.game_log[0])
-
-        # TURNO 6 (Jogador): Passa o turno
-        self.gm.executar_turno_combate({"tipo": "passar_turno"})
-        self.assertEqual(monstro.cooldowns_habilidades["Mordida Feroz"], 1)
-
-        # TURNO 7 (Monstro): Cooldown deve diminuir para 0 e ser usada de novo, resetando para 3.
-        self.gm.clear_log()
-        self.gm.executar_turno_combate(None)
-        self.assertIn("Mordida Feroz", self.gm.game_log[0])
-        self.assertEqual(monstro.cooldowns_habilidades["Mordida Feroz"], 3)
-
-
-    @patch('console_client.menu_combate.selecionar_ataque_ui')
-    @patch('builtins.input')
-    def test_loop_acao_jogador_seleciona_ataque(self, mock_input, mock_selecionar_ataque):
-        """Testa o fluxo de seleção de ataque básico no loop de ação."""
-        # Configura um guerreiro com múltiplos ataques
-        guerreiro = Personagem("Guerreiro Teste")
-        cc_api.aplicar_classe(guerreiro, "guerreiro")
-        self.gm.jogador = guerreiro
-        self.gm.iniciar_combate([self.monstro.id_monstro])
-
-        ataque_pesado = guerreiro.ataques_base[2]
-        self.assertEqual(ataque_pesado['nome'], "Ataque Pesado")
-
-        # Simula as escolhas do jogador: 1 (Atacar), 1 (Alvo), 1 (Parte do Corpo)
-        # A seleção de ataque é mockada, então não precisa de input
-        mock_input.side_effect = ['1', '1', '1']
-        mock_selecionar_ataque.return_value = ataque_pesado
-
-        # Chama a função que estamos testando
-        from console_client import loop_acao_jogador_console
-        acao_final = loop_acao_jogador_console(self.gm)
-
-        # Verifica se a ação final contém o ataque correto
-        self.assertIsNotNone(acao_final)
-        self.assertEqual(acao_final['tipo'], 'ataque_basico')
-        self.assertEqual(acao_final['ataque']['nome'], 'Ataque Pesado')
 
 
 if __name__ == '__main__':

@@ -9,6 +9,10 @@ if TYPE_CHECKING:
     from .item import Item
 
 class Monstro(Personagem):
+    """
+    Representa um adversário no jogo. Herda muitas características de Personagem,
+    mas tem lógica própria para IA, loot e comportamento.
+    """
     def __init__(self,
                  nome: str,
                  nivel: int,
@@ -24,110 +28,128 @@ class Monstro(Personagem):
 
         super().__init__(nome, nivel)
 
+        # --- Identificação do Monstro ---
         self.id_monstro = id_monstro
-        self.familia = familia
+        self.familia = familia # Ex: "Goblin", "Lobo", "Elemental"
+
+        # --- Recompensas ---
         self.xp_recompensa = xp_recompensa
-        self.ouro = ouro_recompensa
-        self.loot_table = loot_table
+        self.ouro = ouro_recompensa # Sobrescreve o ouro base de Personagem
+        self.loot_table = loot_table # Ex: [{"id_item": "pocao_cura", "chance": 0.5, "quantidade": [1, 3]}]
+
+        # --- Atributos e Habilidades Específicas ---
         self.aplicar_stats_base(stats_base)
+
+        # self.habilidades (herdado de Personagem) deve ser uma lista de IDs de string.
         self.habilidades = habilidades_ids
+
+        # Armazena os dados completos da habilidade para uso da IA.
         self.habilidades_completas = [TODAS_HABILIDADES[id_h] for id_h in habilidades_ids if id_h in TODAS_HABILIDADES]
+
+        # Converte os IDs de ataques básicos em objetos de ataque completos
         self.ataques_base = [ATAQUES_BASE[id_a] for id_a in ataques_base_ids if id_a in ATAQUES_BASE]
-        self.comportamento_ia = comportamento_ia
+
+
+        # --- Inteligência Artificial ---
+        self.comportamento_ia = comportamento_ia # "agressivo", "defensivo", "suporte", "oportunista"
         self.cooldowns_habilidades: Dict[str, int] = {h['nome']: 0 for h in self.habilidades_completas}
-        self.memoria_combate: Dict[str, Any] = {}
+        self.memoria_combate: Dict[str, Any] = {} # Para IA adaptativa (ex: "ultima_habilidade_jogador": "bola_de_fogo")
         self.foco_atual: Optional['Personagem'] = None
 
+        # Recalcula os stats DEPOIS de aplicar os stats base do monstro
+        # self.habilidades agora é uma lista de strings, então isso funcionará.
         self.recalcular_stats_completos()
+
+        # Define o HP e MP atuais para o máximo recém-calculado
         self.hp_atual = self.hp_max
         self.mp_atual = self.mp_max
 
     def aplicar_stats_base(self, stats: Dict[str, int]):
-        self.base_forca = stats.get("forca", 5)
-        self.base_destreza = stats.get("destreza", 5)
-        self.base_constituicao = stats.get("constituicao", 5)
-        self.base_inteligencia = stats.get("inteligencia", 5)
-        self.base_sabedoria = stats.get("sabedoria", 5)
-        self.base_carisma = stats.get("carisma", 1)
-        self.base_sorte = stats.get("sorte", 5)
+        """Aplica os atributos base definidos para este tipo de monstro."""
+        # Como monstros não usam equipamentos, seus stats base são seus stats totais.
+        # Nós os atribuímos aos `base_` atributos para consistência com a classe Personagem.
+        self.base_forca = stats.get("forca", 10)
+        self.base_destreza = stats.get("destreza", 10)
+        self.base_constituicao = stats.get("constituicao", 10)
+        self.base_inteligencia = stats.get("inteligencia", 10)
+        self.base_sabedoria = stats.get("sabedoria", 10)
+        self.base_carisma = stats.get("carisma", 1) # Geralmente baixo para monstros
 
-    def decidir_acao(self, aliados: List['Personagem'], inimigos: List['Personagem']) -> Dict[str, Any]:
-        # Reduzir cooldowns no início do turno
-        for hab_nome in self.cooldowns_habilidades:
-            if self.cooldowns_habilidades[hab_nome] > 0:
-                self.cooldowns_habilidades[hab_nome] -= 1
-
-        inimigos_vivos = [i for i in inimigos if i.esta_vivo()]
-        if not inimigos_vivos:
-            return {"tipo": "passar_turno"}
-
+    def decidir_acao(self, aliados: List['Monstro'], inimigos: List['Personagem']) -> Dict[str, Any]:
+        """
+        O cérebro do monstro. Decide qual ação tomar com base na IA.
+        Esta é a primeira implementação da IA adaptativa.
+        """
+        # Define o alvo principal se não tiver um, ou se o alvo atual estiver morto.
         if not self.foco_atual or not self.foco_atual.esta_vivo():
-            self.foco_atual = random.choice(inimigos_vivos)
+            # Comportamento de foco: 'oportunista' foca no inimigo com menos HP.
+            if self.comportamento_ia == "oportunista":
+                self.foco_atual = min(inimigos, key=lambda i: i.hp_atual)
+            else:
+                self.foco_atual = random.choice(inimigos)
 
-        if self.nivel >= 15 and self.comportamento_ia != "suporte":
-            alvo_oportunista = min(inimigos_vivos, key=lambda i: i.hp_atual / i.hp_max)
-            if self.foco_atual != alvo_oportunista:
-                print(f"[IA Escalável] {self.nome} reavalia a situação e foca em {alvo_oportunista.nome}!")
-                self.foco_atual = alvo_oportunista
+        # --- Lógica de Decisão Baseada em Regras ---
 
-        if self.hp_atual / self.hp_max < 0.3:
+        # 1. Autopreservação (Prioridade Alta)
+        if self.hp_atual / self.hp_max < 0.3: # Se com menos de 30% de vida
             habilidade_cura = self.encontrar_habilidade_por_efeito("cura", "self")
             if habilidade_cura:
                 print(f"[IA - Autopreservação] {self.nome} está com pouca vida e decide se curar.")
-                self.cooldowns_habilidades[habilidade_cura['nome']] = habilidade_cura.get('cooldown', 2)
                 return {"tipo": "usar_habilidade", "habilidade": habilidade_cura, "alvo": self}
 
+        # 2. Sinergia / Suporte (Prioridade Média)
         if self.comportamento_ia == "suporte":
             aliado_ferido = self.encontrar_aliado_ferido(aliados)
             if aliado_ferido:
                 habilidade_cura_aliado = self.encontrar_habilidade_por_efeito("cura", "aliado_unico")
                 if habilidade_cura_aliado:
                     print(f"[IA - Suporte] {self.nome} decide curar seu aliado {aliado_ferido.nome}.")
-                    self.cooldowns_habilidades[habilidade_cura_aliado['nome']] = habilidade_cura_aliado.get('cooldown', 2)
                     return {"tipo": "usar_habilidade", "habilidade": habilidade_cura_aliado, "alvo": aliado_ferido}
 
-        if hasattr(self.foco_atual, 'efeitos_ativos'):
-            efeitos_alvo = self.foco_atual.efeitos_ativos
-            if any(e.id_efeito == "buff_defesa_grande" for e in efeitos_alvo):
-                habilidade_debuff = self.encontrar_habilidade_por_efeito("debuff", "inimigo_unico")
-                if habilidade_debuff:
-                    print(f"[IA - Análise] {self.nome} vê a defesa do alvo e tenta aplicar um debuff.")
-                    self.cooldowns_habilidades[habilidade_debuff['nome']] = habilidade_debuff.get('cooldown', 3)
-                    return {"tipo": "usar_habilidade", "habilidade": habilidade_debuff, "alvo": self.foco_atual}
+        # 3. Análise do Jogador (Prioridade Média)
+        # Exemplo simples: se o jogador estiver com um buff de defesa, usar um debuff em vez de ataque direto.
+        efeitos_alvo = self.foco_atual.efeitos_ativos
+        if any(e.id_efeito == "buff_defesa_grande" for e in efeitos_alvo):
+            habilidade_debuff = self.encontrar_habilidade_por_efeito("debuff", "inimigo_unico")
+            if habilidade_debuff:
+                print(f"[IA - Análise] {self.nome} vê a defesa do alvo e tenta aplicar um debuff.")
+                return {"tipo": "usar_habilidade", "habilidade": habilidade_debuff, "alvo": self.foco_atual}
 
+        # 4. Ofensiva Padrão (Prioridade Baixa)
         habilidade_ofensiva = self.encontrar_habilidade_por_efeito("dano", "inimigo_unico")
         if habilidade_ofensiva:
-            chance_usar_habilidade = 0.5 if self.nivel < 25 else 0.8
-            if random.random() < chance_usar_habilidade:
-                print(f"[IA - Ofensiva] {self.nome} decide usar uma habilidade de ataque: {habilidade_ofensiva['nome']}.")
-                self.cooldowns_habilidades[habilidade_ofensiva['nome']] = habilidade_ofensiva.get('cooldown', 2)
-                return {"tipo": "usar_habilidade", "habilidade": habilidade_ofensiva, "alvo": self.foco_atual}
+            print(f"[IA - Ofensiva] {self.nome} decide usar uma habilidade de ataque.")
+            return {"tipo": "usar_habilidade", "habilidade": habilidade_ofensiva, "alvo": self.foco_atual}
 
+        # 5. Ação Padrão: Ataque Básico
         ataque_escolhido = random.choice(self.ataques_base) if self.ataques_base else None
         if ataque_escolhido:
             print(f"[IA - Padrão] {self.nome} recorre a um ataque básico: {ataque_escolhido['nome']}.")
             return {"tipo": "ataque_basico", "ataque": ataque_escolhido, "alvo": self.foco_atual}
         else:
-            print(f"[IA - Padrão] {self.nome} tenta atacar mas não tem ações disponíveis e passa o turno.")
+            # Caso o monstro não tenha ataques básicos definidos (fallback de segurança)
+            print(f"[IA - Padrão] {self.nome} tenta atacar mas não tem ações disponíveis.")
             return {"tipo": "passar_turno"}
 
+
     def encontrar_habilidade_por_efeito(self, tipo_efeito: str, tipo_alvo: str) -> Optional[Dict]:
+        """Encontra a primeira habilidade disponível que corresponde a um tipo de efeito e alvo."""
         habilidades_disponiveis = []
         for h in self.habilidades_completas:
             custo_valor = h.get('custo_valor', 0)
             custo_tipo = h.get('custo_tipo')
+
             pode_pagar = False
             if custo_tipo == 'mp':
-                if self.mp_atual >= custo_valor: pode_pagar = True
+                if self.mp_atual >= custo_valor:
+                    pode_pagar = True
             elif custo_tipo == 'stamina':
-                if self.stamina_atual >= custo_valor: pode_pagar = True
-            else:
+                if self.stamina_atual >= custo_valor:
+                    pode_pagar = True
+            else: # Sem custo
                 pode_pagar = True
 
-            # Verifica se a habilidade não está em cooldown
-            em_cooldown = self.cooldowns_habilidades.get(h.get('nome'), 0) > 0
-
-            if pode_pagar and not em_cooldown:
+            if pode_pagar:
                 habilidades_disponiveis.append(h)
 
         for h in habilidades_disponiveis:
@@ -137,18 +159,21 @@ class Monstro(Personagem):
                         return h
         return None
 
-    def encontrar_aliado_ferido(self, aliados: List['Personagem']) -> Optional['Personagem']:
+    def encontrar_aliado_ferido(self, aliados: List['Monstro']) -> Optional['Monstro']:
+        """Encontra o aliado (excluindo a si mesmo) com a menor porcentagem de vida, se abaixo de 50%."""
         aliados_feridos = [a for a in aliados if a is not self and (a.hp_atual / a.hp_max) < 0.5]
         if not aliados_feridos:
             return None
         return min(aliados_feridos, key=lambda a: a.hp_atual / a.hp_max)
 
     def gerar_loot(self) -> Dict[str, Any]:
+        """Gera loot para o jogador com base na tabela de loot."""
         loot_gerado = {"ouro": self.ouro, "xp": self.xp_recompensa, "itens": []}
         for item_drop in self.loot_table:
             if random.random() < item_drop["chance"]:
                 quantidade = random.randint(item_drop["quantidade"][0], item_drop["quantidade"][1])
                 loot_gerado["itens"].append({"id_item": item_drop["id_item"], "quantidade": quantidade})
+
         return loot_gerado
 
     def __str__(self) -> str:

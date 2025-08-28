@@ -16,15 +16,5 @@ HABILIDADES_PASSIVAS = {
         "efeitos": [
             {"tipo": "modificador_stat", "atributo": "defesa_fisica", "valor": 5}
         ]
-    },
-
-    "estilo_do_bebado": {
-        "nome": "Estilo do Bêbado",
-        "tipo": "passiva",
-        "descricao": "Seus movimentos imprevisíveis tornam você mais difícil de acertar e seus golpes mais fortes. Concede um bônus em esquiva e ataque.",
-        "efeitos": [
-            {"tipo": "modificador_stat", "atributo": "esquiva", "valor": 10},
-            {"tipo": "modificador_stat", "atributo": "ataque_fisico", "valor": 5}
-        ]
     }
 }

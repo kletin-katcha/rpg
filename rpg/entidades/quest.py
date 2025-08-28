@@ -54,29 +54,24 @@ class Quest:
         # --- Recompensas ---
         self.recompensas = recompensas
 
-    def iniciar(self) -> list[str]:
-        """Muda o estado da quest para ativa e retorna o log."""
+    def iniciar(self):
+        """Muda o estado da quest para ativa."""
         if self.estado == EstadoQuest.INATIVA:
             self.estado = EstadoQuest.ATIVA
-            return [f"Nova missão iniciada: [{self.tipo.value}] {self.titulo}"]
-        return []
+            print(f"Nova missão iniciada: [{self.tipo.value}] {self.titulo}")
 
-    def atualizar_progresso(self, tipo_objetivo: str, id_alvo: str, quantidade: int = 1) -> list[str]:
+    def atualizar_progresso(self, tipo_objetivo: str, id_alvo: str, quantidade: int = 1):
         """
-        Atualiza o progresso de um objetivo da quest e retorna o log.
+        Atualiza o progresso de um objetivo da quest.
         Ex: tipo="matar", id="goblin", quantidade=1
         """
         if self.estado != EstadoQuest.ATIVA:
-            return []
+            return
 
-        logs = []
         for obj in self.objetivos:
             if obj["tipo"] == tipo_objetivo and obj["id_alvo"] == id_alvo:
-                # Só atualiza se o progresso não estiver completo
-                if obj["progresso"] < obj["total"]:
-                    obj["progresso"] = min(obj["total"], obj["progresso"] + quantidade)
-                    logs.append(f"Progresso da missão '{self.titulo}': {obj['progresso']}/{obj['total']} {obj['id_alvo']} {obj['tipo']}s.")
-        return logs
+                obj["progresso"] = min(obj["total"], obj["progresso"] + quantidade)
+                print(f"Progresso da missão '{self.titulo}': {obj['progresso']}/{obj['total']} {obj['id_alvo']} {obj['tipo']}s.")
 
     def esta_completa(self) -> bool:
         """Verifica se todos os objetivos da quest foram alcançados."""
@@ -85,13 +80,16 @@ class Quest:
 
         return all(obj["progresso"] >= obj["total"] for obj in self.objetivos)
 
-    def concluir(self, personagem: 'Personagem') -> bool:
-        """
-        Muda o estado para concluída. A entrega de recompensas é feita no sistema de quests.
-        Retorna True se foi bem-sucedido.
-        """
+    def concluir(self, personagem: 'Personagem'):
+        """Muda o estado para concluída e entrega as recompensas ao jogador."""
         if self.esta_completa():
             self.estado = EstadoQuest.CONCLUIDA
+            print(f"Missão Concluída: {self.titulo}!")
+            # TODO: Entregar recompensas ao personagem
+            # personagem.ganhar_xp(self.recompensas.get("xp", 0))
+            # personagem.ouro += self.recompensas.get("ouro", 0)
+            # for item_rec in self.recompensas.get("itens", []):
+            #     personagem.inventario.adicionar_item(item_rec['id_item'], item_rec['quantidade'])
             return True
         return False
 

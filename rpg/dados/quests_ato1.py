@@ -54,53 +54,5 @@ QUESTS_ATO1 = {
             "ouro": 100,
             "itens": [{"id_item": "carta_de_recomendacao_ponte_branca", "quantidade": 1}]
         }
-    },
-    "sq01_coracao_pantano": {
-        "titulo": "O Coração do Pântano",
-        "descricao_inicio": "Elara parece preocupada. 'O Pântano Sombrio ao sul tem se tornado mais perigoso. Uma aura doentia emana dele, e os espectros estão mais agressivos. Dizem que o coração do pântano está corrompido. Se você for corajoso o suficiente, colete a essência desses espíritos e enfrente a fera que guarda o coração do lugar.'",
-        "ato_narrativo": 1,
-        "tipo": TipoQuest.SECUNDARIA,
-        "npc_inicio": "elara_curandeira",
-        "pre_requisitos": ["mq02_ameaca_local"],
-        "objetivos": [
-            {"tipo": "coletar", "id_alvo": "essencia_espectral", "progresso": 0, "total": 5, "descricao": "Colete 5 Essências Espectrais dos espectros no pântano."},
-            {"tipo": "matar", "id_alvo": "crocodilo_gigante", "progresso": 0, "total": 1, "descricao": "Derrote o Crocodilo Gigante que vive no coração do pântano."},
-            {"tipo": "retornar_para", "id_alvo": "elara_curandeira", "progresso": 0, "total": 1, "descricao": "Volte para Elara com a prova de sua vitória."}
-        ],
-        "recompensas": {
-            "xp": 500,
-            "ouro": 250,
-            "itens": [{"id_item": "amuleto_purificado", "quantidade": 1}]
-        }
-    },
-    "mq04_chamado_antigo": {
-        "titulo": "O Chamado Antigo",
-        "descricao_inicio": "Ao ver o amuleto purificado, os olhos de Elara se arregalam. 'Este símbolo... pertence aos Guardiões do Equilíbrio, uma ordem antiga que protegia o mundo de ameaças como o Rei Corrompido. O amuleto estar ativo significa que o mal está se agitando novamente. Você precisa ir à Grande Biblioteca de Aethelgard. Procure pelo estudioso chefe, Mestre Valerius. Mostre a ele o amuleto.'",
-        "ato_narrativo": 1,
-        "tipo": TipoQuest.PRINCIPAL,
-        "npc_inicio": "elara_curandeira",
-        "pre_requisitos": ["sq01_coracao_pantano"],
-        "objetivos": [
-            {"tipo": "viajar_para", "id_alvo": "cidade_aethelgard", "progresso": 0, "total": 1, "descricao": "Vá para a cidade de Aethelgard."},
-            {"tipo": "falar_com", "id_alvo": "mestre_valerius", "progresso": 0, "total": 1, "descricao": "Encontre Mestre Valerius na Grande Biblioteca."}
-        ],
-        "recompensas": {
-            "xp": 1000
-        }
-    },
-    "mq05_a_primeira_dungeon": {
-        "titulo": "As Ruínas Esquecidas",
-        "descricao_inicio": "Valerius examina o amuleto. 'Incrível... ele ressoa com as Ruínas de Al'Khem, uma antiga fortaleza dos Guardiões a leste daqui. Se há respostas sobre o Rei Corrompido, elas estarão lá. As ruínas são perigosas, mas você deve investigar. Procure por qualquer inscrição ou artefato que possa nos guiar.'",
-        "ato_narrativo": 1,
-        "tipo": TipoQuest.PRINCIPAL,
-        "npc_inicio": "mestre_valerius",
-        "pre_requisitos": ["mq04_chamado_antigo"],
-        "objetivos": [
-            {"tipo": "entrar_em", "id_alvo": "dungeon_ruinas_alkhem", "progresso": 0, "total": 1, "descricao": "Encontre a entrada para as Ruínas de Al'Khem."},
-            {"tipo": "encontrar_item", "id_alvo": "mapa_das_sombras", "progresso": 0, "total": 1, "descricao": "Procure por um artefato que possa revelar os planos do inimigo."}
-        ],
-        "recompensas": {
-            "xp": 1500
-        }
     }
 }

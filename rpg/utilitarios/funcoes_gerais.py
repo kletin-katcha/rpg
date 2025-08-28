@@ -2,14 +2,6 @@ import os
 import sys
 import time
 
-# Códigos de Cor ANSI
-COR_RESET = "\033[0m"
-COR_VERMELHA = "\033[91m"
-COR_VERDE = "\033[92m"
-COR_AMARELA = "\033[93m"
-COR_AZUL = "\033[94m"
-COR_BRANCA = "\033[97m"
-
 def limpar_tela():
     """Limpa o console, compatível com Windows, macOS e Linux."""
     os.system('cls' if os.name == 'nt' else 'clear')

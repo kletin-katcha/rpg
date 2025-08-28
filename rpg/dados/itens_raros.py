@@ -66,44 +66,5 @@ ITENS_RAROS = {
         "tipo": TipoItem.POCAO, "raridade": RaridadeItem.RARO, "valor": 200,
         "empilhavel": True, "max_pilha": 10,
         "efeito_consumo": {"tipo": "cura_hp", "quantidade": 250}
-    },
-    "amuleto_purificado": {
-        "nome": "Amuleto Purificado",
-        "descricao": "Um amuleto de prata que emana uma leve quentura. A pedra escura em seu centro agora pulsa com uma luz branca suave.",
-        "lore": "Este amuleto parece ter absorvido a energia maligna do pântano e a purificado. Ele parece antigo e ressoa com um poder desconhecido.",
-        "tipo": TipoItem.QUEST, "raridade": RaridadeItem.UNICO, "valor": 0,
-        "empilhavel": False
-    },
-
-    # --- ITENS DA DUNGEON (RUÍNAS DE AL'KHEM) ---
-    "nucleo_de_construto_intacto": {
-        "nome": "Núcleo de Construto Intacto", "descricao": "Um orbe de energia que pulsa com poder estável. Um feito da engenharia antiga.",
-        "tipo": TipoItem.MATERIAL_CRAFTING, "raridade": RaridadeItem.RARO, "valor": 250,
-        "empilhavel": True, "max_pilha": 5
-    },
-    "lente_de_cristal_focadora": {
-        "nome": "Lente de Cristal Focadora", "descricao": "Uma lente perfeitamente lapidada, usada por construtos arcanos para focar seus raios de energia.",
-        "tipo": TipoItem.MATERIAL_CRAFTING, "raridade": RaridadeItem.RARO, "valor": 300,
-        "empilhavel": True, "max_pilha": 3
-    },
-    "nucleo_de_construto_grande": {
-        "nome": "Núcleo de Construto Grande", "descricao": "O núcleo de poder de um construto Colosso. É pesado e vibra com uma energia imensa.",
-        "tipo": TipoItem.MATERIAL_CRAFTING, "raridade": RaridadeItem.RARO, "valor": 500,
-        "empilhavel": False
-    },
-    "fragmento_de_armadura_ancestral": {
-        "nome": "Fragmento de Armadura Ancestral", "descricao": "Um pedaço de uma liga metálica desconhecida, incrivelmente leve e resistente.",
-        "tipo": TipoItem.MATERIAL_CRAFTING, "raridade": RaridadeItem.RARO, "valor": 180,
-        "empilhavel": True, "max_pilha": 10
-    },
-    "grimorio_antigo_rasgado": {
-        "nome": "Grimório Antigo Rasgado", "descricao": "Páginas de um grimório antigo, detalhando a criação de construtos.",
-        "tipo": TipoItem.QUEST, "raridade": RaridadeItem.UNICO, "valor": 0,
-        "empilhavel": False
-    },
-    "mapa_das_sombras": {
-        "nome": "Mapa das Sombras", "descricao": "Um mapa encantado que revela locais ocultos e de poder sombrio.",
-        "tipo": TipoItem.QUEST, "raridade": RaridadeItem.UNICO, "valor": 0,
-        "empilhavel": False
     }
 }

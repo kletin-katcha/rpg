@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING, Dict, Any, List
 from ..entidades.personagem import Personagem
 from ..dados.racas_base import RACAS
 from ..dados.classes_iniciais import CLASSES_INICIAIS
-from ..dados.ataques_base import ATAQUES_BASE
 
 if TYPE_CHECKING:
     from ..entidades.personagem import Personagem
@@ -17,15 +16,12 @@ def criar_personagem_base(nome: str) -> 'Personagem':
         raise ValueError("O nome não pode estar em branco.")
     return Personagem(nome=nome)
 
-def get_racas_disponiveis() -> Dict[str, Any]:
+def get_dados_racas() -> Dict[str, Any]:
     """Retorna o dicionário completo de raças para a UI exibir."""
     return RACAS
 
-def get_classes_disponiveis_para_raca(id_raca: str) -> Dict[str, Any]:
-    """
-    Retorna as classes disponíveis para uma determinada raça.
-    TODO: Implementar lógica de restrição de classe por raça se necessário.
-    """
+def get_dados_classes() -> Dict[str, Any]:
+    """Retorna o dicionário completo de classes para a UI exibir."""
     return CLASSES_INICIAIS
 
 def aplicar_raca(personagem: 'Personagem', id_raca: str):
@@ -57,14 +53,6 @@ def aplicar_classe(personagem: 'Personagem', id_classe: str):
 
     for habilidade in classe_data.get('habilidades_iniciais', []):
         personagem.habilidades.append(habilidade)
-
-    # Substitui os ataques base pelos da classe
-    ataques_base_disponiveis = classe_data.get('ataques_base_disponiveis', [])
-    if ataques_base_disponiveis:
-        personagem.ataques_base.clear()
-        for id_ataque in ataques_base_disponiveis:
-            if id_ataque in ATAQUES_BASE:
-                personagem.ataques_base.append(ATAQUES_BASE[id_ataque])
 
     equipamento_inicial = classe_data.get('equipamento_inicial', {})
     for slot, id_item in equipamento_inicial.items():
