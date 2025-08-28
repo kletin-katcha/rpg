@@ -41,7 +41,6 @@ def evoluir_classe(personagem: 'Personagem', id_classe_avancada: str) -> list[st
         logs.append("Você aprendeu novas habilidades:")
         for id_habilidade in habilidades:
             personagem.habilidades.append(id_habilidade)
-            # TODO: Precisamos dos dados da habilidade para mostrar o nome.
             logs.append(f"  - {id_habilidade.replace('_', ' ').title()}")
 
     # Aplica bônus de stats permanentes
