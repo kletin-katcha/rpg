@@ -3,12 +3,15 @@ import random
 from typing import List, Dict
 from .entidades.personagem import Personagem
 from .sistemas import combate, quests
+from .sistemas.cidade.dispatcher import executar_opcao_especial_cidade, executar_acao_contextual_cidade
 from .io import menu_inventario, menu_equipamento, salvar_carregar
 from .io import criacao_personagem as cc_api
 # O narrador será substituído por um sistema de log de eventos
 # from .utilitarios import funcoes_gerais, narrador
 from .fabricas.fabrica_monstros import criar_monstro_por_id
 from .dados.habilidades import TODAS_HABILIDADES
+from .dados.monstros_area1 import MONSTROS_AREA1
+from .dados.cidade.opcoes_cidade import OPCOES_CIDADE_BASE
 
 if TYPE_CHECKING:
     from .entidades.personagem import Personagem
@@ -81,6 +84,8 @@ class GameManager:
             return {"step": "nome", "prompt": "Digite o nome do seu herói:"}
         elif self.creation_step == "raca":
             return {"step": "raca", "opcoes": cc_api.get_dados_racas()}
+        elif self.creation_step == "sub_raca":
+            return {"step": "sub_raca", "opcoes": cc_api.get_dados_sub_racas(self.jogador.raca)}
         elif self.creation_step == "classe":
             return {"step": "classe", "opcoes": cc_api.get_dados_classes()}
         elif self.creation_step == "atributos":
@@ -94,6 +99,10 @@ class GameManager:
             self.creation_step = "raca"
         elif self.creation_step == "raca" and "id_raca" in dados:
             cc_api.aplicar_raca(self.jogador, dados["id_raca"])
+            sub_racas = cc_api.get_dados_sub_racas(dados["id_raca"])
+            self.creation_step = "sub_raca" if sub_racas else "classe"
+        elif self.creation_step == "sub_raca" and "id_sub_raca" in dados:
+            cc_api.aplicar_sub_raca(self.jogador, dados["id_sub_raca"])
             self.creation_step = "classe"
         elif self.creation_step == "classe" and "id_classe" in dados:
             cc_api.aplicar_classe(self.jogador, dados["id_classe"])
@@ -107,17 +116,7 @@ class GameManager:
     def get_opcoes_cidade(self) -> list[str]:
         """Retorna as opções de ação disponíveis na cidade atual."""
         # No futuro, isso pode mudar dependendo da cidade ou do estado do jogo.
-        return [
-            "Falar com Elara (Curandeira da Vila)",
-            "Explorar a Floresta dos Sussurros",
-            "Viajar",
-            "Ver Diário de Missões",
-            "Abrir Inventário",
-            "Ver Equipamento",
-            "Ver status do personagem",
-            "Salvar Jogo",
-            "Sair para o Menu Principal"
-        ]
+        return list(OPCOES_CIDADE_BASE)
 
     def executar_opcao_cidade(self, opcao: str) -> dict:
         """
@@ -182,19 +181,25 @@ class GameManager:
         elif opcao == "Ver status do personagem":
             return {"tipo": "abrir_tela", "tela": "status_personagem"}
 
-        elif opcao == "Salvar Jogo":
+        else:
+            resultado_especial = executar_opcao_especial_cidade(self.jogador, opcao)
+            if resultado_especial:
+                self.game_log.extend(resultado_especial.get("log", []))
+                resultado_especial["log"] = self.game_log
+                return resultado_especial
+
+        if opcao == "Salvar Jogo":
             # A UI forneceria o nome do save.
             salvar_carregar.salvar_jogo(self.jogador, "save_teste")
             self._add_log("Jogo salvo com sucesso.")
             return {"tipo": "feedback", "log": self.game_log}
 
-        elif opcao == "Sair para o Menu Principal":
+        if opcao == "Sair para o Menu Principal":
             self.game_state = "main_menu"
             return {"tipo": "transicao_estado", "novo_estado": "main_menu"}
 
-        else:
-            self._add_log("Opção desconhecida.")
-            return {"tipo": "feedback", "log": self.game_log}
+        self._add_log("Opção desconhecida.")
+        return {"tipo": "feedback", "log": self.game_log}
 
     def executar_acao_contextual(self, acao: str):
         """Executa uma ação contextual, como aceitar uma cura."""
@@ -204,6 +209,12 @@ class GameManager:
             self.jogador.mp_atual = self.jogador.mp_max
             self._add_log("Você se sente revigorado! HP e MP totalmente restaurados.")
             return {"tipo": "feedback", "log": self.game_log}
+
+        resultado_cidade = executar_acao_contextual_cidade(self.jogador, acao)
+        if resultado_cidade:
+            self.game_log.extend(resultado_cidade.get("log", []))
+            return {"tipo": "feedback", "log": self.game_log}
+
         return {"tipo": "feedback", "log": ["Ação contextual desconhecida."]}
 
 
