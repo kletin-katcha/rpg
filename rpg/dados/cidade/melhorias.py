@@ -24,6 +24,9 @@ MELHORIAS_ESTRUTURAS = {
         "nivel_maximo": 2,
         "custos_por_nivel": {
             2: {"ouro": 260, "materiais": {"barra_metal_reciclado": 4}},
+        "nivel_maximo": 2,
+        "custos_por_nivel": {
+            2: {"ouro": 180, "materiais": {"barra_metal_reciclado": 3}},
         },
     },
 }

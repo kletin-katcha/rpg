@@ -17,6 +17,12 @@ from ..dados.classes_iniciais_expandidas import CLASSES_INICIAIS_EXPANDIDAS
 from ..dados.classes_evolucoes import CLASSES_EVOLUCOES
 from ..dados.classes_secretas import CLASSES_SECRETAS
 from ..dados.side_quests_classes_secretas import SIDE_QUESTS_CLASSES_SECRETAS
+from ..dados.racas_expandidas import RACAS_EXPANDIDAS
+from ..dados.racas_massivas import RACAS_MASSIVAS
+from ..dados.classes_extras import CLASSES_EXTRAS
+from ..dados.classes_unicas_raciais import CLASSES_UNICAS_SUBRACAIS
+from ..dados.sub_racas_padrao import SUB_RACAS_PADRAO
+from ..dados.arvores_habilidades_massivas import get_catalogo_arvores
 
 if TYPE_CHECKING:
     from ..entidades.personagem import Personagem
@@ -59,6 +65,7 @@ def get_dados_racas() -> Dict[str, Any]:
     racas = dict(RACAS)
     racas.update(RACAS_EXPANDIDAS)
     racas.update(RACAS_MVP_ESTRUTURADAS)
+    racas.update(RACAS_MASSIVAS)
     return {id_raca: _enriquecer_raca_com_variacoes(id_raca, dados) for id_raca, dados in racas.items()}
 
 def get_dados_classes() -> Dict[str, Any]:
@@ -66,6 +73,7 @@ def get_dados_classes() -> Dict[str, Any]:
     classes = dict(CLASSES_INICIAIS)
     classes.update(CLASSES_EXTRAS)
     classes.update(CLASSES_UNICAS_RACIAIS)
+    classes.update(CLASSES_UNICAS_SUBRACAIS)
     return classes
 
 def get_classes_secundarias_disponiveis(id_classe_principal: str | None) -> List[str]:
@@ -82,6 +90,7 @@ def _normalizar_id_sub_raca(nome: str) -> str:
 
 def get_dados_sub_racas(id_raca: str) -> Dict[str, Any]:
     """Retorna sub-raças de uma raça; usa arquivo dedicado para o catálogo MVP estruturado."""
+    """Retorna variações (sub-raças) de uma raça em formato indexado por ID."""
     racas = get_dados_racas()
     if id_raca not in racas:
         raise ValueError(f"Raça inválida: {id_raca}")
@@ -226,6 +235,12 @@ def get_catalogo_classes_progressao() -> Dict[str, Any]:
         "secretas": CLASSES_SECRETAS,
         "side_quests_secretas": SIDE_QUESTS_CLASSES_SECRETAS,
     }
+def get_classes_unicas_por_sub_raca(id_raca: str, id_sub_raca: str) -> List[str]:
+    """Retorna as classes únicas disponíveis para uma sub-raça específica."""
+    sub_racas = get_dados_sub_racas(id_raca)
+    if id_sub_raca not in sub_racas:
+        raise ValueError(f"Sub-raça inválida para '{id_raca}': {id_sub_raca}")
+    return list(sub_racas[id_sub_raca].get("classes_unicas_sub_raca", []))
 
 
 def get_catalogo_arvores_habilidades() -> Dict[str, Dict[str, Dict[str, Any]]]:
@@ -235,3 +250,4 @@ def get_catalogo_arvores_habilidades() -> Dict[str, Dict[str, Dict[str, Any]]]:
         "classes": ARVORES_HABILIDADES_CLASSES,
         "racas": ARVORES_HABILIDADES_RACAS,
     }
+    return get_catalogo_arvores()

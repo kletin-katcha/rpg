@@ -26,6 +26,9 @@ def executar_forja_prototipo(jogador):
             "prompt": "Escolha uma forja adicional:",
             "opcoes": ["forjar_machadinha", "forjar_machado_batalha", "forjar_espada_longa_avancada", "forjar_peitoral_avancado"],
             "acao_prefixo": "acao_forja",
+            "tipo": "pergunta",
+            "prompt": "Deseja forjar uma Machadinha Reciclada? (s/n)",
+            "acao": "forjar_machadinha",
             "log": logs,
         }
 
