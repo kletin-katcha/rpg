@@ -16,6 +16,9 @@ class TestConteudoMassivo(unittest.TestCase):
             self.assertIn(id_raca, racas)
             self.assertEqual(len(cc_api.get_dados_sub_racas(id_raca)), 6)
 
+    def test_classes_unicas_por_raca(self):
+        classes = cc_api.get_classes_unicas_por_raca("alto_nordico")
+        self.assertIn("thane_das_neves", classes)
     def test_classes_unicas_por_sub_raca(self):
         classes = cc_api.get_classes_unicas_por_sub_raca("alto_nordico", "alto_nordico_montanhes")
         self.assertIn("classe_alto_nordico_montanhes", classes)

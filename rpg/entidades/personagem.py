@@ -98,6 +98,10 @@ class Personagem:
         self.quests_ativas: List['Quest'] = []
         self.quests_concluidas: List[str] = [] # Armazena IDs das quests concluídas
 
+        # --- Localização e Reputação ---
+        self.cidade_atual: str = "vila_aurora"
+        self.reino_atual: str = "valedourado"
+
         # --- Reputação ---
         self.reputacao: Dict[str, int] = { # Ex: "Guilda dos Ladrões": 50
             "cidade_inicial": 0,

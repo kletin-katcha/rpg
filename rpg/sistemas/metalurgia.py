@@ -1,8 +1,11 @@
+"""Sistema de metalurgia e forja com trilhas base e avançada."""
 from typing import TYPE_CHECKING, List
 from ..dados.metalurgia import (
     RECEITA_BARRA_RECICLADA,
     RECEITA_LAMINA_RECICLADA,
     RECEITA_MACHADINHA_RECICLADA,
+    RECEITA_MACHADO_BATALHA_FERRO,
+    RECEITAS_AVANCADAS_BLOQUEADAS,
 )
 
 if TYPE_CHECKING:
@@ -56,3 +59,35 @@ def forjar_machadinha_reciclada(jogador: 'Personagem') -> List[str]:
         jogador.adicionar_item(id_item, quantidade)
 
     return ["Faíscas saltam da bigorna! Você criou 1x machadinha_reciclada."]
+
+
+def forjar_machado_batalha_ferro(jogador: 'Personagem') -> List[str]:
+    """Forja um machado de batalha superior para o meio do jogo inicial."""
+    if not _tem_itens_suficientes(jogador, RECEITA_MACHADO_BATALHA_FERRO["entrada"]):
+        return ["Você precisa de 3x barra_metal_reciclado e 1x ferrao_de_vespa para forjar o machado de batalha."]
+
+    _consumir_itens(jogador, RECEITA_MACHADO_BATALHA_FERRO["entrada"])
+    for id_item, quantidade in RECEITA_MACHADO_BATALHA_FERRO["saida"].items():
+        jogador.adicionar_item(id_item, quantidade)
+
+    return ["Marteladas precisas! Você criou 1x machado_de_batalha_ferro."]
+
+
+def forjar_receita_avancada(jogador: 'Personagem', id_receita: str) -> List[str]:
+    """Forja uma receita avançada validando custos e nível mínimo de forja."""
+    receita = RECEITAS_AVANCADAS_BLOQUEADAS.get(id_receita)
+    if not receita:
+        return ["Receita avançada inexistente."]
+
+    nivel_forja = jogador.niveis_estruturas.get("oficina_basica", 1)
+    if nivel_forja < receita.get("requisito_nivel_forja", 99):
+        return [f"Oficina insuficiente. Requer nível {receita.get('requisito_nivel_forja')}." ]
+
+    if not _tem_itens_suficientes(jogador, receita["entrada"]):
+        return ["Materiais insuficientes para a receita avançada."]
+
+    _consumir_itens(jogador, receita["entrada"])
+    for id_item, quantidade in receita["saida"].items():
+        jogador.adicionar_item(id_item, quantidade)
+
+    return [f"Forja avançada concluída: {id_receita}."]

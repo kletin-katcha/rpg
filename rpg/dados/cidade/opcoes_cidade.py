@@ -1,7 +1,10 @@
+"""Opções de menu de cidade expandidas para MVP e pós-MVP."""
 OPCOES_CIDADE_BASE = [
     "Falar com Elara (Curandeira da Vila)",
     "Explorar a Floresta dos Sussurros",
     "Viajar",
+    "Ver mapa de cidades/reinos",
+    "Viajar para outra cidade (Protótipo)",
     "Ver Diário de Missões",
     "Abrir Inventário",
     "Ver Equipamento",
@@ -11,6 +14,10 @@ OPCOES_CIDADE_BASE = [
     "Construir Oficina (Protótipo)",
     "Melhorar Oficina (Protótipo)",
     "Ativar Automação de Coleta (Protótipo)",
+    "Construir Laboratório Alquímico (Protótipo)",
+    "Ativar Automação de Refino (Protótipo)",
+    "Configurar Produção Automática (Protótipo)",
+    "Forjar Machado de Batalha (Protótipo)",
     "Configurar Produção Automática (Protótipo)",
     "Avançar 1 dia (Protótipo)",
     "Salvar Jogo",

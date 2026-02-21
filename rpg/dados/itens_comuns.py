@@ -141,5 +141,23 @@ ITENS_COMUNS = {
         "tipo": TipoItem.ARMA, "raridade": RaridadeItem.COMUM, "valor": 16,
         "slot_equipamento": "arma_principal",
         "modificadores": {"dano_arma": 7, "precisao": -1}
+    },
+    "espada_longa_reciclada": {
+        "nome": "Espada Longa Reciclada", "descricao": "Lâmina longa reforçada com sucata refinada.",
+        "tipo": TipoItem.ARMA, "raridade": RaridadeItem.INCOMUM, "valor": 46,
+        "slot_equipamento": "arma_principal",
+        "modificadores": {"dano_arma": 11, "precisao": 1}
+    },
+    "peitoral_reciclado": {
+        "nome": "Peitoral Reciclado", "descricao": "Armadura pesada de placas reaproveitadas.",
+        "tipo": TipoItem.ARMADURA, "raridade": RaridadeItem.INCOMUM, "valor": 52,
+        "slot_equipamento": "peitoral",
+        "modificadores": {"defesa_fisica": 14}
+    },
+    "lamina_de_guerra_reciclada": {
+        "nome": "Lâmina de Guerra Reciclada", "descricao": "Arma de elite forjada em oficina avançada.",
+        "tipo": TipoItem.ARMA, "raridade": RaridadeItem.RARO, "valor": 90,
+        "slot_equipamento": "arma_principal",
+        "modificadores": {"dano_arma": 16, "chance_critico": 0.03}
     }
 }

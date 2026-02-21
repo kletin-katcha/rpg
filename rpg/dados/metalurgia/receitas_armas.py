@@ -1,3 +1,4 @@
+"""Receitas de armas recicladas para forja inicial."""
 RECEITA_LAMINA_RECICLADA = {
     "entrada": {"barra_metal_reciclado": 2},
     "saida": {"lamina_reciclada": 1},
