@@ -1,0 +1,3 @@
+from .receitas_barras import RECEITA_BARRA_RECICLADA
+from .receitas_armas import RECEITA_LAMINA_RECICLADA, RECEITA_MACHADINHA_RECICLADA
+from .receitas_avancadas import RECEITAS_AVANCADAS_BLOQUEADAS

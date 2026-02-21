@@ -68,6 +68,27 @@ def main_loop():
                             resultado_contexto = gm.executar_acao_contextual(resultado.get("acao"))
                             for log_contexto in resultado_contexto.get("log", []):
                                 print(log_contexto)
+                        else:
+                            print("Você decide não prosseguir com esta ação agora.")
+
+                    elif resultado.get("tipo") == "selecao":
+                        opcoes = resultado.get("opcoes", [])
+                        if not opcoes:
+                            print("Nenhuma opção disponível no momento.")
+                        else:
+                            print(f"\n{resultado.get('prompt', 'Escolha uma opção:')}")
+                            for i, opcao in enumerate(opcoes, 1):
+                                print(f"{i}. {opcao}")
+
+                            escolha_sec = input("Sua escolha: ").strip()
+                            if escolha_sec.isdigit() and 1 <= int(escolha_sec) <= len(opcoes):
+                                id_escolhido = opcoes[int(escolha_sec) - 1]
+                                acao = f"{resultado.get('acao_prefixo')}:{id_escolhido}"
+                                resultado_contexto = gm.executar_acao_contextual(acao)
+                                for log_contexto in resultado_contexto.get("log", []):
+                                    print(log_contexto)
+                            else:
+                                print("Você decide adiar essa escolha por enquanto.")
 
                     funcoes_gerais.pausar()
             else:
@@ -126,6 +147,57 @@ def main_loop():
                             if confirmar == 's':
                                 gm.processar_acao_criacao({"id_raca": id_raca_escolhida})
                                 print(f"Você escolheu ser um(a) {raca_data['nome']}!")
+                                funcoes_gerais.pausar()
+                        else:
+                            print("Número inválido.")
+                            funcoes_gerais.pausar()
+                    except ValueError:
+                        print("Entrada inválida.")
+                        funcoes_gerais.pausar()
+
+            elif step == "sub_raca":
+                sub_racas = dados_criacao.get("opcoes", {})
+                sub_racas_list = list(sub_racas.items())
+
+                # Se a raça não tiver sub-raças disponíveis, segue automaticamente.
+                if not sub_racas_list:
+                    gm.creation_step = "classe"
+                    continue
+
+                sub_raca_selecionada = False
+                while not sub_raca_selecionada:
+                    funcoes_gerais.limpar_tela()
+                    funcoes_gerais.imprimir_cabecalho("Escolha de Sub-raça", nivel=2)
+                    print("Escolha sua sub-raça:")
+                    for i, (_id_sub_raca, sub_raca_data) in enumerate(sub_racas_list, 1):
+                        print(f"{i}. {sub_raca_data['nome']}")
+
+                    print("\nDigite o número de uma sub-raça para ver detalhes, ou 'fim' para confirmar.")
+                    escolha = input("> ").lower().strip()
+
+                    if escolha == 'fim':
+                        if gm.jogador.sub_raca:
+                            sub_raca_selecionada = True
+                        else:
+                            print("Você deve primeiro selecionar uma sub-raça.")
+                            funcoes_gerais.pausar()
+                        continue
+
+                    try:
+                        index = int(escolha) - 1
+                        if 0 <= index < len(sub_racas_list):
+                            id_sub_raca_escolhida, sub_raca_data = sub_racas_list[index]
+                            funcoes_gerais.limpar_tela()
+                            funcoes_gerais.imprimir_cabecalho(sub_raca_data['nome'], nivel=3)
+                            print(f"Descrição: {sub_raca_data['descricao']}")
+                            print("\n--- Modificadores de Atributos ---")
+                            for stat, mod in sub_raca_data['modificadores_stats'].items():
+                                print(f"{stat.capitalize()}: {'+' if mod >= 0 else ''}{mod}")
+
+                            confirmar = input(f"\nDeseja escolher a sub-raça {sub_raca_data['nome']}? (s/n): ").lower().strip()
+                            if confirmar == 's':
+                                gm.processar_acao_criacao({"id_sub_raca": id_sub_raca_escolhida})
+                                print(f"Você escolheu a sub-raça {sub_raca_data['nome']}!")
                                 funcoes_gerais.pausar()
                         else:
                             print("Número inválido.")

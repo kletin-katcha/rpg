@@ -26,7 +26,9 @@ class Personagem:
         # --- Identificação Básica ---
         self.nome: str = nome
         self.raca: Optional[str] = None # ID da raça
+        self.sub_raca: Optional[str] = None # ID da sub-raça/variação
         self.classe: Optional[str] = None # ID da classe
+        self.classe_secundaria: Optional[str] = None # ID da classe secundária
         self.nivel: int = nivel
         self.xp_atual: int = 0
         self.xp_para_proximo_nivel: int = self.calcular_xp_necessario(nivel)
@@ -100,6 +102,11 @@ class Personagem:
         self.reputacao: Dict[str, int] = { # Ex: "Guilda dos Ladrões": 50
             "cidade_inicial": 0,
         }
+
+        # --- Construções / Automação ---
+        self.estruturas_construidas: set[str] = set()
+        self.niveis_estruturas: Dict[str, int] = {}
+        self.plano_producao_ativo: Optional[str] = None
 
         # Recalcular todos os stats derivados na inicialização
         self.recalcular_stats_completos()
