@@ -124,5 +124,22 @@ ITENS_COMUNS = {
         "tipo": TipoItem.ARMA, "raridade": RaridadeItem.COMUM, "valor": 35,
         "slot_equipamento": "arma_principal",
         "modificadores": {"dano_arma": 12, "dano_critico": 0.1}
+    },
+    "barra_metal_reciclado": {
+        "nome": "Barra de Metal Reciclado", "descricao": "Uma barra rudimentar fundida a partir de sucata enferrujada.",
+        "tipo": TipoItem.MATERIAL_CRAFTING, "raridade": RaridadeItem.COMUM, "valor": 6,
+        "empilhavel": True, "max_pilha": 20
+    },
+    "lamina_reciclada": {
+        "nome": "Lâmina Reciclada", "descricao": "Arma simples forjada com metal reaproveitado. Não é bela, mas corta.",
+        "tipo": TipoItem.ARMA, "raridade": RaridadeItem.COMUM, "valor": 14,
+        "slot_equipamento": "arma_principal",
+        "modificadores": {"dano_arma": 6}
+    },
+    "machadinha_reciclada": {
+        "nome": "Machadinha Reciclada", "descricao": "Ferramenta adaptada para combate. Mais pesada e menos precisa.",
+        "tipo": TipoItem.ARMA, "raridade": RaridadeItem.COMUM, "valor": 16,
+        "slot_equipamento": "arma_principal",
+        "modificadores": {"dano_arma": 7, "precisao": -1}
     }
 }

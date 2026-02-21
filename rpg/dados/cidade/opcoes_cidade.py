@@ -1,0 +1,18 @@
+OPCOES_CIDADE_BASE = [
+    "Falar com Elara (Curandeira da Vila)",
+    "Explorar a Floresta dos Sussurros",
+    "Viajar",
+    "Ver Diário de Missões",
+    "Abrir Inventário",
+    "Ver Equipamento",
+    "Ver status do personagem",
+    "Treinar Classe Secundária (Protótipo)",
+    "Usar Forja (Protótipo)",
+    "Construir Oficina (Protótipo)",
+    "Melhorar Oficina (Protótipo)",
+    "Ativar Automação de Coleta (Protótipo)",
+    "Configurar Produção Automática (Protótipo)",
+    "Avançar 1 dia (Protótipo)",
+    "Salvar Jogo",
+    "Sair para o Menu Principal",
+]
