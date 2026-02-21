@@ -1,13 +1,5 @@
-# RPG (Reboot)
+# RESET FASE 1
 
-Projeto reiniciado do zero.
+Todos os arquivos do projeto anterior foram removidos.
 
-## Objetivo
-Construir um RPG em camadas simples, previsíveis e testáveis, evitando acoplamento legado.
-
-## Como executar
-- `python -m rpg.main`
-
-## Como testar
-- `python scripts/verificar_sintaxe.py`
-- `python -m unittest discover rpg/testes`
+Próximo passo: iniciar a reconstrução do RPG do zero, arquivo por arquivo.
