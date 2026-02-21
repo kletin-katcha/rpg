@@ -17,6 +17,10 @@ for id_raca, dados_raca in RACAS_MVP_ESTRUTURADAS.items():
         "classe_unica_racial": True,
         "raca_vinculada": id_raca,
     }
+
+
+# Alias de compatibilidade retroativa para versões antigas do catálogo.
+CLASSES_UNICAS_SUBRACAIS = CLASSES_UNICAS_RACIAIS
 from typing import Dict, Any
 
 from .racas_massivas import RACAS_MASSIVAS
