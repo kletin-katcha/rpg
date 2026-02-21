@@ -5,6 +5,11 @@ from .construcao import construir_estrutura
 from .melhorias import melhorar_estrutura
 from .producao import preparar_configuracao_producao, definir_plano_producao
 from .viagem import preparar_viagem_cidade, viajar_para_cidade, resumo_cidades_reinos
+from .treino import preparar_treino_classe_secundaria, executar_treino_classe_secundaria
+from .forja import executar_forja_prototipo, executar_forja_machadinha
+from .construcao import construir_estrutura
+from .melhorias import melhorar_estrutura
+from .producao import preparar_configuracao_producao, definir_plano_producao
 from ...sistemas.automacao import processar_ciclo_automatizado
 
 
@@ -31,6 +36,8 @@ def executar_opcao_especial_cidade(jogador, opcao: str):
         return {"tipo": "feedback", "log": resumo_cidades_reinos()}
     if opcao == "Viajar para outra cidade (Protótipo)":
         return preparar_viagem_cidade(jogador)
+    if opcao == "Configurar Produção Automática (Protótipo)":
+        return preparar_configuracao_producao(jogador)
     if opcao == "Avançar 1 dia (Protótipo)":
         return {"tipo": "feedback", "log": processar_ciclo_automatizado(jogador)}
     return None

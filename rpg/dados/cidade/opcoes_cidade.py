@@ -18,6 +18,7 @@ OPCOES_CIDADE_BASE = [
     "Ativar Automação de Refino (Protótipo)",
     "Configurar Produção Automática (Protótipo)",
     "Forjar Machado de Batalha (Protótipo)",
+    "Configurar Produção Automática (Protótipo)",
     "Avançar 1 dia (Protótipo)",
     "Salvar Jogo",
     "Sair para o Menu Principal",

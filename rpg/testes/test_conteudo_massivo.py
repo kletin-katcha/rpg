@@ -19,6 +19,9 @@ class TestConteudoMassivo(unittest.TestCase):
     def test_classes_unicas_por_raca(self):
         classes = cc_api.get_classes_unicas_por_raca("alto_nordico")
         self.assertIn("thane_das_neves", classes)
+    def test_classes_unicas_por_sub_raca(self):
+        classes = cc_api.get_classes_unicas_por_sub_raca("alto_nordico", "alto_nordico_montanhes")
+        self.assertIn("classe_alto_nordico_montanhes", classes)
 
     def test_arvores_com_500_ramificacoes(self):
         catalogo = cc_api.get_catalogo_arvores_habilidades()

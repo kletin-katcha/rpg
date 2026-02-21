@@ -17,6 +17,10 @@ def preparar_configuracao_producao(jogador):
         "tipo": "selecao",
         "prompt": "Escolha o plano de produção automática:",
         "opcoes": opcoes_disponiveis,
+    return {
+        "tipo": "selecao",
+        "prompt": "Escolha o plano de produção automática:",
+        "opcoes": list(PLANOS_PRODUCAO.keys()),
         "acao_prefixo": "definir_plano_producao",
         "log": [],
     }

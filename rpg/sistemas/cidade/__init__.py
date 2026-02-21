@@ -4,3 +4,7 @@ from .construcao import construir_estrutura
 from .melhorias import melhorar_estrutura
 from .producao import preparar_configuracao_producao, definir_plano_producao
 from .viagem import preparar_viagem_cidade, viajar_para_cidade, resumo_cidades_reinos
+from .forja import executar_forja_prototipo, executar_forja_machadinha
+from .construcao import construir_estrutura
+from .melhorias import melhorar_estrutura
+from .producao import preparar_configuracao_producao, definir_plano_producao

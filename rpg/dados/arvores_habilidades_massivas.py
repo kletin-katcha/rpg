@@ -1,6 +1,7 @@
 from typing import Dict, Any, List
 
 from .classes_unicas_raciais import CLASSES_UNICAS_RACIAIS
+from .classes_unicas_raciais import CLASSES_UNICAS_SUBRACAIS
 
 TOTAL_RAMIFICACOES_PADRAO = 500
 
@@ -41,6 +42,7 @@ CLASSES_COM_ARVORE = [
     "guerreiro", "mago", "ladino", "arqueiro", "clerigo", "bardo",
     "sentinela_runico", "arcanista_de_campo",
 ] + list(CLASSES_UNICAS_RACIAIS.keys())
+] + list(CLASSES_UNICAS_SUBRACAIS.keys())
 
 
 ARVORES_POR_CLASSE: Dict[str, Dict[str, Any]] = {
