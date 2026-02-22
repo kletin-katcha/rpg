@@ -11,6 +11,9 @@ from .schemas.raca import validate_raca
 from .schemas.classe import validate_classe
 from .schemas.item import validate_item
 from .schemas.monstro import validate_monstro
+from .schemas.receita import validate_receita
+from .schemas.estrutura import validate_estrutura
+from .schemas.automacao import validate_plano_automacao
 
 Validator = Callable[[dict, str], None]
 
@@ -20,6 +23,9 @@ CATALOGS: dict[str, tuple[str, Validator]] = {
     "classes": ("classes.json", validate_classe),
     "itens": ("itens.json", validate_item),
     "monstros": ("monstros.json", validate_monstro),
+    "receitas": ("receitas.json", validate_receita),
+    "estruturas": ("estruturas.json", validate_estrutura),
+    "planos_automacao": ("planos_automacao.json", validate_plano_automacao),
 }
 
 

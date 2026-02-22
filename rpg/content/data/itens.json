@@ -10,5 +10,23 @@
     "nome": "Poção de Cura",
     "tipo": "consumivel",
     "valor": 40
+  },
+  {
+    "id": "sucata_metal",
+    "nome": "Sucata de Metal",
+    "tipo": "material",
+    "valor": 8
+  },
+  {
+    "id": "barra_metal",
+    "nome": "Barra de Metal",
+    "tipo": "material_refinado",
+    "valor": 30
+  },
+  {
+    "id": "espada_longa",
+    "nome": "Espada Longa",
+    "tipo": "arma",
+    "valor": 220
   }
 ]

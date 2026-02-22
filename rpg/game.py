@@ -6,6 +6,8 @@ from rpg.core.types import CharacterState
 from rpg.systems.character.service import criar_personagem
 from rpg.systems.inventory.service import adicionar_item_catalogado
 from rpg.systems.combat.service import combater_ate_fim
+from rpg.systems.city import CityState, construir_estrutura, melhorar_estrutura, ativar_plano_automacao, processar_automacao
+from rpg.systems.crafting import forjar_receita
 
 
 @dataclass
@@ -15,17 +17,18 @@ class GameState:
     jogador: CharacterState | None = None
     inventario: dict[str, int] = field(default_factory=dict)
     log: list[str] = field(default_factory=list)
+    cidade: CityState = field(default_factory=CityState)
 
 
 class Game:
-    """Fase 2: núcleo jogável + combate por turnos com XP e loot."""
+    """Fase 3: cidade, forja e automação inicial sobre o núcleo jogável."""
 
     def __init__(self) -> None:
         self.running = True
         self.state = GameState()
 
     def start_message(self) -> str:
-        return "RPG Surreal iniciado: fase 2 pronta (combate + progressão + loot)."
+        return "RPG Surreal iniciado: fase 3 pronta (cidade + forja + automação)."
 
     def opcoes_criacao(self) -> dict[str, list[str]]:
         racas = load_catalog("racas")
@@ -50,6 +53,12 @@ class Game:
             "coletar_item_inicial",
             "cacar_lobo",
             "cacar_goblin",
+            "forjar_espada_longa",
+            "construir_oficina",
+            "melhorar_oficina",
+            "construir_nucleo_automacao",
+            "ativar_automacao",
+            "avancar_dia",
             "ver_status",
             "sair",
         ]
@@ -76,10 +85,28 @@ class Game:
                 f"Combate concluído. Vitória={resultado['vitoria']} | XP +{resultado['xp_recebido']} | "
                 f"Loot={resultado['loot']}"
             )
+        elif acao == "forjar_espada_longa":
+            forjar_receita(self.state.inventario, "forja_espada_longa")
+            msg = "Forja concluída: 1 Espada Longa criada."
+        elif acao == "construir_oficina":
+            nivel = construir_estrutura(self.state.cidade, "oficina")
+            msg = f"Oficina construída no nível {nivel}."
+        elif acao == "melhorar_oficina":
+            nivel = melhorar_estrutura(self.state.cidade, "oficina")
+            msg = f"Oficina melhorada para nível {nivel}."
+        elif acao == "construir_nucleo_automacao":
+            nivel = construir_estrutura(self.state.cidade, "nucleo_automacao")
+            msg = f"Núcleo de automação construído no nível {nivel}."
+        elif acao == "ativar_automacao":
+            ativar_plano_automacao(self.state.cidade, "coleta_sucata")
+            msg = "Plano de automação 'coleta_sucata' ativado."
+        elif acao == "avancar_dia":
+            processar_automacao(self.state.cidade, self.state.inventario)
+            msg = "Um dia se passou. Automação processada."
         elif acao == "ver_status":
             msg = (
                 f"Status: nível {self.state.jogador.nivel}, HP {self.state.jogador.hp_atual}/{self.state.jogador.hp_max}, "
-                f"inventário={self.state.inventario}"
+                f"inventário={self.state.inventario}, ouro={self.state.cidade.ouro}, estruturas={self.state.cidade.estruturas}"
             )
         elif acao == "sair":
             self.running = False

@@ -3,7 +3,7 @@ import unittest
 from rpg.game import Game
 
 
-class TestPhase1GameFlow(unittest.TestCase):
+class TestGameFlow(unittest.TestCase):
     def test_criacao_de_personagem_altera_estado(self):
         game = Game()
         jogador = game.criar_jogador("Arin", "elfo", "mago")
@@ -23,6 +23,15 @@ class TestPhase1GameFlow(unittest.TestCase):
         game.criar_jogador("Noah", "humano", "guerreiro")
         out = game.executar_acao_cidade("cacar_lobo")
         self.assertIn("Combate concluído", out)
+
+    def test_fluxo_automacao_fase3(self):
+        game = Game()
+        game.criar_jogador("Nia", "humano", "guerreiro")
+        game.executar_acao_cidade("construir_nucleo_automacao")
+        game.executar_acao_cidade("construir_oficina")
+        game.executar_acao_cidade("ativar_automacao")
+        game.executar_acao_cidade("avancar_dia")
+        self.assertIn("sucata_metal", game.state.inventario)
 
     def test_acao_cidade_sair(self):
         game = Game()
