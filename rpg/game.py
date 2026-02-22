@@ -12,6 +12,7 @@ from rpg.systems.meta_world import iniciar_reputacoes, aplicar_evento_mundo, ger
 from rpg.systems.skills import listar_arvore, habilidades_disponiveis, desbloquear_habilidade
 from rpg.systems.economy import iniciar_mercado, atualizar_mercado, vender_item, produzir_liga_metal
 from rpg.systems.immersion import periodo_do_dia, avancar_tempo, atualizar_clima, registrar_jornal, desbloquear_lore, codex_base
+from rpg.systems.world_director import iniciar_memoria_faccoes, gerar_arco_mundo, escolher_mutador, aplicar_mutador_mercado, registrar_memoria
 
 
 @dataclass
@@ -30,10 +31,12 @@ class GameState:
     clima: str = "ensolarado"
     jornal_cidade: list[str] = field(default_factory=list)
     codex: set[str] = field(default_factory=codex_base)
+    mutador_ativo: str | None = None
+    memoria_faccoes: dict[str, list[str]] = field(default_factory=dict)
 
 
 class Game:
-    """Fase 14: imersão com ciclo temporal, clima e jornal/codex."""
+    """Fase 15: diretor de mundo procedural e memória emergente."""
 
     ACTION_ALIASES = {
         "lobo": "cacar_lobo",
@@ -50,14 +53,18 @@ class Game:
         "jornal": "ver_jornal",
         "clima": "ver_clima",
         "codex": "ver_codex",
+        "arco": "gerar_arco_mundo",
+        "mutador": "aplicar_mutador",
+        "memoria": "ver_memoria_faccoes",
     }
 
     def __init__(self) -> None:
         self.running = True
         self.state = GameState()
+        self.state.memoria_faccoes = iniciar_memoria_faccoes(self.state.reputacoes)
 
     def start_message(self) -> str:
-        return "RPG Surreal iniciado: fase 14 pronta (imersão temporal + clima + codex)."
+        return "RPG Surreal iniciado: fase 15 pronta (diretor de mundo + mutadores)."
 
     def opcoes_criacao(self) -> dict[str, list[str]]:
         racas = load_catalog("racas")
@@ -95,6 +102,9 @@ class Game:
             "ver_clima",
             "ver_jornal",
             "ver_codex",
+            "gerar_arco_mundo",
+            "aplicar_mutador",
+            "ver_memoria_faccoes",
             "ver_status",
             "ver_historico",
             "ajuda",
@@ -194,6 +204,18 @@ class Game:
             msg = " | ".join(ultimos)
         elif acao == "ver_codex":
             msg = f"Codex desbloqueado: {sorted(self.state.codex)}"
+        elif acao == "gerar_arco_mundo":
+            arco = gerar_arco_mundo(self.state.reputacoes, self.state.clima, self.state.hora)
+            registrar_jornal(self.state.jornal_cidade, f"Arco: {arco['titulo']}")
+            msg = f"Arco gerado: {arco['titulo']} | {arco['descricao']}"
+        elif acao == "aplicar_mutador":
+            mutador = escolher_mutador(self.state.dia_economico)
+            self.state.mutador_ativo = mutador
+            aplicar_mutador_mercado(self.state.mercado, mutador)
+            registrar_jornal(self.state.jornal_cidade, f"Mutador ativo: {mutador}")
+            msg = f"Mutador aplicado: {mutador}"
+        elif acao == "ver_memoria_faccoes":
+            msg = f"Memória de facções: {self.state.memoria_faccoes}"
         elif acao == "ver_status":
             msg = (
                 f"Status: nível {self.state.jogador.nivel}, HP {self.state.jogador.hp_atual}/{self.state.jogador.hp_max}, "
@@ -231,6 +253,7 @@ class Game:
             self.state.cidade.ouro = resultado["ouro"]
             contrato_nome = self.state.contrato_ativo["nome"]
             self.state.contrato_ativo = None
+            registrar_memoria(self.state.memoria_faccoes, resultado["faccao_id"], f"sucesso:{contrato_nome}")
             msg = (
                 f"Contrato concluído: {contrato_nome} | XP +{resultado['xp']} | "
                 f"Reputação {resultado['faccao_id']}={resultado['reputacao']}"
@@ -241,6 +264,7 @@ class Game:
             resultado = falhar_contrato(self.state.reputacoes, self.state.contrato_ativo)
             contrato_nome = self.state.contrato_ativo["nome"]
             self.state.contrato_ativo = None
+            registrar_memoria(self.state.memoria_faccoes, resultado["faccao_id"], f"falha:{contrato_nome}")
             msg = (
                 f"Contrato falhou: {contrato_nome} | Reputação {resultado['faccao_id']} {resultado['reputacao']} "
                 f"(perda {resultado['perda']})"
@@ -280,6 +304,8 @@ class Game:
 
             carregado = load_game()
             self.state = carregado.state
+            if not self.state.memoria_faccoes:
+                self.state.memoria_faccoes = iniciar_memoria_faccoes(self.state.reputacoes)
             msg = "Jogo carregado de savegame.json"
         elif acao == "sair":
             self.running = False

@@ -114,3 +114,10 @@ Criar um RPG expansível com sistemas de progressão, exploração, cidade e cra
 - Jornal da cidade para histórico diegético recente
 - Codex desbloqueável por eventos do mundo
 - Fase 14 concluída: base de imersão narrativa integrada ao gameplay.
+
+
+### Fase 15 — Diretor de Mundo e procedural avançado
+- Gerador de arcos de mundo com base em reputação, clima e período do dia
+- Mutadores de mundo que alteram mercado dinamicamente
+- Memória emergente por facção a partir das decisões do jogador
+- Fase 15 concluída: núcleo procedural e memória sistêmica integrados ao loop.

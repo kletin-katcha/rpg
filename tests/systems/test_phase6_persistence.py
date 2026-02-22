@@ -24,6 +24,7 @@ class TestPhase6Persistence(unittest.TestCase):
         self.assertIsNotNone(loaded.state.contrato_ativo)
         self.assertGreaterEqual(loaded.state.dia_economico, 1)
         self.assertTrue(isinstance(loaded.state.codex, set))
+        self.assertTrue(isinstance(loaded.state.memoria_faccoes, dict))
 
         Path(path).unlink(missing_ok=True)
 

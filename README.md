@@ -30,4 +30,4 @@ python scripts/check_all.py
 ```
 
 ## Fase atual
-- Fase 14 concluída: imersão sistêmica com ciclo temporal, clima dinâmico, jornal e codex.
+- Fase 15 concluída: Diretor de Mundo procedural com mutadores e memória emergente de facções.

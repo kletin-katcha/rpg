@@ -27,6 +27,8 @@ def _to_dict(game: Game) -> dict:
         "clima": game.state.clima,
         "jornal_cidade": game.state.jornal_cidade,
         "codex": sorted(game.state.codex),
+        "mutador_ativo": game.state.mutador_ativo,
+        "memoria_faccoes": game.state.memoria_faccoes,
         "jogador": None
         if p is None
         else {
@@ -93,5 +95,7 @@ def load_game(path: str = "savegame.json") -> Game:
         clima=raw.get("clima", "ensolarado"),
         jornal_cidade=raw.get("jornal_cidade", []),
         codex=set(raw.get("codex", [])),
+        mutador_ativo=raw.get("mutador_ativo"),
+        memoria_faccoes=raw.get("memoria_faccoes", {}),
     )
     return game
