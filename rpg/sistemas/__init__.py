@@ -1,2 +1,1 @@
-from . import metalurgia
-from . import cidade
+"""Pacote legado mantido por compatibilidade."""

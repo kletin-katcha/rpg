@@ -1,0 +1,8 @@
+[
+  {
+    "id": "coleta_sucata",
+    "nome": "Coleta de Sucata",
+    "estrutura_requerida": "nucleo_automacao",
+    "ganhos": {"sucata_metal": 2}
+  }
+]

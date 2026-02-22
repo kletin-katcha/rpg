@@ -1,0 +1,130 @@
+# Planejamento Mestre — RPG Surreal
+
+## Visão
+Criar um RPG expansível com sistemas de progressão, exploração, cidade e crafting, sem herdar acoplamentos antigos.
+
+## Fases
+
+### Fase 0 — Fundação (agora)
+- Estrutura de repositório limpa
+- Entrypoint funcional
+- Testes mínimos de sanidade
+- Documento de arquitetura base
+
+### Fase 1 — Núcleo jogável
+- Criação de personagem (nome, raça, classe)
+- Estado de jogo em memória
+- Loop de cidade inicial
+
+### Fase 2 — Combate e progressão
+- Sistema de combate por turnos
+- XP, níveis e atributos derivados
+- Primeiros inimigos e loot
+
+### Fase 3 — Economia, forja e cidade
+- Inventário robusto
+- Receitas e forja
+- Melhorias de cidade e automação inicial
+
+### Fase 4 — Conteúdo massivo e UX
+- Catálogos expandidos (raças/classes/árvores)
+- Melhorias de interface (console/gui)
+- Balanceamento e testes de regressão
+
+### Fase 5 — Estabilização e telemetria de balanceamento
+- Relatórios de balanceamento automatizados
+- Testes de regressão de métricas de combate/progressão
+- Critérios de sanidade para tuning contínuo
+
+### Fase 6 — Hardening e readiness
+- Save/Load de sessão
+- Pipeline único de checagem local
+- Reforço de regressão para fluxo de estado
+
+## Regras de execução
+1. Implementar em fatias pequenas.
+2. Cada mudança com testes.
+3. Sem mega-commits de reescrita total.
+
+
+## Status atual
+- Contratos do núcleo definidos.
+- Loader de conteúdo e schemas iniciais implementados (raças, classes, itens).
+
+- Domínios iniciais implementados: `systems/character` e `systems/inventory` com service/rules/testes.
+
+- Fase 1 concluída: criação de personagem + estado em memória + loop de cidade inicial.
+- Fase 2 concluída: combate por turnos, XP/níveis em combate e primeiros inimigos com loot.
+- Fase 3 concluída: inventário robusto inicial, forja por receita e automação inicial da cidade.
+- Fase 4 concluída: expansão de catálogos, árvore de habilidades base e melhorias de UX com aliases/ajuda/histórico.
+- Fase 5 concluída: relatório de balanceamento automatizado e testes de regressão de métricas.
+- Fase 6 concluída: persistência (save/load), comando integrado no loop e pipeline de checks local.
+
+### Fase 7 — Meta-sistemas e mundo dinâmico
+- Facções e reputação inicial
+- Eventos dinâmicos de mundo
+- Contratos procedurais
+- Fase 7 concluída: facções/reputação base, eventos de mundo e contratos aleatórios integrados.
+
+### Fase 8 — Progressão de habilidades em runtime
+- Desbloqueio de nós em árvore de habilidades com pré-requisitos
+- Aplicação de efeitos simples no estado do personagem
+- Ações de cidade para visualizar árvore e desbloquear habilidades
+- Fase 8 concluída: desbloqueio da árvore `combate_base` integrado no loop com persistência.
+
+
+### Fase 9 — Contratos executáveis e reputação progressiva
+- Contrato aleatório vira contrato ativo no estado do jogo
+- Conclusão de contrato concede XP, ouro e reputação por facção
+- Persistência do contrato ativo no save/load
+- Fase 9 concluída: contratos agora fecham o loop de progressão meta e economia.
+
+
+### Fase 10 — Benefícios de facção e recompensas de reputação
+- Reputação agora desbloqueia benefícios resgatáveis por facção
+- Benefícios impactam economia (ouro/itens) no loop principal
+- Ação dedicada para resgate no menu de cidade
+- Fase 10 concluída: reputação virou moeda de progressão contínua.
+
+
+### Fase 11 — Contratos ramificados e reputação dinâmica
+- Contratos classificados por tier (bronze/prata/ouro/lendário)
+- Falha de contrato gera reputação negativa por facção
+- Perks de facção passam a escalar por tier de reputação
+- Fase 11 concluída: loop de contrato ganhou risco/recompensa real e progressão reputacional bidirecional.
+
+
+### Fase 12 — Combate avançado e chefes multi-fase
+- Iniciativa por velocidade/destreza no turno de combate
+- Arquétipos de inimigo (agressivo/defensivo/venenoso/boss)
+- Boss com transição de fase durante a luta
+- Fase 12 concluída: combate ganhou profundidade tática sem quebrar o loop atual.
+
+
+### Fase 13 — Economia dinâmica e cadeia de produção
+- Mercado com multiplicadores dinâmicos por dia
+- Venda de itens convertendo inventário em ouro com preço variável
+- Cadeia produtiva avançada (`barra_metal` -> `liga_metal`)
+- Fase 13 concluída: economia ganhou variação temporal e novo loop de produção.
+
+
+### Fase 14 — Imersão sistêmica (tempo, clima e narrativa local)
+- Ciclo temporal com períodos do dia no loop principal
+- Clima dinâmico acoplado ao avanço de tempo
+- Jornal da cidade para histórico diegético recente
+- Codex desbloqueável por eventos do mundo
+- Fase 14 concluída: base de imersão narrativa integrada ao gameplay.
+
+
+### Fase 15 — Diretor de Mundo e procedural avançado
+- Gerador de arcos de mundo com base em reputação, clima e período do dia
+- Mutadores de mundo que alteram mercado dinamicamente
+- Memória emergente por facção a partir das decisões do jogador
+- Fase 15 concluída: núcleo procedural e memória sistêmica integrados ao loop.
+
+
+### Fase 16 — Plataforma para conteúdo massivo e compatibilidade de branches
+- Validação de referências cruzadas entre catálogos (itens, facções, receitas, planos, loot)
+- Pipeline local estendida com etapa de referência semântica
+- Shims de compatibilidade para caminhos legados (reduz conflitos de merge no GitHub)
+- Fase 16 concluída: base preparada para expansão massiva de conteúdo com menor risco operacional.
