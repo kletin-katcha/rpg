@@ -121,3 +121,10 @@ Criar um RPG expansível com sistemas de progressão, exploração, cidade e cra
 - Mutadores de mundo que alteram mercado dinamicamente
 - Memória emergente por facção a partir das decisões do jogador
 - Fase 15 concluída: núcleo procedural e memória sistêmica integrados ao loop.
+
+
+### Fase 16 — Plataforma para conteúdo massivo e compatibilidade de branches
+- Validação de referências cruzadas entre catálogos (itens, facções, receitas, planos, loot)
+- Pipeline local estendida com etapa de referência semântica
+- Shims de compatibilidade para caminhos legados (reduz conflitos de merge no GitHub)
+- Fase 16 concluída: base preparada para expansão massiva de conteúdo com menor risco operacional.

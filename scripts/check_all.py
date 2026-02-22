@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CMDS = [
     [sys.executable, "scripts/verificar_sintaxe.py"],
     [sys.executable, "scripts/validar_content.py"],
+    [sys.executable, "scripts/validar_referencias_content.py"],
     [sys.executable, "-m", "unittest", "discover", "tests"],
     [sys.executable, "scripts/relatorio_balance.py"],
 ]

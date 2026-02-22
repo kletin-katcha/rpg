@@ -30,4 +30,4 @@ python scripts/check_all.py
 ```
 
 ## Fase atual
-- Fase 15 concluída: Diretor de Mundo procedural com mutadores e memória emergente de facções.
+- Fase 16 concluída: plataforma de conteúdo massivo com validação semântica e compatibilidade legada para merges.

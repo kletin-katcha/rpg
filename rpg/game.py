@@ -36,7 +36,7 @@ class GameState:
 
 
 class Game:
-    """Fase 15: diretor de mundo procedural e memória emergente."""
+    """Fase 16: plataforma de conteúdo massivo e compatibilidade operacional."""
 
     ACTION_ALIASES = {
         "lobo": "cacar_lobo",
@@ -64,7 +64,7 @@ class Game:
         self.state.memoria_faccoes = iniciar_memoria_faccoes(self.state.reputacoes)
 
     def start_message(self) -> str:
-        return "RPG Surreal iniciado: fase 15 pronta (diretor de mundo + mutadores)."
+        return "RPG Surreal iniciado: fase 16 pronta (pipeline robusta + compatibilidade GitHub)."
 
     def opcoes_criacao(self) -> dict[str, list[str]]:
         racas = load_catalog("racas")
