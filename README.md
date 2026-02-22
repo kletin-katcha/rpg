@@ -30,4 +30,4 @@ python scripts/check_all.py
 ```
 
 ## Fase atual
-- Fase 7 concluída: meta-sistemas iniciais (facções, eventos e contratos).
+- Fase 8 concluída: progressão de habilidades em runtime (árvore base com desbloqueio e efeitos).

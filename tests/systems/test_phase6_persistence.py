@@ -10,6 +10,7 @@ class TestPhase6Persistence(unittest.TestCase):
         game = Game()
         game.criar_jogador("Arin", "humano", "guerreiro")
         game.executar_acao_cidade("coletar_item_inicial")
+        game.executar_acao_cidade("desbloquear_postura_ofensiva")
 
         path = "test_savegame.json"
         save_game(game, path)
@@ -17,6 +18,7 @@ class TestPhase6Persistence(unittest.TestCase):
 
         self.assertEqual(loaded.state.jogador.nome, "Arin")
         self.assertEqual(loaded.state.inventario.get("pocao_cura"), 1)
+        self.assertIn("postura_ofensiva", loaded.state.jogador.habilidades_desbloqueadas)
 
         Path(path).unlink(missing_ok=True)
 

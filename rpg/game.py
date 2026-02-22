@@ -9,6 +9,7 @@ from rpg.systems.combat.service import combater_ate_fim
 from rpg.systems.city import CityState, construir_estrutura, melhorar_estrutura, ativar_plano_automacao, processar_automacao
 from rpg.systems.crafting import forjar_receita
 from rpg.systems.meta_world import iniciar_reputacoes, aplicar_evento_mundo, gerar_contrato_aleatorio
+from rpg.systems.skills import listar_arvore, habilidades_disponiveis, desbloquear_habilidade
 
 
 @dataclass
@@ -23,7 +24,7 @@ class GameState:
 
 
 class Game:
-    """Fase 5: conteúdo expandido + UX + telemetria de balanceamento."""
+    """Fase 8: progressão de habilidades integrada ao loop de cidade."""
 
     ACTION_ALIASES = {
         "lobo": "cacar_lobo",
@@ -35,6 +36,7 @@ class Game:
         "status": "ver_status",
         "help": "ajuda",
         "historico": "ver_historico",
+        "arvore": "ver_arvore",
     }
 
     def __init__(self) -> None:
@@ -42,7 +44,7 @@ class Game:
         self.state = GameState()
 
     def start_message(self) -> str:
-        return "RPG Surreal iniciado: fase 7 pronta (meta-sistemas + mundo dinâmico)."
+        return "RPG Surreal iniciado: fase 8 pronta (skills em runtime + meta-sistemas)."
 
     def opcoes_criacao(self) -> dict[str, list[str]]:
         racas = load_catalog("racas")
@@ -79,6 +81,9 @@ class Game:
             "evento_mundo",
             "contrato_aleatorio",
             "faccao_status",
+            "ver_arvore",
+            "desbloquear_postura_ofensiva",
+            "desbloquear_golpe_reforcado",
             "salvar",
             "carregar",
             "sair",
@@ -149,6 +154,19 @@ class Game:
             msg = f"Contrato: {contrato['nome']} (XP {contrato['xp']}, Ouro {contrato['ouro']})"
         elif acao == "faccao_status":
             msg = f"Reputações: {self.state.reputacoes}"
+        elif acao == "ver_arvore":
+            arvore = listar_arvore("combate_base")
+            disponiveis = habilidades_disponiveis(self.state.jogador, "combate_base")
+            msg = (
+                f"Árvore {arvore['nome']} | desbloqueadas={self.state.jogador.habilidades_desbloqueadas} "
+                f"| disponíveis={disponiveis}"
+            )
+        elif acao == "desbloquear_postura_ofensiva":
+            desbloquear_habilidade(self.state.jogador, "postura_ofensiva", "combate_base")
+            msg = "Habilidade desbloqueada: postura_ofensiva."
+        elif acao == "desbloquear_golpe_reforcado":
+            desbloquear_habilidade(self.state.jogador, "golpe_reforcado", "combate_base")
+            msg = "Habilidade desbloqueada: golpe_reforcado."
         elif acao == "salvar":
             from rpg.systems.persistence import save_game
 

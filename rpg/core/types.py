@@ -10,6 +10,7 @@ class CharacterState:
     atributos: dict[str, int] = field(default_factory=dict)
     hp_atual: int = 100
     hp_max: int = 100
+    habilidades_desbloqueadas: list[str] = field(default_factory=list)
 
 
 @dataclass

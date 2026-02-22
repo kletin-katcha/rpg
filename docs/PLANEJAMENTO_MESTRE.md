@@ -65,3 +65,9 @@ Criar um RPG expansível com sistemas de progressão, exploração, cidade e cra
 - Eventos dinâmicos de mundo
 - Contratos procedurais
 - Fase 7 concluída: facções/reputação base, eventos de mundo e contratos aleatórios integrados.
+
+### Fase 8 — Progressão de habilidades em runtime
+- Desbloqueio de nós em árvore de habilidades com pré-requisitos
+- Aplicação de efeitos simples no estado do personagem
+- Ações de cidade para visualizar árvore e desbloquear habilidades
+- Fase 8 concluída: desbloqueio da árvore `combate_base` integrado no loop com persistência.

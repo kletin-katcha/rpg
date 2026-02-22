@@ -30,6 +30,7 @@ def _to_dict(game: Game) -> dict:
             "atributos": p.atributos,
             "hp_atual": p.hp_atual,
             "hp_max": p.hp_max,
+            "habilidades_desbloqueadas": p.habilidades_desbloqueadas,
         },
     }
 
@@ -60,6 +61,7 @@ def load_game(path: str = "savegame.json") -> Game:
             atributos=jogador_raw["atributos"],
             hp_atual=jogador_raw["hp_atual"],
             hp_max=jogador_raw["hp_max"],
+            habilidades_desbloqueadas=jogador_raw.get("habilidades_desbloqueadas", []),
         )
 
     cidade_raw = raw.get("cidade", {})
