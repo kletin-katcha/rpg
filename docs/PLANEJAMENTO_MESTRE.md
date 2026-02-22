@@ -40,3 +40,5 @@ Criar um RPG expansível com sistemas de progressão, exploração, cidade e cra
 ## Status atual
 - Contratos do núcleo definidos.
 - Loader de conteúdo e schemas iniciais implementados (raças, classes, itens).
+
+- Domínios iniciais implementados: `systems/character` e `systems/inventory` com service/rules/testes.
