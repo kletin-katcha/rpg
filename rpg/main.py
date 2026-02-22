@@ -25,6 +25,7 @@ def main() -> None:
 
     while game.running:
         print(f"Ações da cidade: {', '.join(game.opcoes_cidade())}")
+        print("Dica: você pode usar atalhos como lobo, goblin, forjar, oficina, automacao, dia, status, historico, help")
         acao = input("Ação: ").strip()
         try:
             print(game.executar_acao_cidade(acao))

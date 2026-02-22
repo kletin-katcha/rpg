@@ -46,3 +46,4 @@ Criar um RPG expansível com sistemas de progressão, exploração, cidade e cra
 - Fase 1 concluída: criação de personagem + estado em memória + loop de cidade inicial.
 - Fase 2 concluída: combate por turnos, XP/níveis em combate e primeiros inimigos com loot.
 - Fase 3 concluída: inventário robusto inicial, forja por receita e automação inicial da cidade.
+- Fase 4 concluída: expansão de catálogos, árvore de habilidades base e melhorias de UX com aliases/ajuda/histórico.

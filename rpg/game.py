@@ -21,14 +21,26 @@ class GameState:
 
 
 class Game:
-    """Fase 3: cidade, forja e automação inicial sobre o núcleo jogável."""
+    """Fase 4: conteúdo expandido + UX melhorada + testes de regressão."""
+
+    ACTION_ALIASES = {
+        "lobo": "cacar_lobo",
+        "goblin": "cacar_goblin",
+        "forjar": "forjar_espada_longa",
+        "oficina": "construir_oficina",
+        "automacao": "ativar_automacao",
+        "dia": "avancar_dia",
+        "status": "ver_status",
+        "help": "ajuda",
+        "historico": "ver_historico",
+    }
 
     def __init__(self) -> None:
         self.running = True
         self.state = GameState()
 
     def start_message(self) -> str:
-        return "RPG Surreal iniciado: fase 3 pronta (cidade + forja + automação)."
+        return "RPG Surreal iniciado: fase 4 pronta (conteúdo expandido + UX)."
 
     def opcoes_criacao(self) -> dict[str, list[str]]:
         racas = load_catalog("racas")
@@ -60,12 +72,20 @@ class Game:
             "ativar_automacao",
             "avancar_dia",
             "ver_status",
+            "ver_historico",
+            "ajuda",
             "sair",
         ]
+
+    def normalizar_acao(self, acao: str) -> str:
+        base = acao.strip().lower()
+        return self.ACTION_ALIASES.get(base, base)
 
     def executar_acao_cidade(self, acao: str) -> str:
         if self.state.jogador is None:
             raise RegraNegocioError("Jogador não criado")
+
+        acao = self.normalizar_acao(acao)
 
         if acao == "descansar":
             self.state.jogador.hp_atual = self.state.jogador.hp_max
@@ -108,6 +128,11 @@ class Game:
                 f"Status: nível {self.state.jogador.nivel}, HP {self.state.jogador.hp_atual}/{self.state.jogador.hp_max}, "
                 f"inventário={self.state.inventario}, ouro={self.state.cidade.ouro}, estruturas={self.state.cidade.estruturas}"
             )
+        elif acao == "ver_historico":
+            ultimos = self.state.log[-5:] if self.state.log else ["Sem histórico ainda."]
+            msg = " | ".join(ultimos)
+        elif acao == "ajuda":
+            msg = f"Ações disponíveis: {', '.join(self.opcoes_cidade())}"
         elif acao == "sair":
             self.running = False
             msg = "Saindo do jogo."

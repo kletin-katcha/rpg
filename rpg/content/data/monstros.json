@@ -6,7 +6,9 @@
     "hp_max": 35,
     "ataque_base": 6,
     "xp": 40,
-    "loot": {"pocao_cura": 1}
+    "loot": {
+      "pocao_cura": 1
+    }
   },
   {
     "id": "goblin_batedor",
@@ -15,6 +17,30 @@
     "hp_max": 45,
     "ataque_base": 8,
     "xp": 60,
-    "loot": {"espada_curta": 1}
+    "loot": {
+      "espada_curta": 1
+    }
+  },
+  {
+    "id": "esqueleto_vigia",
+    "nome": "Esqueleto Vigia",
+    "nivel": 3,
+    "hp_max": 60,
+    "ataque_base": 10,
+    "xp": 85,
+    "loot": {
+      "barra_metal": 1
+    }
+  },
+  {
+    "id": "aranha_cavernosa",
+    "nome": "Aranha Cavernosa",
+    "nivel": 2,
+    "hp_max": 50,
+    "ataque_base": 9,
+    "xp": 70,
+    "loot": {
+      "sucata_metal": 2
+    }
   }
 ]

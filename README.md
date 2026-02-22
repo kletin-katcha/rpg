@@ -26,3 +26,6 @@ python scripts/verificar_sintaxe.py
 python scripts/validar_content.py
 python -m unittest discover tests
 ```
+
+## Fase atual
+- Fase 4 concluída: conteúdo expandido e UX de console aprimorada.
