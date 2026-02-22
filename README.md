@@ -30,4 +30,4 @@ python scripts/check_all.py
 ```
 
 ## Fase atual
-- Fase 10 concluída: benefícios de facção resgatáveis com impacto direto em economia e inventário.
+- Fase 11 concluída: contratos por tier com falha/reputação negativa e perks de facção escaláveis.

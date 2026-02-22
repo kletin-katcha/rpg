@@ -85,3 +85,10 @@ Criar um RPG expansível com sistemas de progressão, exploração, cidade e cra
 - Benefícios impactam economia (ouro/itens) no loop principal
 - Ação dedicada para resgate no menu de cidade
 - Fase 10 concluída: reputação virou moeda de progressão contínua.
+
+
+### Fase 11 — Contratos ramificados e reputação dinâmica
+- Contratos classificados por tier (bronze/prata/ouro/lendário)
+- Falha de contrato gera reputação negativa por facção
+- Perks de facção passam a escalar por tier de reputação
+- Fase 11 concluída: loop de contrato ganhou risco/recompensa real e progressão reputacional bidirecional.
