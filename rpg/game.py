@@ -21,7 +21,7 @@ class GameState:
 
 
 class Game:
-    """Fase 4: conteúdo expandido + UX melhorada + testes de regressão."""
+    """Fase 5: conteúdo expandido + UX + telemetria de balanceamento."""
 
     ACTION_ALIASES = {
         "lobo": "cacar_lobo",
@@ -40,7 +40,7 @@ class Game:
         self.state = GameState()
 
     def start_message(self) -> str:
-        return "RPG Surreal iniciado: fase 4 pronta (conteúdo expandido + UX)."
+        return "RPG Surreal iniciado: fase 5 pronta (balanceamento + regressão)."
 
     def opcoes_criacao(self) -> dict[str, list[str]]:
         racas = load_catalog("racas")

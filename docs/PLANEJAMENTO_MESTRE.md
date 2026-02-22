@@ -31,6 +31,11 @@ Criar um RPG expansível com sistemas de progressão, exploração, cidade e cra
 - Melhorias de interface (console/gui)
 - Balanceamento e testes de regressão
 
+### Fase 5 — Estabilização e telemetria de balanceamento
+- Relatórios de balanceamento automatizados
+- Testes de regressão de métricas de combate/progressão
+- Critérios de sanidade para tuning contínuo
+
 ## Regras de execução
 1. Implementar em fatias pequenas.
 2. Cada mudança com testes.
@@ -47,3 +52,4 @@ Criar um RPG expansível com sistemas de progressão, exploração, cidade e cra
 - Fase 2 concluída: combate por turnos, XP/níveis em combate e primeiros inimigos com loot.
 - Fase 3 concluída: inventário robusto inicial, forja por receita e automação inicial da cidade.
 - Fase 4 concluída: expansão de catálogos, árvore de habilidades base e melhorias de UX com aliases/ajuda/histórico.
+- Fase 5 concluída: relatório de balanceamento automatizado e testes de regressão de métricas.
