@@ -18,6 +18,12 @@ class TestPhase1GameFlow(unittest.TestCase):
         self.assertIn("Poção de Cura", out)
         self.assertEqual(game.state.inventario.get("pocao_cura"), 1)
 
+    def test_acao_cidade_caca_lobo(self):
+        game = Game()
+        game.criar_jogador("Noah", "humano", "guerreiro")
+        out = game.executar_acao_cidade("cacar_lobo")
+        self.assertIn("Combate concluído", out)
+
     def test_acao_cidade_sair(self):
         game = Game()
         game.criar_jogador("Lia", "elfo", "mago")

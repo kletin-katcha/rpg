@@ -5,6 +5,7 @@ from rpg.core.errors import RegraNegocioError
 from rpg.core.types import CharacterState
 from rpg.systems.character.service import criar_personagem
 from rpg.systems.inventory.service import adicionar_item_catalogado
+from rpg.systems.combat.service import combater_ate_fim
 
 
 @dataclass
@@ -17,14 +18,14 @@ class GameState:
 
 
 class Game:
-    """Fase 1: criação de personagem + estado em memória + loop de cidade inicial."""
+    """Fase 2: núcleo jogável + combate por turnos com XP e loot."""
 
     def __init__(self) -> None:
         self.running = True
         self.state = GameState()
 
     def start_message(self) -> str:
-        return "RPG Surreal iniciado: fase 1 pronta (criação + cidade)."
+        return "RPG Surreal iniciado: fase 2 pronta (combate + progressão + loot)."
 
     def opcoes_criacao(self) -> dict[str, list[str]]:
         racas = load_catalog("racas")
@@ -47,6 +48,8 @@ class Game:
         return [
             "descansar",
             "coletar_item_inicial",
+            "cacar_lobo",
+            "cacar_goblin",
             "ver_status",
             "sair",
         ]
@@ -61,6 +64,18 @@ class Game:
         elif acao == "coletar_item_inicial":
             adicionar_item_catalogado(self.state.inventario, "pocao_cura", 1)
             msg = "Você recebeu 1 Poção de Cura."
+        elif acao == "cacar_lobo":
+            resultado = combater_ate_fim(self.state.jogador, "lobo_cinzento", self.state.inventario)
+            msg = (
+                f"Combate concluído. Vitória={resultado['vitoria']} | XP +{resultado['xp_recebido']} | "
+                f"Loot={resultado['loot']}"
+            )
+        elif acao == "cacar_goblin":
+            resultado = combater_ate_fim(self.state.jogador, "goblin_batedor", self.state.inventario)
+            msg = (
+                f"Combate concluído. Vitória={resultado['vitoria']} | XP +{resultado['xp_recebido']} | "
+                f"Loot={resultado['loot']}"
+            )
         elif acao == "ver_status":
             msg = (
                 f"Status: nível {self.state.jogador.nivel}, HP {self.state.jogador.hp_atual}/{self.state.jogador.hp_max}, "

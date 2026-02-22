@@ -1,0 +1,20 @@
+[
+  {
+    "id": "lobo_cinzento",
+    "nome": "Lobo Cinzento",
+    "nivel": 1,
+    "hp_max": 35,
+    "ataque_base": 6,
+    "xp": 40,
+    "loot": {"pocao_cura": 1}
+  },
+  {
+    "id": "goblin_batedor",
+    "nome": "Goblin Batedor",
+    "nivel": 2,
+    "hp_max": 45,
+    "ataque_base": 8,
+    "xp": 60,
+    "loot": {"espada_curta": 1}
+  }
+]

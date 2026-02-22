@@ -44,3 +44,4 @@ Criar um RPG expansível com sistemas de progressão, exploração, cidade e cra
 - Domínios iniciais implementados: `systems/character` e `systems/inventory` com service/rules/testes.
 
 - Fase 1 concluída: criação de personagem + estado em memória + loop de cidade inicial.
+- Fase 2 concluída: combate por turnos, XP/níveis em combate e primeiros inimigos com loot.
