@@ -30,4 +30,4 @@ python scripts/check_all.py
 ```
 
 ## Fase atual
-- Fase 9 concluída: contratos executáveis com ganho de XP, ouro e reputação de facção.
+- Fase 10 concluída: benefícios de facção resgatáveis com impacto direto em economia e inventário.

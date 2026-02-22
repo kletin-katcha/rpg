@@ -8,7 +8,7 @@ from rpg.systems.inventory.service import adicionar_item_catalogado
 from rpg.systems.combat.service import combater_ate_fim
 from rpg.systems.city import CityState, construir_estrutura, melhorar_estrutura, ativar_plano_automacao, processar_automacao
 from rpg.systems.crafting import forjar_receita
-from rpg.systems.meta_world import iniciar_reputacoes, aplicar_evento_mundo, gerar_contrato_aleatorio, concluir_contrato
+from rpg.systems.meta_world import iniciar_reputacoes, aplicar_evento_mundo, gerar_contrato_aleatorio, concluir_contrato, resgatar_beneficio_faccao
 from rpg.systems.skills import listar_arvore, habilidades_disponiveis, desbloquear_habilidade
 
 
@@ -25,7 +25,7 @@ class GameState:
 
 
 class Game:
-    """Fase 9: contratos executáveis com progressão de reputação."""
+    """Fase 10: benefícios de facção e progressão meta estendida."""
 
     ACTION_ALIASES = {
         "lobo": "cacar_lobo",
@@ -45,7 +45,7 @@ class Game:
         self.state = GameState()
 
     def start_message(self) -> str:
-        return "RPG Surreal iniciado: fase 9 pronta (contratos executáveis + reputação)."
+        return "RPG Surreal iniciado: fase 10 pronta (benefícios de facção + contratos)."
 
     def opcoes_criacao(self) -> dict[str, list[str]]:
         racas = load_catalog("racas")
@@ -83,6 +83,7 @@ class Game:
             "contrato_aleatorio",
             "faccao_status",
             "concluir_contrato",
+            "resgatar_beneficio_faccao",
             "ver_arvore",
             "desbloquear_postura_ofensiva",
             "desbloquear_golpe_reforcado",
@@ -175,6 +176,18 @@ class Game:
             msg = (
                 f"Contrato concluído: {contrato_nome} | XP +{resultado['xp']} | "
                 f"Reputação {resultado['faccao_id']}={resultado['reputacao']}"
+            )
+        elif acao == "resgatar_beneficio_faccao":
+            faccao_mais_relevante = max(self.state.reputacoes, key=self.state.reputacoes.get)
+            resultado = resgatar_beneficio_faccao(
+                self.state.reputacoes,
+                self.state.inventario,
+                self.state.cidade.ouro,
+                faccao_mais_relevante,
+            )
+            self.state.cidade.ouro = resultado["ouro"]
+            msg = (
+                f"Benefício de facção ({faccao_mais_relevante}): {resultado['detalhe']}"
             )
         elif acao == "ver_arvore":
             arvore = listar_arvore("combate_base")

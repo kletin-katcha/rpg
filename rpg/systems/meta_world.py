@@ -37,3 +37,19 @@ def concluir_contrato(personagem, reputacoes: dict[str, int], ouro_atual: int, c
         "reputacao": reputacoes[faccao_id],
         "xp": contrato["xp"],
     }
+
+
+def resgatar_beneficio_faccao(reputacoes: dict[str, int], inventario: dict[str, int], ouro_atual: int, faccao_id: str) -> dict:
+    reputacao = reputacoes.get(faccao_id, 0)
+    if reputacao < 10:
+        return {"ouro": ouro_atual, "beneficio": "nenhum", "detalhe": "Reputação insuficiente"}
+
+    if faccao_id == "guilda_ferreiros":
+        inventario["sucata_metal"] = inventario.get("sucata_metal", 0) + 2
+        return {"ouro": ouro_atual, "beneficio": "item", "detalhe": "+2 sucata_metal"}
+
+    if faccao_id == "circulo_arcano":
+        novo_ouro = ouro_atual + 40
+        return {"ouro": novo_ouro, "beneficio": "ouro", "detalhe": "+40 ouro"}
+
+    return {"ouro": ouro_atual, "beneficio": "nenhum", "detalhe": "Facção sem benefício configurado"}

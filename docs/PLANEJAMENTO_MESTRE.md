@@ -78,3 +78,10 @@ Criar um RPG expansível com sistemas de progressão, exploração, cidade e cra
 - Conclusão de contrato concede XP, ouro e reputação por facção
 - Persistência do contrato ativo no save/load
 - Fase 9 concluída: contratos agora fecham o loop de progressão meta e economia.
+
+
+### Fase 10 — Benefícios de facção e recompensas de reputação
+- Reputação agora desbloqueia benefícios resgatáveis por facção
+- Benefícios impactam economia (ouro/itens) no loop principal
+- Ação dedicada para resgate no menu de cidade
+- Fase 10 concluída: reputação virou moeda de progressão contínua.
