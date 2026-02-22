@@ -1,5 +1,27 @@
-# RESET FASE 1
+# RPG Surreal (novo repositório base)
 
-Todos os arquivos do projeto anterior foram removidos.
+Este repositório foi reiniciado para construir um RPG novo, com foco em:
 
-Próximo passo: iniciar a reconstrução do RPG do zero, arquivo por arquivo.
+- arquitetura modular
+- evolução incremental (1 arquivo por vez)
+- testes de sanidade desde o começo
+
+## Estrutura inicial
+
+- `docs/`: planejamento e decisões arquiteturais
+- `rpg/`: código-fonte do jogo
+- `tests/`: testes automatizados mínimos
+- `scripts/`: utilitários de desenvolvimento
+
+## Como rodar
+
+```bash
+python -m rpg.main
+```
+
+## Como validar
+
+```bash
+python scripts/verificar_sintaxe.py
+python -m unittest discover tests
+```
