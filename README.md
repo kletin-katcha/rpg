@@ -30,4 +30,4 @@ python scripts/check_all.py
 ```
 
 ## Fase atual
-- Fase 6 concluída: hardening com save/load e pipeline único de checagem.
+- Fase 7 concluída: meta-sistemas iniciais (facções, eventos e contratos).

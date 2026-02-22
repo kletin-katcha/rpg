@@ -8,6 +8,7 @@ from rpg.systems.inventory.service import adicionar_item_catalogado
 from rpg.systems.combat.service import combater_ate_fim
 from rpg.systems.city import CityState, construir_estrutura, melhorar_estrutura, ativar_plano_automacao, processar_automacao
 from rpg.systems.crafting import forjar_receita
+from rpg.systems.meta_world import iniciar_reputacoes, aplicar_evento_mundo, gerar_contrato_aleatorio
 
 
 @dataclass
@@ -18,6 +19,7 @@ class GameState:
     inventario: dict[str, int] = field(default_factory=dict)
     log: list[str] = field(default_factory=list)
     cidade: CityState = field(default_factory=CityState)
+    reputacoes: dict[str, int] = field(default_factory=iniciar_reputacoes)
 
 
 class Game:
@@ -40,7 +42,7 @@ class Game:
         self.state = GameState()
 
     def start_message(self) -> str:
-        return "RPG Surreal iniciado: fase 5 pronta (balanceamento + regressão)."
+        return "RPG Surreal iniciado: fase 7 pronta (meta-sistemas + mundo dinâmico)."
 
     def opcoes_criacao(self) -> dict[str, list[str]]:
         racas = load_catalog("racas")
@@ -74,6 +76,9 @@ class Game:
             "ver_status",
             "ver_historico",
             "ajuda",
+            "evento_mundo",
+            "contrato_aleatorio",
+            "faccao_status",
             "salvar",
             "carregar",
             "sair",
@@ -135,6 +140,15 @@ class Game:
             msg = " | ".join(ultimos)
         elif acao == "ajuda":
             msg = f"Ações disponíveis: {', '.join(self.opcoes_cidade())}"
+        elif acao == "evento_mundo":
+            ev = aplicar_evento_mundo(self.state.cidade.ouro)
+            self.state.cidade.ouro = ev["ouro"]
+            msg = f"Evento: {ev['evento']} | Ouro agora: {self.state.cidade.ouro}"
+        elif acao == "contrato_aleatorio":
+            contrato = gerar_contrato_aleatorio()
+            msg = f"Contrato: {contrato['nome']} (XP {contrato['xp']}, Ouro {contrato['ouro']})"
+        elif acao == "faccao_status":
+            msg = f"Reputações: {self.state.reputacoes}"
         elif acao == "salvar":
             from rpg.systems.persistence import save_game
 

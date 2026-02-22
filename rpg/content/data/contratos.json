@@ -1,0 +1,4 @@
+[
+  {"id": "caca_lobo", "nome": "Caçar Lobos", "objetivo": "Derrotar um lobo", "xp": 30, "ouro": 20},
+  {"id": "caca_goblin", "nome": "Caçar Goblins", "objetivo": "Derrotar um goblin", "xp": 45, "ouro": 30}
+]

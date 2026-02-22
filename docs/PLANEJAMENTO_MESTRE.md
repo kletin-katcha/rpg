@@ -59,3 +59,9 @@ Criar um RPG expansível com sistemas de progressão, exploração, cidade e cra
 - Fase 4 concluída: expansão de catálogos, árvore de habilidades base e melhorias de UX com aliases/ajuda/histórico.
 - Fase 5 concluída: relatório de balanceamento automatizado e testes de regressão de métricas.
 - Fase 6 concluída: persistência (save/load), comando integrado no loop e pipeline de checks local.
+
+### Fase 7 — Meta-sistemas e mundo dinâmico
+- Facções e reputação inicial
+- Eventos dinâmicos de mundo
+- Contratos procedurais
+- Fase 7 concluída: facções/reputação base, eventos de mundo e contratos aleatórios integrados.
