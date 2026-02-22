@@ -30,4 +30,4 @@ python scripts/check_all.py
 ```
 
 ## Fase atual
-- Fase 13 concluída: economia dinâmica com mercado variável, venda e cadeia de produção avançada.
+- Fase 14 concluída: imersão sistêmica com ciclo temporal, clima dinâmico, jornal e codex.

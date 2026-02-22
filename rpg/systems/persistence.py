@@ -23,6 +23,10 @@ def _to_dict(game: Game) -> dict:
         "contrato_ativo": game.state.contrato_ativo,
         "mercado": game.state.mercado,
         "dia_economico": game.state.dia_economico,
+        "hora": game.state.hora,
+        "clima": game.state.clima,
+        "jornal_cidade": game.state.jornal_cidade,
+        "codex": sorted(game.state.codex),
         "jogador": None
         if p is None
         else {
@@ -85,5 +89,9 @@ def load_game(path: str = "savegame.json") -> Game:
         contrato_ativo=raw.get("contrato_ativo"),
         mercado=raw.get("mercado", {}),
         dia_economico=raw.get("dia_economico", 0),
+        hora=raw.get("hora", 8),
+        clima=raw.get("clima", "ensolarado"),
+        jornal_cidade=raw.get("jornal_cidade", []),
+        codex=set(raw.get("codex", [])),
     )
     return game

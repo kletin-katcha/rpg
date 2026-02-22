@@ -106,3 +106,11 @@ Criar um RPG expansível com sistemas de progressão, exploração, cidade e cra
 - Venda de itens convertendo inventário em ouro com preço variável
 - Cadeia produtiva avançada (`barra_metal` -> `liga_metal`)
 - Fase 13 concluída: economia ganhou variação temporal e novo loop de produção.
+
+
+### Fase 14 — Imersão sistêmica (tempo, clima e narrativa local)
+- Ciclo temporal com períodos do dia no loop principal
+- Clima dinâmico acoplado ao avanço de tempo
+- Jornal da cidade para histórico diegético recente
+- Codex desbloqueável por eventos do mundo
+- Fase 14 concluída: base de imersão narrativa integrada ao gameplay.

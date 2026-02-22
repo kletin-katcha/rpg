@@ -23,6 +23,7 @@ class TestPhase6Persistence(unittest.TestCase):
         self.assertIn("postura_ofensiva", loaded.state.jogador.habilidades_desbloqueadas)
         self.assertIsNotNone(loaded.state.contrato_ativo)
         self.assertGreaterEqual(loaded.state.dia_economico, 1)
+        self.assertTrue(isinstance(loaded.state.codex, set))
 
         Path(path).unlink(missing_ok=True)
 

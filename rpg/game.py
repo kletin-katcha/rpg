@@ -11,6 +11,7 @@ from rpg.systems.crafting import forjar_receita
 from rpg.systems.meta_world import iniciar_reputacoes, aplicar_evento_mundo, gerar_contrato_aleatorio, concluir_contrato, falhar_contrato, resgatar_beneficio_faccao
 from rpg.systems.skills import listar_arvore, habilidades_disponiveis, desbloquear_habilidade
 from rpg.systems.economy import iniciar_mercado, atualizar_mercado, vender_item, produzir_liga_metal
+from rpg.systems.immersion import periodo_do_dia, avancar_tempo, atualizar_clima, registrar_jornal, desbloquear_lore, codex_base
 
 
 @dataclass
@@ -25,10 +26,14 @@ class GameState:
     contrato_ativo: dict | None = None
     mercado: dict[str, float] = field(default_factory=iniciar_mercado)
     dia_economico: int = 0
+    hora: int = 8
+    clima: str = "ensolarado"
+    jornal_cidade: list[str] = field(default_factory=list)
+    codex: set[str] = field(default_factory=codex_base)
 
 
 class Game:
-    """Fase 13: economia dinâmica e cadeia de produção avançada."""
+    """Fase 14: imersão com ciclo temporal, clima e jornal/codex."""
 
     ACTION_ALIASES = {
         "lobo": "cacar_lobo",
@@ -42,6 +47,9 @@ class Game:
         "historico": "ver_historico",
         "arvore": "ver_arvore",
         "mercado": "ver_mercado",
+        "jornal": "ver_jornal",
+        "clima": "ver_clima",
+        "codex": "ver_codex",
     }
 
     def __init__(self) -> None:
@@ -49,7 +57,7 @@ class Game:
         self.state = GameState()
 
     def start_message(self) -> str:
-        return "RPG Surreal iniciado: fase 13 pronta (economia dinâmica + produção)."
+        return "RPG Surreal iniciado: fase 14 pronta (imersão temporal + clima + codex)."
 
     def opcoes_criacao(self) -> dict[str, list[str]]:
         racas = load_catalog("racas")
@@ -84,6 +92,9 @@ class Game:
             "ver_mercado",
             "vender_sucata",
             "produzir_liga_metal",
+            "ver_clima",
+            "ver_jornal",
+            "ver_codex",
             "ver_status",
             "ver_historico",
             "ajuda",
@@ -153,8 +164,14 @@ class Game:
         elif acao == "avancar_dia":
             processar_automacao(self.state.cidade, self.state.inventario)
             self.state.dia_economico += 1
+            self.state.hora = avancar_tempo(self.state.hora, 6)
+            self.state.clima = atualizar_clima(self.state.dia_economico)
             atualizar_mercado(self.state.mercado, self.state.dia_economico)
-            msg = "Um dia se passou. Automação e mercado processados."
+            registrar_jornal(
+                self.state.jornal_cidade,
+                f"Dia {self.state.dia_economico}: clima={self.state.clima}, periodo={periodo_do_dia(self.state.hora)}",
+            )
+            msg = "Tempo avançado. Automação, mercado e clima atualizados."
         elif acao == "ver_mercado":
             top = sorted(self.state.mercado.items(), key=lambda kv: kv[1], reverse=True)[:3]
             msg = f"Mercado (dia {self.state.dia_economico}): {top}"
@@ -170,6 +187,13 @@ class Game:
         elif acao == "produzir_liga_metal":
             produzir_liga_metal(self.state.inventario)
             msg = "Produção concluída: 1 liga_metal (2 barra_metal consumidas)."
+        elif acao == "ver_clima":
+            msg = f"Clima atual: {self.state.clima} | Período: {periodo_do_dia(self.state.hora)}"
+        elif acao == "ver_jornal":
+            ultimos = self.state.jornal_cidade[-5:] if self.state.jornal_cidade else ["Sem eventos no jornal."]
+            msg = " | ".join(ultimos)
+        elif acao == "ver_codex":
+            msg = f"Codex desbloqueado: {sorted(self.state.codex)}"
         elif acao == "ver_status":
             msg = (
                 f"Status: nível {self.state.jogador.nivel}, HP {self.state.jogador.hp_atual}/{self.state.jogador.hp_max}, "
@@ -183,6 +207,8 @@ class Game:
         elif acao == "evento_mundo":
             ev = aplicar_evento_mundo(self.state.cidade.ouro)
             self.state.cidade.ouro = ev["ouro"]
+            desbloquear_lore(self.state.codex, f"evento:{ev['evento']}")
+            registrar_jornal(self.state.jornal_cidade, f"Evento mundial registrado: {ev['evento']}")
             msg = f"Evento: {ev['evento']} | Ouro agora: {self.state.cidade.ouro}"
         elif acao == "contrato_aleatorio":
             contrato = gerar_contrato_aleatorio("ouro")
