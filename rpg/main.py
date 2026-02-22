@@ -25,7 +25,7 @@ def main() -> None:
 
     while game.running:
         print(f"Ações da cidade: {', '.join(game.opcoes_cidade())}")
-        print("Dica: atalhos: lobo, goblin, forjar, oficina, automacao, dia, status, historico, arvore, help + salvar/carregar")
+        print("Dica: use contrato_aleatorio + concluir_contrato para progresso de facção; atalhos: lobo, goblin, forjar, oficina, automacao, dia, status, historico, arvore, help + salvar/carregar")
         acao = input("Ação: ").strip()
         try:
             print(game.executar_acao_cidade(acao))

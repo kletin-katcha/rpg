@@ -8,7 +8,7 @@ from rpg.systems.inventory.service import adicionar_item_catalogado
 from rpg.systems.combat.service import combater_ate_fim
 from rpg.systems.city import CityState, construir_estrutura, melhorar_estrutura, ativar_plano_automacao, processar_automacao
 from rpg.systems.crafting import forjar_receita
-from rpg.systems.meta_world import iniciar_reputacoes, aplicar_evento_mundo, gerar_contrato_aleatorio
+from rpg.systems.meta_world import iniciar_reputacoes, aplicar_evento_mundo, gerar_contrato_aleatorio, concluir_contrato
 from rpg.systems.skills import listar_arvore, habilidades_disponiveis, desbloquear_habilidade
 
 
@@ -21,10 +21,11 @@ class GameState:
     log: list[str] = field(default_factory=list)
     cidade: CityState = field(default_factory=CityState)
     reputacoes: dict[str, int] = field(default_factory=iniciar_reputacoes)
+    contrato_ativo: dict | None = None
 
 
 class Game:
-    """Fase 8: progressão de habilidades integrada ao loop de cidade."""
+    """Fase 9: contratos executáveis com progressão de reputação."""
 
     ACTION_ALIASES = {
         "lobo": "cacar_lobo",
@@ -44,7 +45,7 @@ class Game:
         self.state = GameState()
 
     def start_message(self) -> str:
-        return "RPG Surreal iniciado: fase 8 pronta (skills em runtime + meta-sistemas)."
+        return "RPG Surreal iniciado: fase 9 pronta (contratos executáveis + reputação)."
 
     def opcoes_criacao(self) -> dict[str, list[str]]:
         racas = load_catalog("racas")
@@ -81,6 +82,7 @@ class Game:
             "evento_mundo",
             "contrato_aleatorio",
             "faccao_status",
+            "concluir_contrato",
             "ver_arvore",
             "desbloquear_postura_ofensiva",
             "desbloquear_golpe_reforcado",
@@ -151,9 +153,29 @@ class Game:
             msg = f"Evento: {ev['evento']} | Ouro agora: {self.state.cidade.ouro}"
         elif acao == "contrato_aleatorio":
             contrato = gerar_contrato_aleatorio()
-            msg = f"Contrato: {contrato['nome']} (XP {contrato['xp']}, Ouro {contrato['ouro']})"
+            self.state.contrato_ativo = contrato
+            msg = (
+                f"Contrato ativo: {contrato['nome']} (XP {contrato['xp']}, Ouro {contrato['ouro']}, "
+                f"Facção {contrato['faccao_id']})"
+            )
         elif acao == "faccao_status":
             msg = f"Reputações: {self.state.reputacoes}"
+        elif acao == "concluir_contrato":
+            if self.state.contrato_ativo is None:
+                raise RegraNegocioError("Nenhum contrato ativo. Use contrato_aleatorio primeiro.")
+            resultado = concluir_contrato(
+                self.state.jogador,
+                self.state.reputacoes,
+                self.state.cidade.ouro,
+                self.state.contrato_ativo,
+            )
+            self.state.cidade.ouro = resultado["ouro"]
+            contrato_nome = self.state.contrato_ativo["nome"]
+            self.state.contrato_ativo = None
+            msg = (
+                f"Contrato concluído: {contrato_nome} | XP +{resultado['xp']} | "
+                f"Reputação {resultado['faccao_id']}={resultado['reputacao']}"
+            )
         elif acao == "ver_arvore":
             arvore = listar_arvore("combate_base")
             disponiveis = habilidades_disponiveis(self.state.jogador, "combate_base")

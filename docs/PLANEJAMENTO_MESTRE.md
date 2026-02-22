@@ -71,3 +71,10 @@ Criar um RPG expansível com sistemas de progressão, exploração, cidade e cra
 - Aplicação de efeitos simples no estado do personagem
 - Ações de cidade para visualizar árvore e desbloquear habilidades
 - Fase 8 concluída: desbloqueio da árvore `combate_base` integrado no loop com persistência.
+
+
+### Fase 9 — Contratos executáveis e reputação progressiva
+- Contrato aleatório vira contrato ativo no estado do jogo
+- Conclusão de contrato concede XP, ouro e reputação por facção
+- Persistência do contrato ativo no save/load
+- Fase 9 concluída: contratos agora fecham o loop de progressão meta e economia.

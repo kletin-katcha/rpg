@@ -30,4 +30,4 @@ python scripts/check_all.py
 ```
 
 ## Fase atual
-- Fase 8 concluída: progressão de habilidades em runtime (árvore base com desbloqueio e efeitos).
+- Fase 9 concluída: contratos executáveis com ganho de XP, ouro e reputação de facção.

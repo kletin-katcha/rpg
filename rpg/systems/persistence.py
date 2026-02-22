@@ -20,6 +20,7 @@ def _to_dict(game: Game) -> dict:
             "plano_automacao_ativo": game.state.cidade.plano_automacao_ativo,
         },
         "reputacoes": game.state.reputacoes,
+        "contrato_ativo": game.state.contrato_ativo,
         "jogador": None
         if p is None
         else {
@@ -79,5 +80,6 @@ def load_game(path: str = "savegame.json") -> Game:
         log=raw.get("log", []),
         cidade=cidade,
         reputacoes=raw.get("reputacoes", {}),
+        contrato_ativo=raw.get("contrato_ativo"),
     )
     return game

@@ -1,4 +1,4 @@
 [
-  {"id": "caca_lobo", "nome": "Caçar Lobos", "objetivo": "Derrotar um lobo", "xp": 30, "ouro": 20},
-  {"id": "caca_goblin", "nome": "Caçar Goblins", "objetivo": "Derrotar um goblin", "xp": 45, "ouro": 30}
+  {"id": "caca_lobo", "nome": "Caçar Lobos", "objetivo": "Derrotar um lobo", "xp": 30, "ouro": 20, "faccao_id": "guilda_ferreiros", "reputacao_ganho": 3},
+  {"id": "caca_goblin", "nome": "Caçar Goblins", "objetivo": "Derrotar um goblin", "xp": 45, "ouro": 30, "faccao_id": "circulo_arcano", "reputacao_ganho": 4}
 ]
