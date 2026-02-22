@@ -18,5 +18,15 @@
     "resultado": {
       "espada_longa": 1
     }
+  },
+  {
+    "id": "refino_liga_metal",
+    "nome": "Refino de Liga de Metal",
+    "insumos": {
+      "barra_metal": 2
+    },
+    "resultado": {
+      "liga_metal": 1
+    }
   }
 ]

@@ -12,6 +12,7 @@ class TestPhase6Persistence(unittest.TestCase):
         game.executar_acao_cidade("coletar_item_inicial")
         game.executar_acao_cidade("desbloquear_postura_ofensiva")
         game.executar_acao_cidade("contrato_aleatorio")
+        game.executar_acao_cidade("avancar_dia")
 
         path = "test_savegame.json"
         save_game(game, path)
@@ -21,6 +22,7 @@ class TestPhase6Persistence(unittest.TestCase):
         self.assertEqual(loaded.state.inventario.get("pocao_cura"), 1)
         self.assertIn("postura_ofensiva", loaded.state.jogador.habilidades_desbloqueadas)
         self.assertIsNotNone(loaded.state.contrato_ativo)
+        self.assertGreaterEqual(loaded.state.dia_economico, 1)
 
         Path(path).unlink(missing_ok=True)
 

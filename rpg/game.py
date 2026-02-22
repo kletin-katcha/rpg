@@ -10,6 +10,7 @@ from rpg.systems.city import CityState, construir_estrutura, melhorar_estrutura,
 from rpg.systems.crafting import forjar_receita
 from rpg.systems.meta_world import iniciar_reputacoes, aplicar_evento_mundo, gerar_contrato_aleatorio, concluir_contrato, falhar_contrato, resgatar_beneficio_faccao
 from rpg.systems.skills import listar_arvore, habilidades_disponiveis, desbloquear_habilidade
+from rpg.systems.economy import iniciar_mercado, atualizar_mercado, vender_item, produzir_liga_metal
 
 
 @dataclass
@@ -22,10 +23,12 @@ class GameState:
     cidade: CityState = field(default_factory=CityState)
     reputacoes: dict[str, int] = field(default_factory=iniciar_reputacoes)
     contrato_ativo: dict | None = None
+    mercado: dict[str, float] = field(default_factory=iniciar_mercado)
+    dia_economico: int = 0
 
 
 class Game:
-    """Fase 12: combate avançado com arquétipos, iniciativa e boss multi-fase."""
+    """Fase 13: economia dinâmica e cadeia de produção avançada."""
 
     ACTION_ALIASES = {
         "lobo": "cacar_lobo",
@@ -38,6 +41,7 @@ class Game:
         "help": "ajuda",
         "historico": "ver_historico",
         "arvore": "ver_arvore",
+        "mercado": "ver_mercado",
     }
 
     def __init__(self) -> None:
@@ -45,7 +49,7 @@ class Game:
         self.state = GameState()
 
     def start_message(self) -> str:
-        return "RPG Surreal iniciado: fase 12 pronta (combate avançado + meta-loop)."
+        return "RPG Surreal iniciado: fase 13 pronta (economia dinâmica + produção)."
 
     def opcoes_criacao(self) -> dict[str, list[str]]:
         racas = load_catalog("racas")
@@ -77,6 +81,9 @@ class Game:
             "construir_nucleo_automacao",
             "ativar_automacao",
             "avancar_dia",
+            "ver_mercado",
+            "vender_sucata",
+            "produzir_liga_metal",
             "ver_status",
             "ver_historico",
             "ajuda",
@@ -145,7 +152,24 @@ class Game:
             msg = "Plano de automação 'coleta_sucata' ativado."
         elif acao == "avancar_dia":
             processar_automacao(self.state.cidade, self.state.inventario)
-            msg = "Um dia se passou. Automação processada."
+            self.state.dia_economico += 1
+            atualizar_mercado(self.state.mercado, self.state.dia_economico)
+            msg = "Um dia se passou. Automação e mercado processados."
+        elif acao == "ver_mercado":
+            top = sorted(self.state.mercado.items(), key=lambda kv: kv[1], reverse=True)[:3]
+            msg = f"Mercado (dia {self.state.dia_economico}): {top}"
+        elif acao == "vender_sucata":
+            self.state.cidade.ouro = vender_item(
+                self.state.inventario,
+                self.state.cidade.ouro,
+                "sucata_metal",
+                1,
+                self.state.mercado,
+            )
+            msg = f"Venda concluída: 1 sucata_metal. Ouro={self.state.cidade.ouro}"
+        elif acao == "produzir_liga_metal":
+            produzir_liga_metal(self.state.inventario)
+            msg = "Produção concluída: 1 liga_metal (2 barra_metal consumidas)."
         elif acao == "ver_status":
             msg = (
                 f"Status: nível {self.state.jogador.nivel}, HP {self.state.jogador.hp_atual}/{self.state.jogador.hp_max}, "

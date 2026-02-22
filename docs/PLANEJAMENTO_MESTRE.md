@@ -99,3 +99,10 @@ Criar um RPG expansível com sistemas de progressão, exploração, cidade e cra
 - Arquétipos de inimigo (agressivo/defensivo/venenoso/boss)
 - Boss com transição de fase durante a luta
 - Fase 12 concluída: combate ganhou profundidade tática sem quebrar o loop atual.
+
+
+### Fase 13 — Economia dinâmica e cadeia de produção
+- Mercado com multiplicadores dinâmicos por dia
+- Venda de itens convertendo inventário em ouro com preço variável
+- Cadeia produtiva avançada (`barra_metal` -> `liga_metal`)
+- Fase 13 concluída: economia ganhou variação temporal e novo loop de produção.

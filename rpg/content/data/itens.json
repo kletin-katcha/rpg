@@ -28,5 +28,11 @@
     "nome": "Espada Longa",
     "tipo": "arma",
     "valor": 220
+  },
+  {
+    "id": "liga_metal",
+    "nome": "Liga de Metal",
+    "tipo": "material_avancado",
+    "valor": 75
   }
 ]

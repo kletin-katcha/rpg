@@ -30,4 +30,4 @@ python scripts/check_all.py
 ```
 
 ## Fase atual
-- Fase 12 concluída: combate avançado com iniciativa, arquétipos e boss multi-fase.
+- Fase 13 concluída: economia dinâmica com mercado variável, venda e cadeia de produção avançada.
