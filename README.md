@@ -23,5 +23,6 @@ python -m rpg.main
 
 ```bash
 python scripts/verificar_sintaxe.py
+python scripts/validar_content.py
 python -m unittest discover tests
 ```

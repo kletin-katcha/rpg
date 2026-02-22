@@ -1,0 +1,14 @@
+[
+  {
+    "id": "espada_curta",
+    "nome": "Espada Curta",
+    "tipo": "arma",
+    "valor": 120
+  },
+  {
+    "id": "pocao_cura",
+    "nome": "Poção de Cura",
+    "tipo": "consumivel",
+    "valor": 40
+  }
+]

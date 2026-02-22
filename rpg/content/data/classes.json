@@ -1,0 +1,14 @@
+[
+  {
+    "id": "guerreiro",
+    "nome": "Guerreiro",
+    "papel": "frontline",
+    "habilidades_iniciais": ["ataque_poderoso"]
+  },
+  {
+    "id": "mago",
+    "nome": "Mago",
+    "papel": "caster",
+    "habilidades_iniciais": ["missil_arcano"]
+  }
+]

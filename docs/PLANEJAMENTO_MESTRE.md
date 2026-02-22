@@ -35,3 +35,8 @@ Criar um RPG expansível com sistemas de progressão, exploração, cidade e cra
 1. Implementar em fatias pequenas.
 2. Cada mudança com testes.
 3. Sem mega-commits de reescrita total.
+
+
+## Status atual
+- Contratos do núcleo definidos.
+- Loader de conteúdo e schemas iniciais implementados (raças, classes, itens).

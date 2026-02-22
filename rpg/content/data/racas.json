@@ -1,0 +1,14 @@
+[
+  {
+    "id": "humano",
+    "nome": "Humano",
+    "descricao": "Adaptáveis, versáteis e sociais.",
+    "bonus": {"carisma": 1}
+  },
+  {
+    "id": "elfo",
+    "nome": "Elfo",
+    "descricao": "Ágeis e afinados com magia.",
+    "bonus": {"destreza": 1, "inteligencia": 1}
+  }
+]
