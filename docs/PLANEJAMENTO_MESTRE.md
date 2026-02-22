@@ -42,3 +42,5 @@ Criar um RPG expansível com sistemas de progressão, exploração, cidade e cra
 - Loader de conteúdo e schemas iniciais implementados (raças, classes, itens).
 
 - Domínios iniciais implementados: `systems/character` e `systems/inventory` com service/rules/testes.
+
+- Fase 1 concluída: criação de personagem + estado em memória + loop de cidade inicial.
