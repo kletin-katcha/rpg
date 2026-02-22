@@ -19,6 +19,8 @@ def criar_inimigo(monstro_id: str) -> EnemyState:
         hp_atual=m["hp_max"],
         hp_max=m["hp_max"],
         ataque_base=m["ataque_base"],
+        velocidade=m.get("velocidade", 5),
+        arquetipo=m.get("arquetipo", "agressivo"),
     )
 
 
@@ -46,4 +48,5 @@ def combater_ate_fim(personagem: CharacterState, monstro_id: str, inventario: di
         "xp_recebido": recompensa_xp,
         "loot": recompensa_loot,
         "turnos": len(historico),
+        "fase_final_inimigo": inimigo.fase,
     }

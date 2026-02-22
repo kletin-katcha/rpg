@@ -21,6 +21,9 @@ class EnemyState:
     hp_atual: int = 50
     hp_max: int = 50
     ataque_base: int = 5
+    velocidade: int = 5
+    arquetipo: str = "agressivo"
+    fase: int = 1
 
 
 @dataclass

@@ -92,3 +92,10 @@ Criar um RPG expansível com sistemas de progressão, exploração, cidade e cra
 - Falha de contrato gera reputação negativa por facção
 - Perks de facção passam a escalar por tier de reputação
 - Fase 11 concluída: loop de contrato ganhou risco/recompensa real e progressão reputacional bidirecional.
+
+
+### Fase 12 — Combate avançado e chefes multi-fase
+- Iniciativa por velocidade/destreza no turno de combate
+- Arquétipos de inimigo (agressivo/defensivo/venenoso/boss)
+- Boss com transição de fase durante a luta
+- Fase 12 concluída: combate ganhou profundidade tática sem quebrar o loop atual.

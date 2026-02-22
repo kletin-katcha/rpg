@@ -30,4 +30,4 @@ python scripts/check_all.py
 ```
 
 ## Fase atual
-- Fase 11 concluída: contratos por tier com falha/reputação negativa e perks de facção escaláveis.
+- Fase 12 concluída: combate avançado com iniciativa, arquétipos e boss multi-fase.

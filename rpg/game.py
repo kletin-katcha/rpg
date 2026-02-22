@@ -25,7 +25,7 @@ class GameState:
 
 
 class Game:
-    """Fase 11: contratos por tier, reputação negativa e perks escaláveis."""
+    """Fase 12: combate avançado com arquétipos, iniciativa e boss multi-fase."""
 
     ACTION_ALIASES = {
         "lobo": "cacar_lobo",
@@ -45,7 +45,7 @@ class Game:
         self.state = GameState()
 
     def start_message(self) -> str:
-        return "RPG Surreal iniciado: fase 11 pronta (contratos por tier + reputação dinâmica)."
+        return "RPG Surreal iniciado: fase 12 pronta (combate avançado + meta-loop)."
 
     def opcoes_criacao(self) -> dict[str, list[str]]:
         racas = load_catalog("racas")
@@ -70,6 +70,7 @@ class Game:
             "coletar_item_inicial",
             "cacar_lobo",
             "cacar_goblin",
+            "cacar_boss",
             "forjar_espada_longa",
             "construir_oficina",
             "melhorar_oficina",
@@ -120,6 +121,12 @@ class Game:
             msg = (
                 f"Combate concluído. Vitória={resultado['vitoria']} | XP +{resultado['xp_recebido']} | "
                 f"Loot={resultado['loot']}"
+            )
+        elif acao == "cacar_boss":
+            resultado = combater_ate_fim(self.state.jogador, "ogro_alfa", self.state.inventario)
+            msg = (
+                f"Boss derrotado={resultado['vitoria']} | XP +{resultado['xp_recebido']} | "
+                f"fase_final={resultado['fase_final_inimigo']} | Loot={resultado['loot']}"
             )
         elif acao == "forjar_espada_longa":
             forjar_receita(self.state.inventario, "forja_espada_longa")
