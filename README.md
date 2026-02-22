@@ -26,7 +26,8 @@ python scripts/verificar_sintaxe.py
 python scripts/validar_content.py
 python -m unittest discover tests
 python scripts/relatorio_balance.py
+python scripts/check_all.py
 ```
 
 ## Fase atual
-- Fase 5 concluída: conteúdo expandido + UX + relatório de balanceamento automatizado.
+- Fase 6 concluída: hardening com save/load e pipeline único de checagem.

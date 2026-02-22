@@ -74,6 +74,8 @@ class Game:
             "ver_status",
             "ver_historico",
             "ajuda",
+            "salvar",
+            "carregar",
             "sair",
         ]
 
@@ -133,6 +135,17 @@ class Game:
             msg = " | ".join(ultimos)
         elif acao == "ajuda":
             msg = f"Ações disponíveis: {', '.join(self.opcoes_cidade())}"
+        elif acao == "salvar":
+            from rpg.systems.persistence import save_game
+
+            save_game(self)
+            msg = "Jogo salvo em savegame.json"
+        elif acao == "carregar":
+            from rpg.systems.persistence import load_game
+
+            carregado = load_game()
+            self.state = carregado.state
+            msg = "Jogo carregado de savegame.json"
         elif acao == "sair":
             self.running = False
             msg = "Saindo do jogo."
