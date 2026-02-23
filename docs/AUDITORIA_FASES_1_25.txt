@@ -8,13 +8,15 @@ ATUALIZAÇÃO DE PROGRESSO (CICLO ATUAL)
 - Próximo alvo sugerido: ampliar fracos de economia/contratos e fortalecer pontos fortes com conteúdo adicional.
 - Estabilidade de entrada reforçada: criação agora repete escolha inválida e trata EOF sem crash após raça/classe.
 - HUD do CLI reorganizado por blocos (Combate, Economia/Cidade, Mundo/Meta, Sistema) para reduzir poluição visual.
+- Criação ganhou fluxo numerado com sub-raça após raça e HUD passou a exibir 15 atributos/status completos.
+- Criação agora usa menu numerado (raça -> sub-raça -> classe) e HUD exibe 15+ atributos/status do personagem.
 
 FASE 01 - Nucleo jogavel
 1. [x] Escopo base implementado conforme planejamento da fase 1.
 2. [x] Ponto forte A: Criacao de personagem e loop basico funcionando.
 3. [x] Ponto forte B: Estado em memoria consistente para sessao atual.
-4. [!] Ponto fraco A: Fluxo CLI estável (sem crash em EOF), porém ainda simples em UX avançada.
-5. [!] Ponto fraco B: Sem telemetria fina de UX de onboarding.
+4. [x] Ponto fraco A: Fluxo CLI estabilizado e melhorado com menu numerado (raça/sub-raça/classe).
+5. [!] Ponto fraco B: Telemetria de UX existe, mas ainda falta aprofundar métricas de abandono por etapa de criação.
 6. [x] Falta para produção #1: Salvar checkpoint de criacao com rollback.
 7. [ ] Falta para produção #2: Adicionar tutorial guiado opcional.
 8. [ ] Falta para produção #3: Medir taxa de abandono na criacao.
@@ -63,8 +65,8 @@ FASE 03 - Economia/forja/cidade
 FASE 04 - Conteudo massivo e UX
 1. [x] Escopo base implementado conforme planejamento da fase 4.
 2. [x] Ponto forte A: Catalogos expandidos e aliases de comando.
-3. [x] Ponto forte B: Historico/ajuda melhoram uso no terminal.
-4. [x] Ponto fraco A: HUD/menus reorganizados por blocos para reduzir confusão de navegação.
+3. [x] Ponto forte B: Histórico/ajuda + menu numerado melhoram uso no terminal.
+4. [x] Ponto fraco A: HUD/menus reorganizados por blocos + seleção numerada para reduzir confusão de navegação.
 5. [x] Ponto fraco B: Busca/filtro semantico no CLI implementada (buscar_acoes:<termo>).
 6. [ ] Falta para produção #1: Ajuda contextual por estado do jogo.
 7. [ ] Falta para produção #2: Comandos compostos (macro) para QA.
@@ -433,3 +435,9 @@ FASE 25 - Ferramentas de expansao massiva
 13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
 14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
 15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+ATUALIZAÇÃO RECENTE (UX exploração/regiões)
+- [x] Fluxo de exploração fora da cidade adicionado (`explorar_fora_cidade`) com seleção de monstros por área/região.
+- [x] Catálogo de monstros agora registra áreas de ocorrência (`areas`) para separar encontros por região.
+- [x] Viagens entre regiões podem acionar eventos de rota (emboscada ou coleta de recurso), reduzindo repetição do loop urbano.
+- [!] Próximo gap recomendado: tela/mapa de navegação por regiões com risco/recompensa visível antes da viagem.

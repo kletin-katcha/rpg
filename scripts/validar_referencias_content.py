@@ -14,8 +14,14 @@ from rpg.content.schemas.common import ContentValidationError
 def validar_referencias() -> None:
     data = load_all_catalogs()
     itens = set(data["itens"].keys())
+    racas = set(data["racas"].keys())
+
     faccoes = set(data["faccoes"].keys())
     estruturas = set(data["estruturas"].keys())
+
+    for sid, sub_raca in data["sub_racas"].items():
+        if sub_raca.get("raca_id") not in racas:
+            raise ContentValidationError(f"sub_racas.{sid}: raca_id inexistente '{sub_raca.get('raca_id')}'")
 
     for mid, monstro in data["monstros"].items():
         for item_id in monstro.get("loot", {}).keys():

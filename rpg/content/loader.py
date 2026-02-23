@@ -8,6 +8,7 @@ from typing import Callable
 
 from .schemas.common import ContentValidationError
 from .schemas.raca import validate_raca
+from .schemas.sub_raca import validate_sub_raca
 from .schemas.classe import validate_classe
 from .schemas.item import validate_item
 from .schemas.monstro import validate_monstro
@@ -24,6 +25,7 @@ Validator = Callable[[dict, str], None]
 
 CATALOGS: dict[str, tuple[str, Validator]] = {
     "racas": ("racas.json", validate_raca),
+    "sub_racas": ("sub_racas.json", validate_sub_raca),
     "classes": ("classes.json", validate_classe),
     "itens": ("itens.json", validate_item),
     "monstros": ("monstros.json", validate_monstro),

@@ -52,6 +52,9 @@ def _to_dict(game: Game) -> dict:
         else {
             "id": p.id,
             "nome": p.nome,
+            "raca_id": p.raca_id,
+            "sub_raca_id": p.sub_raca_id,
+            "classe_id": p.classe_id,
             "nivel": p.nivel,
             "xp": p.xp,
             "atributos": p.atributos,
@@ -100,6 +103,9 @@ def _build_game_from_raw(raw: dict) -> Game:
         jogador = CharacterState(
             id=jogador_raw["id"],
             nome=jogador_raw["nome"],
+            raca_id=jogador_raw.get("raca_id", ""),
+            sub_raca_id=jogador_raw.get("sub_raca_id", ""),
+            classe_id=jogador_raw.get("classe_id", ""),
             nivel=jogador_raw["nivel"],
             xp=jogador_raw["xp"],
             atributos=jogador_raw["atributos"],

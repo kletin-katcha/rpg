@@ -20,6 +20,13 @@ def validate_monstro(entry: dict, context: str) -> None:
     if "arquetipo" in entry and entry["arquetipo"] not in ARQUETIPOS_VALIDOS:
         raise ContentValidationError(f"{context}: arquetipo inválido")
 
+    if "areas" in entry:
+        if not isinstance(entry["areas"], list) or not entry["areas"]:
+            raise ContentValidationError(f"{context}: 'areas' deve ser lista não vazia")
+        for area in entry["areas"]:
+            if not isinstance(area, str) or not area.strip():
+                raise ContentValidationError(f"{context}: area inválida em 'areas'")
+
     if not isinstance(entry["loot"], dict):
         raise ContentValidationError(f"{context}: 'loot' deve ser objeto")
     for item_id, qtd in entry["loot"].items():

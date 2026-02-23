@@ -10,7 +10,11 @@
     "xp": 40,
     "loot": {
       "pocao_cura": 1
-    }
+    },
+    "areas": [
+      "vila_aurora",
+      "fronteira_norte"
+    ]
   },
   {
     "id": "goblin_batedor",
@@ -23,7 +27,11 @@
     "xp": 60,
     "loot": {
       "espada_curta": 1
-    }
+    },
+    "areas": [
+      "vila_aurora",
+      "fronteira_norte"
+    ]
   },
   {
     "id": "esqueleto_vigia",
@@ -36,7 +44,10 @@
     "xp": 85,
     "loot": {
       "barra_metal": 1
-    }
+    },
+    "areas": [
+      "ruinas_antigas"
+    ]
   },
   {
     "id": "aranha_cavernosa",
@@ -49,7 +60,11 @@
     "xp": 70,
     "loot": {
       "sucata_metal": 2
-    }
+    },
+    "areas": [
+      "fronteira_norte",
+      "ruinas_antigas"
+    ]
   },
   {
     "id": "ogro_alfa",
@@ -63,6 +78,9 @@
     "loot": {
       "barra_metal": 2,
       "espada_curta": 1
-    }
+    },
+    "areas": [
+      "ruinas_antigas"
+    ]
   }
 ]

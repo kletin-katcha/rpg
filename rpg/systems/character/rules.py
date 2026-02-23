@@ -2,11 +2,20 @@ from rpg.core.types import CharacterState
 
 BASE_ATTRIBUTES = {
     "forca": 5,
+    "agilidade": 5,
     "destreza": 5,
     "constituicao": 5,
     "inteligencia": 5,
     "sabedoria": 5,
     "carisma": 5,
+    "vitalidade": 5,
+    "vontade": 5,
+    "percepcao": 5,
+    "precisao": 5,
+    "resistencia": 5,
+    "espirito": 5,
+    "sorte": 5,
+    "fe": 5,
 }
 
 
@@ -25,4 +34,5 @@ def aplicar_xp(personagem: CharacterState, ganho_xp: int) -> CharacterState:
         personagem.hp_max += 10
         personagem.hp_atual = personagem.hp_max
         personagem.atributos["constituicao"] = personagem.atributos.get("constituicao", 0) + 1
+        personagem.atributos["vitalidade"] = personagem.atributos.get("vitalidade", 0) + 1
     return personagem

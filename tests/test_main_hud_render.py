@@ -1,21 +1,13 @@
 import unittest
 
-from rpg.main import _agrupar_acoes, _render_hud
+from rpg.main import _render_hud, _normalizar_escolha
 from rpg.game import Game
 
 
 class TestMainHudRender(unittest.TestCase):
-    def test_agrupar_acoes(self):
-        grupos = _agrupar_acoes([
-            "cacar_lobo",
-            "construir_oficina",
-            "ver_status",
-            "salvar",
-        ])
-        self.assertIn("Combate", grupos)
-        self.assertIn("Economia/Cidade", grupos)
-        self.assertIn("Mundo/Meta", grupos)
-        self.assertIn("Sistema", grupos)
+    def test_normalizar_escolha(self):
+        self.assertEqual(_normalizar_escolha("Humano"), "humano")
+        self.assertEqual(_normalizar_escolha("Elfo da Floresta"), "elfo_da_floresta")
 
     def test_render_hud_contem_blocos(self):
         game = Game()
@@ -23,6 +15,8 @@ class TestMainHudRender(unittest.TestCase):
         hud = _render_hud(game)
         self.assertIn("RPG Surreal", hud)
         self.assertIn("Jogador: Nid", hud)
+        self.assertIn("Sub-raça", hud)
+        self.assertIn("ATRIBUTOS / STATUS", hud)
         self.assertIn("[Combate]", hud)
         self.assertIn("Atalhos:", hud)
 

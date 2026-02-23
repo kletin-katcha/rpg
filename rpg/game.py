@@ -1,9 +1,10 @@
+import random
 from dataclasses import dataclass, field
 
 from rpg.content.loader import load_catalog
 from rpg.core.errors import RegraNegocioError
 from rpg.core.types import CharacterState
-from rpg.systems.character.service import criar_personagem, conceder_xp
+from rpg.systems.character.service import criar_personagem, conceder_xp, sub_racas_por_raca
 from rpg.systems.inventory.service import adicionar_item_catalogado
 from rpg.systems.combat.service import combater_ate_fim
 from rpg.systems.city import CityState, construir_estrutura, melhorar_estrutura, ativar_plano_automacao, processar_automacao
@@ -81,6 +82,7 @@ class Game:
         "tensao": "ver_tensao_faccoes",
         "crise": "gerar_crise_urbana",
         "viagem": "ver_regiao",
+        "explorar": "explorar_fora_cidade",
         "dungeon": "gerar_dungeon",
         "agenda": "rodar_agenda_faccoes",
         "arco_longo": "ver_arco_longo",
@@ -96,7 +98,7 @@ class Game:
     def ajuda_contextual(self) -> str:
         grupos = {
             "core": ["descansar", "coletar_item_inicial", "ver_status", "ver_historico", "ajuda", "sair"],
-            "combate": ["cacar_lobo", "cacar_goblin", "cacar_boss", "ver_condicoes_combate", "ver_arvore"],
+            "combate": ["cacar_lobo", "cacar_goblin", "cacar_boss", "explorar_fora_cidade", "ver_condicoes_combate", "ver_arvore"],
             "economia": [
                 "forjar_espada_longa",
                 "construir_oficina",
@@ -123,6 +125,7 @@ class Game:
             ],
             "expansao": [
                 "ver_regiao",
+                "explorar_fora_cidade",
                 "viajar_fronteira_norte",
                 "viajar_ruinas_antigas",
                 "gerar_dungeon",
@@ -155,21 +158,25 @@ class Game:
             "classes": sorted(classes.keys()),
         }
 
-    def criar_jogador(self, nome: str, raca_id: str, classe_id: str) -> CharacterState:
+    def opcoes_sub_raca(self, raca_id: str) -> dict[str, dict]:
+        return sub_racas_por_raca(raca_id)
+
+    def criar_jogador(self, nome: str, raca_id: str, classe_id: str, sub_raca_id: str | None = None) -> CharacterState:
         try:
-            jogador = criar_personagem(nome, raca_id, classe_id)
+            jogador = criar_personagem(nome, raca_id, classe_id, sub_raca_id=sub_raca_id)
         except RegraNegocioError:
             self.state.metricas_onboarding["erros_criacao"] += 1
             raise
         self.state.jogador = jogador
         self.state.etapa = "cidade"
         self.state.log.append(
-            f"Personagem criado: {jogador.nome} ({raca_id}/{classe_id}) em {self.state.cidade_atual}."
+            f"Personagem criado: {jogador.nome} ({raca_id}/{jogador.sub_raca_id}/{classe_id}) em {self.state.cidade_atual}."
         )
         self.state.checkpoint_criacao = {
             "nome": nome,
             "raca_id": raca_id,
             "classe_id": classe_id,
+            "sub_raca_id": jogador.sub_raca_id,
         }
         return jogador
 
@@ -204,6 +211,7 @@ class Game:
             "gerar_crise_urbana",
             "ver_crise_urbana",
             "ver_regiao",
+            "explorar_fora_cidade",
             "viajar_fronteira_norte",
             "viajar_ruinas_antigas",
             "gerar_dungeon",
@@ -264,6 +272,39 @@ class Game:
     def normalizar_acao(self, acao: str) -> str:
         base = acao.strip().lower()
         return self.ACTION_ALIASES.get(base, base)
+
+    def _monstros_por_area(self, area_id: str) -> list[str]:
+        monstros = load_catalog("monstros")
+        candidatos = [
+            monstro_id
+            for monstro_id, dados in monstros.items()
+            if area_id in dados.get("areas", ["vila_aurora"])
+        ]
+        return sorted(candidatos)
+
+    def _selecionar_monstro_area(self, area_id: str) -> str:
+        candidatos = self._monstros_por_area(area_id)
+        if not candidatos:
+            raise RegraNegocioError(f"Sem monstros configurados para a área '{area_id}'.")
+        return random.choice(candidatos)
+
+    def _evento_de_viagem(self, destino: str) -> str:
+        if random.random() > 0.35:
+            return ""
+        if random.random() < 0.65:
+            monstro_id = self._selecionar_monstro_area(destino)
+            resultado = combater_ate_fim(
+                self.state.jogador,
+                monstro_id,
+                self.state.inventario,
+                self.mutadores_combate_atuais(),
+            )
+            self.state.ultimo_log_combate = resultado.get("log_turnos", [])
+            return f" Evento de viagem: emboscada por {monstro_id}! Vitória={resultado['vitoria']} XP+{resultado['xp_recebido']}."
+
+        recompensa = random.choice(["pocao_cura", "sucata_metal", "barra_metal"])
+        adicionar_item_catalogado(self.state.inventario, recompensa, 1)
+        return f" Evento de viagem: você encontrou recurso ({recompensa})."
 
     def executar_acao_cidade(self, acao: str) -> str:
         if self.state.jogador is None:
@@ -409,6 +450,19 @@ class Game:
             msg = f"Memória de facções: {self.state.memoria_faccoes}"
         elif acao == "ver_condicoes_combate":
             msg = f"Condições de combate atuais: {self.mutadores_combate_atuais()}"
+        elif acao == "explorar_fora_cidade":
+            monstro_id = self._selecionar_monstro_area(self.state.regiao_atual)
+            resultado = combater_ate_fim(
+                self.state.jogador,
+                monstro_id,
+                self.state.inventario,
+                self.mutadores_combate_atuais(),
+            )
+            self.state.ultimo_log_combate = resultado.get("log_turnos", [])
+            msg = (
+                f"Exploração em {self.state.regiao_atual}: encontro com {monstro_id}. "
+                f"Vitória={resultado['vitoria']} | XP +{resultado['xp_recebido']} | Loot={resultado['loot']}"
+            )
         elif acao == "ver_regiao":
             msg = f"Região atual: {self.state.regiao_atual} | energia_viagem={self.state.energia_viagem}"
         elif acao == "viajar_fronteira_norte":
@@ -418,7 +472,8 @@ class Game:
             self.state.regiao_atual = resultado["regiao"]
             self.state.energia_viagem = resultado["energia"]
             self.state.regioes_descobertas.add(resultado["regiao"])
-            msg = f"Viagem concluída para {resultado['regiao']} (energia {self.state.energia_viagem})."
+            evento = self._evento_de_viagem(resultado["regiao"])
+            msg = f"Viagem concluída para {resultado['regiao']} (energia {self.state.energia_viagem}).{evento}"
         elif acao == "viajar_ruinas_antigas":
             resultado = viajar_para_regiao(self.state.regiao_atual, "ruinas_antigas", self.state.energia_viagem)
             if not resultado["ok"]:
@@ -426,7 +481,8 @@ class Game:
             self.state.regiao_atual = resultado["regiao"]
             self.state.energia_viagem = resultado["energia"]
             self.state.regioes_descobertas.add(resultado["regiao"])
-            msg = f"Viagem concluída para {resultado['regiao']} (energia {self.state.energia_viagem})."
+            evento = self._evento_de_viagem(resultado["regiao"])
+            msg = f"Viagem concluída para {resultado['regiao']} (energia {self.state.energia_viagem}).{evento}"
         elif acao == "gerar_dungeon":
             self.state.dungeon_ativa = gerar_dungeon(self.state.dia_economico, self.state.regiao_atual)
             msg = f"Dungeon gerada: {self.state.dungeon_ativa}"
@@ -511,7 +567,7 @@ class Game:
             checkpoint = self.state.checkpoint_criacao
             self.state = GameState()
             self.state.memoria_faccoes = iniciar_memoria_faccoes(self.state.reputacoes)
-            self.criar_jogador(checkpoint["nome"], checkpoint["raca_id"], checkpoint["classe_id"])
+            self.criar_jogador(checkpoint["nome"], checkpoint["raca_id"], checkpoint["classe_id"], checkpoint.get("sub_raca_id"))
             msg = "Rollback aplicado: estado do jogo restaurado para logo após a criação."
         elif acao == "evento_mundo":
             ev = aplicar_evento_mundo(self.state.cidade.ouro)

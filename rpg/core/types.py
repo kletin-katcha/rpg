@@ -5,6 +5,9 @@ from dataclasses import dataclass, field
 class CharacterState:
     id: str
     nome: str
+    raca_id: str = ""
+    sub_raca_id: str = ""
+    classe_id: str = ""
     nivel: int = 1
     xp: int = 0
     atributos: dict[str, int] = field(default_factory=dict)

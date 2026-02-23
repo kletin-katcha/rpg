@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 
 from rpg.core.errors import RegraNegocioError
 from rpg.game import Game
@@ -40,6 +41,22 @@ class TestPhase4GameUx(unittest.TestCase):
         game.executar_acao_cidade("cacar_lobo")
         out = game.executar_acao_cidade("ver_log_combate")
         self.assertIn("Log combate", out)
+
+    def test_explorar_fora_da_cidade_usa_area_atual(self):
+        game = Game()
+        game.criar_jogador("Mila", "humano", "guerreiro")
+        with patch("rpg.game.random.choice", return_value="lobo_cinzento"):
+            out = game.executar_acao_cidade("explorar_fora_cidade")
+        self.assertIn("Exploração em vila_aurora", out)
+        self.assertIn("lobo_cinzento", out)
+
+    def test_viagem_dispara_evento(self):
+        game = Game()
+        game.criar_jogador("Theo", "humano", "guerreiro")
+        with patch("rpg.game.random.random", side_effect=[0.1, 0.4]), patch("rpg.game.random.choice", return_value="goblin_batedor"):
+            out = game.executar_acao_cidade("viajar_fronteira_norte")
+        self.assertIn("Viagem concluída", out)
+        self.assertIn("Evento de viagem", out)
 
 
 if __name__ == "__main__":
