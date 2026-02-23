@@ -1,0 +1,14 @@
+[
+  {
+    "id": "oficina",
+    "nome": "Oficina",
+    "custo_base": 100,
+    "max_nivel": 3
+  },
+  {
+    "id": "nucleo_automacao",
+    "nome": "Núcleo de Automação",
+    "custo_base": 180,
+    "max_nivel": 2
+  }
+]
