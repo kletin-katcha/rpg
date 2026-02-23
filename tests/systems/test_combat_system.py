@@ -17,6 +17,8 @@ class TestCombatSystem(unittest.TestCase):
         self.assertTrue(out["vitoria"])
         self.assertGreater(out["xp_recebido"], 0)
         self.assertIn("pocao_cura", inv)
+        self.assertTrue(len(out["log_turnos"]) >= 1)
+        self.assertIn("dano_causado", out["log_turnos"][0])
 
 
 if __name__ == "__main__":

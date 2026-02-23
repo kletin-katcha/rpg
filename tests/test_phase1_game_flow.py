@@ -24,6 +24,15 @@ class TestGameFlow(unittest.TestCase):
         out = game.executar_acao_cidade("cacar_lobo")
         self.assertIn("Combate concluído", out)
 
+    def test_acao_cidade_caca_esqueleto_e_aranha(self):
+        game = Game()
+        game.criar_jogador("Mina", "elfo", "mago")
+        out1 = game.executar_acao_cidade("cacar_esqueleto")
+        out2 = game.executar_acao_cidade("cacar_aranha")
+        self.assertIn("Combate concluído", out1)
+        self.assertIn("Combate concluído", out2)
+        self.assertTrue(len(game.state.ultimo_log_combate) > 0)
+
     def test_fluxo_automacao_fase3(self):
         game = Game()
         game.criar_jogador("Nia", "humano", "guerreiro")

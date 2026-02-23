@@ -31,6 +31,9 @@ class CombatContext:
     personagem: CharacterState
     inimigo: EnemyState
     acao: str = "ataque_basico"
+    bonus_dano_personagem: int = 0
+    reducao_dano_personagem: int = 0
+    bonus_dano_inimigo: int = 0
 
 
 @dataclass

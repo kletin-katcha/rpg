@@ -12,6 +12,8 @@ CMDS = [
     [sys.executable, "scripts/validar_referencias_content.py"],
     [sys.executable, "-m", "unittest", "discover", "tests"],
     [sys.executable, "scripts/relatorio_balance.py"],
+    [sys.executable, "scripts/gate_kpis.py"],
+    [sys.executable, "scripts/load_test_systems.py"],
 ]
 
 

@@ -128,3 +128,62 @@ Criar um RPG expansível com sistemas de progressão, exploração, cidade e cra
 - Pipeline local estendida com etapa de referência semântica
 - Shims de compatibilidade para caminhos legados (reduz conflitos de merge no GitHub)
 - Fase 16 concluída: base preparada para expansão massiva de conteúdo com menor risco operacional.
+
+
+### Fase 17 — Combate situacional e condições ambientais
+- Mutadores de combate conectados ao período do dia, clima e mutador global do diretor de mundo
+- Contexto de combate expandido com bônus/reduções aplicados a cada turno
+- Nova ação de inspeção (`ver_condicoes_combate`) para leitura rápida dos modificadores ativos
+- Fase 17 concluída: combate mais reativo ao estado sistêmico do mundo sem quebrar compatibilidade.
+
+
+### Fase 18 — Cadeias de contratos narrativos
+- Geração de cadeia de contratos (mini-campanha) com múltiplas etapas
+- Progresso rastreável por etapa e inspeção via comando no loop
+- Avanço automático para o próximo contrato após conclusão
+- Falha em contrato da cadeia encerra o arco em andamento
+- Fase 18 concluída: contratos ganharam continuidade narrativa e sensação de campanha.
+
+
+### Fase 19 — Tensão dinâmica entre facções
+- Avaliação sistêmica da rivalidade entre as facções mais influentes
+- Estado de tensão com três níveis (`conflito`, `competicao`, `hegemonia`)
+- Impacto urbano imediato via ajuste de ouro da cidade
+- Novas ações de inspeção e atualização (`gerar_tensao_faccoes`, `ver_tensao_faccoes`)
+- Fase 19 concluída: reputação agora afeta o estado político-econômico local.
+
+
+### Fase 20 — Crises urbanas sistêmicas
+- Geração de crise urbana baseada em tensão de facções e condição climática
+- Crises com impacto econômico imediato na cidade
+- Registro diegético no jornal para reforçar continuidade narrativa
+- Novas ações de controle e inspeção (`gerar_crise_urbana`, `ver_crise_urbana`)
+- Fase 20 concluída: o mundo urbano reage a política + clima de forma tangível.
+
+
+### Fase 21 — Regiões e viagem
+- Múltiplas regiões exploráveis com custo de energia
+- Descoberta persistente de áreas visitadas
+- Fase 21 concluída: exploração geográfica entrou no loop principal.
+
+### Fase 22 — Dungeons procedurais leves
+- Geração de dungeon por dia/região
+- Exploração com risco/recompensa no loop de cidade
+- Fase 22 concluída: conteúdo repetível com variação controlada.
+
+### Fase 23 — Agenda autônoma de facções
+- Tick de agenda por facção com variações de reputação
+- Histórico de eventos faccionais para inspeção
+- Fase 23 concluída: o mundo político evolui entre decisões do jogador.
+
+### Fase 24 — Arcos narrativos multi-ato
+- Arco longo inicializável e progressão por atos
+- Estado de campanha observável durante a run
+- Fase 24 concluída: narrativa de campanha ganhou continuidade formal.
+
+### Fase 25 — Ferramentas de expansão massiva
+- Gerador de pacotes mock para produção de conteúdo em lote
+- Simulação headless para leitura rápida de balanceamento
+- Gate de qualidade adicional: auditoria automática `scripts/auditar_fases.py` com trilha 1→25 e teste end-to-end.
+- Instrumentação runtime: ação `diagnostico_fases_1_25` para inspeção rápida da cobertura funcional por marcos.
+- Fase 25 concluída: base pronta para escalar conteúdo de forma industrial.

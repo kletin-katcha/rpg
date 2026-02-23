@@ -24,10 +24,22 @@ python -m rpg.main
 ```bash
 python scripts/verificar_sintaxe.py
 python scripts/validar_content.py
+python scripts/validar_referencias_content.py
 python -m unittest discover tests
 python scripts/relatorio_balance.py
+python scripts/gate_kpis.py
+python scripts/load_test_systems.py
 python scripts/check_all.py
+python scripts/auditar_fases.py
 ```
 
+Runbook operacional: `docs/RUNBOOK_OPERACIONAL.txt`.
+
 ## Fase atual
-- Fase 16 concluída: plataforma de conteúdo massivo com validação semântica e compatibilidade legada para merges.
+- Fase 25 concluída: expansão massiva entregue com regiões, dungeons, agenda faccional, arcos longos e ferramentas headless.
+- Fase 20 concluída: crises urbanas dinâmicas reativas à tensão de facções e ao clima.
+
+## Auditoria de fases (1-25)
+- Execute `python scripts/auditar_fases.py` para validar uma trilha funcional representativa do progresso completo, incluindo expansão 21-25 e teste end-to-end.
+
+- Comando `diagnostico_fases_1_25` no jogo para snapshot de consistência funcional (inclui validação da expansão 21-25).

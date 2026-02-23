@@ -71,3 +71,56 @@ def resgatar_beneficio_faccao(reputacoes: dict[str, int], inventario: dict[str, 
         return {"ouro": novo_ouro, "beneficio": "ouro", "detalhe": "+40 ouro (tier 1)"}
 
     return {"ouro": ouro_atual, "beneficio": "nenhum", "detalhe": "Facção sem benefício configurado"}
+
+
+
+def gerar_cadeia_contratos(tier_maximo: str = "ouro", tamanho: int = 3) -> list[dict]:
+    """Gera uma sequência curta de contratos para criar mini-arcos de progressão."""
+    cadeia: list[dict] = []
+    for _ in range(max(1, tamanho)):
+        cadeia.append(gerar_contrato_aleatorio(tier_maximo))
+    return cadeia
+
+
+def progresso_cadeia(resolvidos: int, tamanho_total: int) -> str:
+    if tamanho_total <= 0:
+        return "Sem cadeia ativa."
+    if resolvidos >= tamanho_total:
+        return "Cadeia concluída."
+    return f"Etapa {resolvidos + 1}/{tamanho_total}"
+
+
+
+def avaliar_tensao_faccoes(reputacoes: dict[str, int]) -> dict:
+    """Calcula tensão entre as duas facções mais influentes no momento."""
+    if len(reputacoes) < 2:
+        return {"status": "neutro", "rivalidade": [], "efeito_ouro": 0}
+
+    ranking = sorted(reputacoes.items(), key=lambda kv: kv[1], reverse=True)
+    (f1, r1), (f2, r2) = ranking[0], ranking[1]
+    delta = abs(r1 - r2)
+
+    if delta <= 2:
+        return {"status": "conflito", "rivalidade": [f1, f2], "efeito_ouro": -10}
+    if delta <= 6:
+        return {"status": "competicao", "rivalidade": [f1, f2], "efeito_ouro": 0}
+    return {"status": "hegemonia", "rivalidade": [f1, f2], "efeito_ouro": 10}
+
+
+
+def gerar_crise_urbana(tensao: dict, clima: str) -> dict:
+    """Gera uma crise urbana simples baseada em tensão política e clima."""
+    status = tensao.get("status", "competicao")
+
+    if status == "conflito":
+        if clima == "tempestade_arcana":
+            return {"tipo": "saques_arcanos", "gravidade": "alta", "impacto_ouro": -20}
+        return {"tipo": "motim_local", "gravidade": "media", "impacto_ouro": -12}
+
+    if status == "hegemonia":
+        return {"tipo": "reforma_civica", "gravidade": "baixa", "impacto_ouro": 8}
+
+    if clima == "chuvoso":
+        return {"tipo": "alagamento_comercial", "gravidade": "media", "impacto_ouro": -6}
+
+    return {"tipo": "estabilidade_vigiada", "gravidade": "baixa", "impacto_ouro": 0}

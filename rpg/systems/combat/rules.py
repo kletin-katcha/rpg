@@ -33,14 +33,20 @@ def resolver_turno(contexto: CombatContext) -> CombatResult:
     personagem_ataca_primeiro = velocidade_personagem >= inimigo.velocidade
 
     def ataque_inimigo() -> int:
-        dano = max(1, _calcular_ataque_inimigo(inimigo) - personagem.atributos.get("constituicao", 5) // 3)
+        dano = max(
+            1,
+            _calcular_ataque_inimigo(inimigo)
+            + contexto.bonus_dano_inimigo
+            - personagem.atributos.get("constituicao", 5) // 3
+            - contexto.reducao_dano_personagem,
+        )
         if inimigo.arquetipo == "venenoso":
             dano += 1
         personagem.hp_atual = max(0, personagem.hp_atual - dano)
         return dano
 
     def ataque_personagem() -> int:
-        dano_base = calcular_ataque_personagem(personagem)
+        dano_base = calcular_ataque_personagem(personagem) + contexto.bonus_dano_personagem
         if inimigo.arquetipo == "defensivo":
             dano_base = max(1, dano_base - 1)
         inimigo.hp_atual = max(0, inimigo.hp_atual - dano_base)
