@@ -1,0 +1,435 @@
+AUDITORIA OBJETIVA POR FASE (1-25) - FORTE, FRACO E GAP PARA PRODUCAO
+Escala: [x] forte | [!] fraco/risco | [ ] falta para produção
+
+ATUALIZAÇÃO DE PROGRESSO (CICLO ATUAL)
+- Ordem aplicada: faltas para produção -> fracos -> fortes.
+- Produção já coberto: checkpoint+rollback, KPI gate, load test e runbook operacional.
+- Fracos melhorados neste ciclo: diversidade de caça early-game, logs estruturados de combate e busca de ações no CLI.
+- Próximo alvo sugerido: ampliar fracos de economia/contratos e fortalecer pontos fortes com conteúdo adicional.
+- Estabilidade de entrada reforçada: criação agora repete escolha inválida e trata EOF sem crash após raça/classe.
+- HUD do CLI reorganizado por blocos (Combate, Economia/Cidade, Mundo/Meta, Sistema) para reduzir poluição visual.
+
+FASE 01 - Nucleo jogavel
+1. [x] Escopo base implementado conforme planejamento da fase 1.
+2. [x] Ponto forte A: Criacao de personagem e loop basico funcionando.
+3. [x] Ponto forte B: Estado em memoria consistente para sessao atual.
+4. [!] Ponto fraco A: Fluxo CLI estável (sem crash em EOF), porém ainda simples em UX avançada.
+5. [!] Ponto fraco B: Sem telemetria fina de UX de onboarding.
+6. [x] Falta para produção #1: Salvar checkpoint de criacao com rollback.
+7. [ ] Falta para produção #2: Adicionar tutorial guiado opcional.
+8. [ ] Falta para produção #3: Medir taxa de abandono na criacao.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 02 - Combate e progressao
+1. [x] Escopo base implementado conforme planejamento da fase 2.
+2. [x] Ponto forte A: Combate por turnos integrado ao loop.
+3. [x] Ponto forte B: XP/loot conectados ao resultado de luta.
+4. [x] Ponto fraco A: Diversidade de comportamentos early-game ampliada com novos encontros de caça.
+5. [!] Ponto fraco B: Balance inicial depende de poucos encontros.
+6. [ ] Falta para produção #1: Curvas por faixa de nivel (1-10/11-20).
+7. [ ] Falta para produção #2: Mais inimigos de entrada com papeis distintos.
+8. [x] Falta para produção #3: Logs de combate estruturados para analytics.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 03 - Economia/forja/cidade
+1. [x] Escopo base implementado conforme planejamento da fase 3.
+2. [x] Ponto forte A: Receitas e forja operacionalizadas.
+3. [x] Ponto forte B: Cidade com primeiras automacoes e estruturas.
+4. [!] Ponto fraco A: Poucas receitas de transicao entre tiers.
+5. [!] Ponto fraco B: Economia local ainda com baixa profundidade.
+6. [ ] Falta para produção #1: Custos de manutencao por estrutura.
+7. [ ] Falta para produção #2: Fila de producao com tempo de execucao.
+8. [ ] Falta para produção #3: Falhas/qualidade de item por maestria.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 04 - Conteudo massivo e UX
+1. [x] Escopo base implementado conforme planejamento da fase 4.
+2. [x] Ponto forte A: Catalogos expandidos e aliases de comando.
+3. [x] Ponto forte B: Historico/ajuda melhoram uso no terminal.
+4. [x] Ponto fraco A: HUD/menus reorganizados por blocos para reduzir confusão de navegação.
+5. [x] Ponto fraco B: Busca/filtro semantico no CLI implementada (buscar_acoes:<termo>).
+6. [ ] Falta para produção #1: Ajuda contextual por estado do jogo.
+7. [ ] Falta para produção #2: Comandos compostos (macro) para QA.
+8. [ ] Falta para produção #3: Autocomplete basico no cliente console.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 05 - Telemetria de balance
+1. [x] Escopo base implementado conforme planejamento da fase 5.
+2. [x] Ponto forte A: Relatorio automatizado de balance ativo.
+3. [x] Ponto forte B: Suite de regressao para metricas chave.
+4. [!] Ponto fraco A: Cobertura de cenarios extremos ainda limitada.
+5. [!] Ponto fraco B: Sem guard-rails por classe/raca em lote.
+6. [x] Falta para produção #1: Thresholds por build/perfil de risco.
+7. [ ] Falta para produção #2: Comparativo historico por versao.
+8. [x] Falta para produção #3: Falha automatica quando KPI sai da faixa.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 06 - Hardening/readiness
+1. [x] Escopo base implementado conforme planejamento da fase 6.
+2. [x] Ponto forte A: Save/load integrados no fluxo oficial.
+3. [x] Ponto forte B: Pipeline unico de checks consolidado.
+4. [!] Ponto fraco A: Backups de save ainda simples.
+5. [!] Ponto fraco B: Migracao de save schema pode evoluir.
+6. [x] Falta para produção #1: Versionamento de savegame com migrators.
+7. [x] Falta para produção #2: Checkpoint atomico anti-corrupt.
+8. [x] Falta para produção #3: Recovery mode para saves parciais.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 07 - Meta-sistemas iniciais
+1. [x] Escopo base implementado conforme planejamento da fase 7.
+2. [x] Ponto forte A: Faccoes/reputacao e eventos de mundo ativos.
+3. [x] Ponto forte B: Contratos aleatorios inseridos no loop.
+4. [!] Ponto fraco A: Pool de eventos ainda enxuto.
+5. [!] Ponto fraco B: Reputacao inicial com poucos gatilhos indiretos.
+6. [ ] Falta para produção #1: Eventos por bioma/regiao/faccao.
+7. [ ] Falta para produção #2: Contratos com condicoes especiais.
+8. [ ] Falta para produção #3: Peso dinamico por historico do jogador.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 08 - Habilidades em runtime
+1. [x] Escopo base implementado conforme planejamento da fase 8.
+2. [x] Ponto forte A: Desbloqueio de nos com prerequisito.
+3. [x] Ponto forte B: Persistencia de habilidades desbloqueadas.
+4. [!] Ponto fraco A: Arvores ainda pequenas frente ao objetivo massivo.
+5. [!] Ponto fraco B: Pouca sinergia cruzada com economia/cidade.
+6. [ ] Falta para produção #1: Ramos por classe e por faccao.
+7. [ ] Falta para produção #2: Reespec parcial com custo.
+8. [ ] Falta para produção #3: Build planner para prever impacto.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 09 - Contratos executaveis
+1. [x] Escopo base implementado conforme planejamento da fase 9.
+2. [x] Ponto forte A: Contrato ativo com recompensa real.
+3. [x] Ponto forte B: Loop XP+ouro+reputacao fechado.
+4. [!] Ponto fraco A: Pouca variacao de objetivo de contrato.
+5. [!] Ponto fraco B: Escalonamento de dificuldade pode ampliar.
+6. [ ] Falta para produção #1: Objetivos compostos (tempo/stealth/sem dano).
+7. [ ] Falta para produção #2: Escala por tier e historico de sucesso.
+8. [ ] Falta para produção #3: Falha parcial com recompensa reduzida.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 10 - Beneficios de faccao
+1. [x] Escopo base implementado conforme planejamento da fase 10.
+2. [x] Ponto forte A: Perks por reputacao resgataveis.
+3. [x] Ponto forte B: Impacto direto em economia/jogo.
+4. [!] Ponto fraco A: Poucos perks exclusivos por faccao.
+5. [!] Ponto fraco B: Progressao de tiers ainda curta.
+6. [ ] Falta para produção #1: Arvore de perks por faccao.
+7. [ ] Falta para produção #2: Cooldown e custo de manutencao de perks.
+8. [ ] Falta para produção #3: Sinergia perk + clima + diretor de mundo.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 11 - Contratos por tier/reputacao negativa
+1. [x] Escopo base implementado conforme planejamento da fase 11.
+2. [x] Ponto forte A: Risco/recompensa melhor definido.
+3. [x] Ponto forte B: Falha afeta reputacao de forma explicita.
+4. [!] Ponto fraco A: Distribuicao de tiers pode ficar previsivel.
+5. [!] Ponto fraco B: Penalidades ainda pouco contextuais.
+6. [ ] Falta para produção #1: Tabela de odds adaptativa por desempenho.
+7. [ ] Falta para produção #2: Penalidade contextual por faccao rival.
+8. [ ] Falta para produção #3: Protecoes anti-loop de farm em tier baixo.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 12 - Combate avancado e boss multi-fase
+1. [x] Escopo base implementado conforme planejamento da fase 12.
+2. [x] Ponto forte A: Iniciativa por atributos adicionada.
+3. [x] Ponto forte B: Arquétipos e fase de boss elevam tática.
+4. [!] Ponto fraco A: Poucos bosses para validar diversidade.
+5. [!] Ponto fraco B: Ausencia de terreno/posicionamento robusto.
+6. [ ] Falta para produção #1: Status persistentes (sangramento/veneno).
+7. [ ] Falta para produção #2: Terreno com modificadores por arena.
+8. [ ] Falta para produção #3: Pacote de bosses com mecanicas unicas.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 13 - Economia dinamica
+1. [x] Escopo base implementado conforme planejamento da fase 13.
+2. [x] Ponto forte A: Mercado varia por dia e contexto.
+3. [x] Ponto forte B: Venda/producao conectam inventario a ouro.
+4. [!] Ponto fraco A: Oferta/demanda ainda simplificada.
+5. [!] Ponto fraco B: Mercados regionais ainda limitados.
+6. [ ] Falta para produção #1: Preco por regiao e escassez.
+7. [ ] Falta para produção #2: Eventos economicos sazonais.
+8. [ ] Falta para produção #3: Taxa/logistica para transporte de bens.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 14 - Imersao sistêmica
+1. [x] Escopo base implementado conforme planejamento da fase 14.
+2. [x] Ponto forte A: Tempo/clima/jornal/codex integrados.
+3. [x] Ponto forte B: Eventos alimentam memoria narrativa local.
+4. [!] Ponto fraco A: Pouca profundidade de rotina NPC.
+5. [!] Ponto fraco B: Codex pode crescer em densidade.
+6. [ ] Falta para produção #1: Agenda diaria de NPCs chave.
+7. [ ] Falta para produção #2: Codex por descoberta/geografia/faccao.
+8. [ ] Falta para produção #3: Eventos de clima com efeitos longos.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 15 - Diretor de mundo
+1. [x] Escopo base implementado conforme planejamento da fase 15.
+2. [x] Ponto forte A: Arcos procedurais e mutadores ativos.
+3. [x] Ponto forte B: Memoria emergente de faccoes registrada.
+4. [!] Ponto fraco A: Pool de mutadores ainda curto.
+5. [!] Ponto fraco B: Arcos podem repetir padroes cedo.
+6. [ ] Falta para produção #1: Mutadores combinaveis com anti-sinergia.
+7. [ ] Falta para produção #2: Diretor com controle por seed/temporada.
+8. [ ] Falta para produção #3: Biblioteca maior de templates narrativos.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 16 - Plataforma para conteudo massivo
+1. [x] Escopo base implementado conforme planejamento da fase 16.
+2. [x] Ponto forte A: Validacao semantica de referencias cruzadas.
+3. [x] Ponto forte B: Compatibilidade com caminhos legados reforcada.
+4. [!] Ponto fraco A: Lint semantico ainda pode ser expandido.
+5. [!] Ponto fraco B: Nao ha score de qualidade por pacote.
+6. [ ] Falta para produção #1: Validador de balance por lote de conteudo.
+7. [ ] Falta para produção #2: Relatorio de risco por catalogo alterado.
+8. [ ] Falta para produção #3: Bloqueio CI para referencias fragilizadas.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 17 - Combate situacional
+1. [x] Escopo base implementado conforme planejamento da fase 17.
+2. [x] Ponto forte A: Mutadores ambientais aplicados ao combate.
+3. [x] Ponto forte B: Comando de inspeção facilita debug.
+4. [!] Ponto fraco A: Poucas condicoes ambientais combinadas.
+5. [!] Ponto fraco B: UI textual do estado pode ser mais didatica.
+6. [ ] Falta para produção #1: Stack de condicoes com prioridade.
+7. [ ] Falta para produção #2: Preview de impacto antes do combate.
+8. [ ] Falta para produção #3: Logs por turno com fator ambiental explicito.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 18 - Cadeias de contratos
+1. [x] Escopo base implementado conforme planejamento da fase 18.
+2. [x] Ponto forte A: Mini-campanhas por etapas implementadas.
+3. [x] Ponto forte B: Falha encerra cadeia com consequencia clara.
+4. [!] Ponto fraco A: Ramificacao de cadeia ainda baixa.
+5. [!] Ponto fraco B: Poucos desfechos alternativos por arco.
+6. [ ] Falta para produção #1: Cadeias com bifurcacao por escolha.
+7. [ ] Falta para produção #2: Recompensas exclusivas por rota.
+8. [ ] Falta para produção #3: Memoria de campanha entre cidades.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 19 - Tensao entre faccoes
+1. [x] Escopo base implementado conforme planejamento da fase 19.
+2. [x] Ponto forte A: Estado politico dinamico com impacto urbano.
+3. [x] Ponto forte B: Comandos de leitura/atualizacao disponiveis.
+4. [!] Ponto fraco A: Modelo politico ainda agregado/simples.
+5. [!] Ponto fraco B: Efeito economico poderia ser mais granular.
+6. [ ] Falta para produção #1: Relação par-a-par entre faccoes.
+7. [ ] Falta para produção #2: Eventos de diplomacia (trégua/ruptura).
+8. [ ] Falta para produção #3: Impacto por distrito/estrutura da cidade.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 20 - Crises urbanas
+1. [x] Escopo base implementado conforme planejamento da fase 20.
+2. [x] Ponto forte A: Crises geradas por tensao + clima.
+3. [x] Ponto forte B: Impacto imediato e registro no jornal.
+4. [!] Ponto fraco A: Biblioteca de crises ainda pequena.
+5. [!] Ponto fraco B: Sem cadeia de resposta multi-etapa.
+6. [ ] Falta para produção #1: Sistema de mitigacao de crise.
+7. [ ] Falta para produção #2: Crises encadeadas por severidade.
+8. [ ] Falta para produção #3: Custos de recuperacao com escolhas.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 21 - Regioes e viagem
+1. [x] Escopo base implementado conforme planejamento da fase 21.
+2. [x] Ponto forte A: Exploracao geografica com energia.
+3. [x] Ponto forte B: Descoberta persistente de regioes.
+4. [!] Ponto fraco A: Mapa ainda abstrato no CLI.
+5. [!] Ponto fraco B: Pouca variacao de eventos por trajeto.
+6. [ ] Falta para produção #1: Eventos de viagem por rota.
+7. [ ] Falta para produção #2: Risco por horario/clima da regiao.
+8. [ ] Falta para produção #3: Pontos de interesse com recompensas unicas.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 22 - Dungeons procedurais
+1. [x] Escopo base implementado conforme planejamento da fase 22.
+2. [x] Ponto forte A: Geracao por regiao/dia operacional.
+3. [x] Ponto forte B: Loop repetivel de risco/recompensa.
+4. [!] Ponto fraco A: Pool de salas/encontros ainda limitado.
+5. [!] Ponto fraco B: Sem chefes de dungeon dedicados por tema.
+6. [ ] Falta para produção #1: Tabela de salas tematicas por regiao.
+7. [ ] Falta para produção #2: Boss de dungeon com relics exclusivas.
+8. [ ] Falta para produção #3: Objetivos secundarios em run.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 23 - Agenda autonoma de faccoes
+1. [x] Escopo base implementado conforme planejamento da fase 23.
+2. [x] Ponto forte A: Faccoes evoluem entre acoes do jogador.
+3. [x] Ponto forte B: Historico de eventos politicos registrado.
+4. [!] Ponto fraco A: Baixa variedade de decisoes de agenda.
+5. [!] Ponto fraco B: Consequencias de longo prazo podem ampliar.
+6. [ ] Falta para produção #1: Agenda semanal por personalidade da faccao.
+7. [ ] Falta para produção #2: Operacoes secretas e contrainteligencia.
+8. [ ] Falta para produção #3: Efeito da agenda em contratos disponiveis.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 24 - Arcos narrativos multi-ato
+1. [x] Escopo base implementado conforme planejamento da fase 24.
+2. [x] Ponto forte A: Campanha por atos com progresso observavel.
+3. [x] Ponto forte B: Conclusao com recompensa integrada.
+4. [!] Ponto fraco A: Poucos arcos simultaneos suportados.
+5. [!] Ponto fraco B: Estados de falha parcial ainda simples.
+6. [ ] Falta para produção #1: Multiplos arcos concorrentes.
+7. [ ] Falta para produção #2: Marcos opcionais por ato.
+8. [ ] Falta para produção #3: Recompensas narrativas persistentes no mundo.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.
+
+FASE 25 - Ferramentas de expansao massiva
+1. [x] Escopo base implementado conforme planejamento da fase 25.
+2. [x] Ponto forte A: Gerador de pacote e simulacao headless ativos.
+3. [x] Ponto forte B: Auditoria 1-25 e diagnostico runtime disponiveis.
+4. [!] Ponto fraco A: Ferramentas ainda em nivel baseline.
+5. [!] Ponto fraco B: Pipeline de conteudo poderia ser mais assistido.
+6. [ ] Falta para produção #1: CLI de scaffold para novos catálogos.
+7. [ ] Falta para produção #2: Dashboard de KPIs por fase/sistema.
+8. [ ] Falta para produção #3: Teste de carga com milhares de entradas.
+9. [x] Testes automatizados existentes para o domínio principal desta fase.
+10. [!] Risco operacional atual: crescimento de conteúdo pode superar governança sem tooling extra.
+11. [ ] Critério de produção recomendado: KPI do sistema com threshold formal no CI.
+12. [ ] Critério de produção recomendado: teste de carga/dados para o domínio da fase.
+13. [ ] Critério de produção recomendado: runbook de falha e recuperação.
+14. Status resumido: funcional em desenvolvimento, requer hardening para produção real.
+15. Prioridade sugerida: média/alta conforme impacto no loop principal.

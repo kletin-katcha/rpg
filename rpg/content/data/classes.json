@@ -1,0 +1,42 @@
+[
+  {
+    "id": "guerreiro",
+    "nome": "Guerreiro",
+    "papel": "frontline",
+    "habilidades_iniciais": [
+      "ataque_poderoso"
+    ]
+  },
+  {
+    "id": "mago",
+    "nome": "Mago",
+    "papel": "caster",
+    "habilidades_iniciais": [
+      "missil_arcano"
+    ]
+  },
+  {
+    "id": "guardiao",
+    "nome": "Guardião",
+    "papel": "tank",
+    "habilidades_iniciais": [
+      "provocar"
+    ]
+  },
+  {
+    "id": "arqueiro",
+    "nome": "Arqueiro",
+    "papel": "ranged",
+    "habilidades_iniciais": [
+      "tiro_preciso"
+    ]
+  },
+  {
+    "id": "alquimista",
+    "nome": "Alquimista",
+    "papel": "support",
+    "habilidades_iniciais": [
+      "frasco_instavel"
+    ]
+  }
+]
