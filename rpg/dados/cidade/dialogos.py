@@ -1,0 +1,6 @@
+MENSAGEM_CLASSE_SECUNDARIA_BLOQUEADA = "Você já domina uma classe secundária: {classe}."
+MENSAGEM_SEM_CLASSE_PRINCIPAL = "Você precisa definir uma classe principal antes de treinar uma secundária."
+MENSAGEM_SEM_NIVEL = "Você precisa alcançar o nível {nivel} para treinar uma classe secundária."
+MENSAGEM_SEM_OURO = "Treinamento custa {custo} de ouro. Você não possui fundos suficientes."
+MENSAGEM_SEM_OPCOES = "Nenhuma classe secundária disponível no momento."
+MENSAGEM_TREINO_SUCESSO = "Você concluiu o treinamento e desbloqueou a classe secundária '{classe}'."
