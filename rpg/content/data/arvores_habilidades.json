@@ -1,0 +1,20 @@
+[
+  {
+    "id": "combate_base",
+    "nome": "Combate Base",
+    "dominio": "universal",
+    "nodos": [
+      {"id": "postura_ofensiva", "requer": []},
+      {"id": "golpe_reforcado", "requer": ["postura_ofensiva"]}
+    ]
+  },
+  {
+    "id": "magia_base",
+    "nome": "Magia Base",
+    "dominio": "universal",
+    "nodos": [
+      {"id": "foco_arcano", "requer": []},
+      {"id": "descarga_arcana", "requer": ["foco_arcano"]}
+    ]
+  }
+]

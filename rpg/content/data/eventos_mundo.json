@@ -1,0 +1,4 @@
+[
+  {"id": "festival_comercial", "nome": "Festival Comercial", "efeito": "ouro_bonus"},
+  {"id": "tempestade_mistica", "nome": "Tempestade Mística", "efeito": "xp_bonus"}
+]

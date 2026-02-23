@@ -1,0 +1,21 @@
+[
+  {"id": "humano_brasileiro", "raca_id": "humano", "nome": "Brasileiro", "descricao": "Adaptabilidade cultural e resiliência social.", "bonus": {"carisma": 1, "vontade": 1}},
+  {"id": "humano_nordico", "raca_id": "humano", "nome": "Nórdico", "descricao": "Resistência ao frio e disciplina.", "bonus": {"resistencia": 1, "constituicao": 1}},
+  {"id": "humano_oriental", "raca_id": "humano", "nome": "Oriental", "descricao": "Foco e precisão técnica.", "bonus": {"precisao": 1, "inteligencia": 1}},
+
+  {"id": "elfo_floresta", "raca_id": "elfo", "nome": "Elfo da Floresta", "descricao": "Caçador natural das matas.", "bonus": {"agilidade": 1, "percepcao": 1}},
+  {"id": "elfo_noturno", "raca_id": "elfo", "nome": "Elfo Noturno", "descricao": "Místico e silencioso.", "bonus": {"destreza": 1, "espirito": 1}},
+  {"id": "elfo_arcano", "raca_id": "elfo", "nome": "Elfo Arcano", "descricao": "Estudioso de magia avançada.", "bonus": {"inteligencia": 1, "sabedoria": 1}},
+
+  {"id": "anao_montanhes", "raca_id": "anao", "nome": "Anão Montanhês", "descricao": "Defesa e trabalho pesado.", "bonus": {"forca": 1, "resistencia": 1}},
+  {"id": "anao_ferreiro", "raca_id": "anao", "nome": "Anão Ferreiro", "descricao": "Mestre da forja e precisão.", "bonus": {"precisao": 1, "vontade": 1}},
+  {"id": "anao_runico", "raca_id": "anao", "nome": "Anão Rúnico", "descricao": "Conhecedor de símbolos antigos.", "bonus": {"sabedoria": 1, "fe": 1}},
+
+  {"id": "orc_guerreiro", "raca_id": "orc", "nome": "Orc Guerreiro", "descricao": "Brutalidade de linha de frente.", "bonus": {"forca": 1, "vitalidade": 1}},
+  {"id": "orc_caçador", "raca_id": "orc", "nome": "Orc Caçador", "descricao": "Predador de campo aberto.", "bonus": {"agilidade": 1, "percepcao": 1}},
+  {"id": "orc_xama", "raca_id": "orc", "nome": "Orc Xamã", "descricao": "Conexão espiritual ancestral.", "bonus": {"espirito": 1, "sabedoria": 1}},
+
+  {"id": "draconato_escarlate", "raca_id": "draconato", "nome": "Escarlate", "descricao": "Fúria e presença dracônica.", "bonus": {"forca": 1, "carisma": 1}},
+  {"id": "draconato_azur", "raca_id": "draconato", "nome": "Azur", "descricao": "Controle mental e foco arcano.", "bonus": {"inteligencia": 1, "vontade": 1}},
+  {"id": "draconato_obsidiana", "raca_id": "draconato", "nome": "Obsidiana", "descricao": "Corpo duro como rocha viva.", "bonus": {"constituicao": 1, "resistencia": 1}}
+]
