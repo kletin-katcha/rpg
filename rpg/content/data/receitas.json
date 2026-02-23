@@ -1,0 +1,32 @@
+[
+  {
+    "id": "refino_barra_metal",
+    "nome": "Refino de Barra de Metal",
+    "insumos": {
+      "sucata_metal": 3
+    },
+    "resultado": {
+      "barra_metal": 1
+    }
+  },
+  {
+    "id": "forja_espada_longa",
+    "nome": "Forja de Espada Longa",
+    "insumos": {
+      "barra_metal": 1
+    },
+    "resultado": {
+      "espada_longa": 1
+    }
+  },
+  {
+    "id": "refino_liga_metal",
+    "nome": "Refino de Liga de Metal",
+    "insumos": {
+      "barra_metal": 2
+    },
+    "resultado": {
+      "liga_metal": 1
+    }
+  }
+]

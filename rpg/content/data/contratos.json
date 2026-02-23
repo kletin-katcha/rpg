@@ -1,0 +1,5 @@
+[
+  {"id": "caca_lobo", "nome": "Caçar Lobos", "objetivo": "Derrotar um lobo", "tier": "bronze", "xp": 30, "ouro": 20, "faccao_id": "guilda_ferreiros", "reputacao_ganho": 3, "reputacao_perda": 2},
+  {"id": "caca_goblin", "nome": "Caçar Goblins", "objetivo": "Derrotar um goblin", "tier": "prata", "xp": 45, "ouro": 30, "faccao_id": "circulo_arcano", "reputacao_ganho": 4, "reputacao_perda": 3},
+  {"id": "escolta_arcana", "nome": "Escolta Arcana", "objetivo": "Proteger caravana mística", "tier": "ouro", "xp": 70, "ouro": 55, "faccao_id": "circulo_arcano", "reputacao_ganho": 6, "reputacao_perda": 4}
+]

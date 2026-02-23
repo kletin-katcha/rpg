@@ -1,0 +1,28 @@
+RUNBOOK OPERACIONAL (PÓS-FASE 25)
+
+1) Falha de sintaxe ou import:
+- Rodar: python scripts/verificar_sintaxe.py
+- Se falhar, bloquear merge e corrigir imediatamente.
+
+2) Falha em catálogo ou schema:
+- Rodar: python scripts/validar_content.py
+- Rodar: python scripts/validar_referencias_content.py
+- Corrigir referência faltante/ID duplicado.
+
+3) Falha de KPI (readiness):
+- Rodar: python scripts/gate_kpis.py
+- Se FAIL: investigar regressão em combate/economia.
+- Reexecutar testes sistêmicos após fix.
+
+4) Save corrompido:
+- O loader tenta fallback automático em *.bak.
+- Se ambos falharem: restaurar último save válido do controle operacional.
+
+5) Falha end-to-end de fases:
+- Rodar: python scripts/auditar_fases.py
+- Validar teste de diagnóstico 1–25.
+
+6) Checklist antes de release:
+- python scripts/check_all.py
+- python scripts/load_test_systems.py
+- smoke manual: python -m rpg.main
