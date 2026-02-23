@@ -7,6 +7,7 @@ ATUALIZAÇÃO DE PROGRESSO (CICLO ATUAL)
 - Fracos melhorados neste ciclo: diversidade de caça early-game, logs estruturados de combate e busca de ações no CLI.
 - Próximo alvo sugerido: ampliar fracos de economia/contratos e fortalecer pontos fortes com conteúdo adicional.
 - Estabilidade de entrada reforçada: criação agora repete escolha inválida e trata EOF sem crash após raça/classe.
+- HUD do CLI reorganizado por blocos (Combate, Economia/Cidade, Mundo/Meta, Sistema) para reduzir poluição visual.
 
 FASE 01 - Nucleo jogavel
 1. [x] Escopo base implementado conforme planejamento da fase 1.
@@ -63,7 +64,7 @@ FASE 04 - Conteudo massivo e UX
 1. [x] Escopo base implementado conforme planejamento da fase 4.
 2. [x] Ponto forte A: Catalogos expandidos e aliases de comando.
 3. [x] Ponto forte B: Historico/ajuda melhoram uso no terminal.
-4. [!] Ponto fraco A: Navegacao de muitos comandos pode confundir.
+4. [x] Ponto fraco A: HUD/menus reorganizados por blocos para reduzir confusão de navegação.
 5. [x] Ponto fraco B: Busca/filtro semantico no CLI implementada (buscar_acoes:<termo>).
 6. [ ] Falta para produção #1: Ajuda contextual por estado do jogo.
 7. [ ] Falta para produção #2: Comandos compostos (macro) para QA.
