@@ -6,12 +6,13 @@ ATUALIZAÇÃO DE PROGRESSO (CICLO ATUAL)
 - Produção já coberto: checkpoint+rollback, KPI gate, load test e runbook operacional.
 - Fracos melhorados neste ciclo: diversidade de caça early-game, logs estruturados de combate e busca de ações no CLI.
 - Próximo alvo sugerido: ampliar fracos de economia/contratos e fortalecer pontos fortes com conteúdo adicional.
+- Estabilidade de entrada reforçada: criação agora repete escolha inválida e trata EOF sem crash após raça/classe.
 
 FASE 01 - Nucleo jogavel
 1. [x] Escopo base implementado conforme planejamento da fase 1.
 2. [x] Ponto forte A: Criacao de personagem e loop basico funcionando.
 3. [x] Ponto forte B: Estado em memoria consistente para sessao atual.
-4. [!] Ponto fraco A: Fluxo ainda centrado em CLI simples.
+4. [!] Ponto fraco A: Fluxo CLI estável (sem crash em EOF), porém ainda simples em UX avançada.
 5. [!] Ponto fraco B: Sem telemetria fina de UX de onboarding.
 6. [x] Falta para produção #1: Salvar checkpoint de criacao com rollback.
 7. [ ] Falta para produção #2: Adicionar tutorial guiado opcional.

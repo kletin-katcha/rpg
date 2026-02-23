@@ -3,6 +3,26 @@ from rpg.core.errors import RegraNegocioError
 from .game import Game
 
 
+def _normalizar_escolha(valor: str) -> str:
+    return valor.strip().lower().replace(" ", "_")
+
+
+def _escolher_opcao(label: str, opcoes: list[str]) -> str | None:
+    opcoes_norm = {o.lower(): o for o in opcoes}
+    while True:
+        try:
+            valor = input(label).strip()
+        except EOFError:
+            print("Entrada encerrada. Saindo do jogo.")
+            return None
+
+        valor_norm = _normalizar_escolha(valor)
+        if valor_norm in opcoes_norm:
+            return opcoes_norm[valor_norm]
+
+        print(f"Valor inválido: '{valor}'. Opções válidas: {', '.join(opcoes)}")
+
+
 def main() -> None:
     game = Game()
     print(game.start_message())
@@ -11,9 +31,23 @@ def main() -> None:
     print(f"Raças: {', '.join(opcoes['racas'])}")
     print(f"Classes: {', '.join(opcoes['classes'])}")
 
-    nome = input("Nome do personagem: ").strip()
-    raca = input("Escolha raça: ").strip()
-    classe = input("Escolha classe: ").strip()
+    try:
+        nome = input("Nome do personagem: ").strip()
+    except EOFError:
+        print("Entrada encerrada. Saindo do jogo.")
+        return
+
+    if not nome:
+        print("Nome inválido. Encerrando criação.")
+        return
+
+    raca = _escolher_opcao("Escolha raça: ", opcoes["racas"])
+    if raca is None:
+        return
+
+    classe = _escolher_opcao("Escolha classe: ", opcoes["classes"])
+    if classe is None:
+        return
 
     try:
         jogador = game.criar_jogador(nome, raca, classe)
@@ -26,8 +60,16 @@ def main() -> None:
 
     while game.running:
         print(f"Ações da cidade: {', '.join(game.opcoes_cidade())}")
-        print("Dica: contrato_aleatorio -> concluir_contrato/falhar_contrato -> resgatar_beneficio_faccao; atalhos: lobo, goblin, forjar, oficina, automacao, dia, status, historico, arvore, help + salvar/carregar (novo: cacar_boss, ver_mercado, vender_sucata, produzir_liga_metal, ver_clima, ver_jornal, ver_codex, gerar_arco_mundo, aplicar_mutador, ver_memoria_faccoes, ver_condicoes_combate, iniciar_cadeia_contratos, ver_cadeia_contratos, gerar_tensao_faccoes, ver_tensao_faccoes, gerar_crise_urbana, ver_crise_urbana, ver_regiao, viajar_fronteira_norte, viajar_ruinas_antigas, gerar_dungeon, explorar_dungeon, rodar_agenda_faccoes, ver_agenda_faccoes, iniciar_arco_longo, avancar_arco_longo, ver_arco_longo, gerar_pacote_expansao, simular_balance_headless)")
-        acao = input("Ação: ").strip()
+        print(
+            "Dica: contrato_aleatorio -> concluir_contrato/falhar_contrato -> resgatar_beneficio_faccao; "
+            "atalhos: lobo, goblin, forjar, oficina, automacao, dia, status, historico, arvore, help + salvar/carregar"
+        )
+        try:
+            acao = input("Ação: ").strip()
+        except EOFError:
+            print("Entrada encerrada. Saindo do jogo.")
+            break
+
         try:
             print(game.executar_acao_cidade(acao))
         except RegraNegocioError as exc:
